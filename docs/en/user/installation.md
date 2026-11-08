@@ -13,11 +13,11 @@ The API is public and needs no account or key.
 
 ## HACS (custom repository)
 
-[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=CodeBrauer&repository=ha-mannheim-climate&category=integration)
+[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=CodeBrauer&repository=ha-urban-weather&category=integration)
 
 Or manually:
 
-1. HACS → ⋮ → *Custom repositories* → add `https://github.com/CodeBrauer/ha-mannheim-climate`
+1. HACS → ⋮ → *Custom repositories* → add `https://github.com/CodeBrauer/ha-urban-weather`
    with type *Integration*.
 2. Install *Klimamessnetz Mannheim* and restart Home Assistant.
 

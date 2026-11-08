@@ -1,6 +1,6 @@
 # German translation of the documentation site, see mkdocs.base.yml for shared settings.
 INHERIT: mkdocs.base.yml
-site_url: https://codebrauer.github.io/ha-mannheim-climate/de/
+site_url: https://codebrauer.github.io/ha-urban-weather/de/
 edit_uri: edit/main/docs/de/
 copyright: Inoffizielles Projekt, nicht verbunden mit der Smart City Mannheim GmbH oder der Stadt Mannheim.
 

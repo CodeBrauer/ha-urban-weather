@@ -1,8 +1,8 @@
-<!-- source: 2971943981cd7479a3bb1bf51cf44546cd5a7bc0 -->
+<!-- source: 36ade8f8d98af4da1036870c6ce161cbe41288b8 -->
 # Mitarbeit
 
 Die Regeln für Code, Tests, Commits, Pull Requests und Versionierung stehen in
-[`AGENTS.md`](https://github.com/CodeBrauer/ha-mannheim-climate/blob/main/AGENTS.md). Sie
+[`AGENTS.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/AGENTS.md). Sie
 gelten für Menschen und KI-Agenten gleichermaßen.
 
 ## Entwicklungsumgebung
@@ -49,7 +49,7 @@ SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/
 | Release | veröffentlichtes Release | Hängt `mannheim_climate.zip` an, das HACS installiert |
 
 Releases folgen dem Runbook in
-[`.claude/skills/release/SKILL.md`](https://github.com/CodeBrauer/ha-mannheim-climate/blob/main/.claude/skills/release/SKILL.md).
+[`.claude/skills/release/SKILL.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/.claude/skills/release/SKILL.md).
 
 ## Dokumentation
 
@@ -77,4 +77,4 @@ scripts/docs build                                          # Check und strikter
 ```
 
 Der Ablauf, eine Übersetzung mit möglichst wenig Aufwand zu aktualisieren, steht in
-[`.claude/skills/docs-site/SKILL.md`](https://github.com/CodeBrauer/ha-mannheim-climate/blob/main/.claude/skills/docs-site/SKILL.md).
+[`.claude/skills/docs-site/SKILL.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/.claude/skills/docs-site/SKILL.md).

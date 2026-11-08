@@ -12,4 +12,4 @@
 Entities carry the attribution *Smart City Mannheim GmbH, dl-de/by-2-0*.
 
 The integration and this documentation are licensed under the
-[MIT License](https://github.com/CodeBrauer/ha-mannheim-climate/blob/main/LICENSE).
+[MIT License](https://github.com/CodeBrauer/ha-urban-weather/blob/main/LICENSE).

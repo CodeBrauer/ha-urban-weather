@@ -1,4 +1,4 @@
-<!-- source: b6d443885717b287619a289a52dfc32fedff0f59 -->
+<!-- source: 9762fb56584b7c74a6a5fe652c06b4982dbd0b92 -->
 # Installation
 
 ## Voraussetzungen
@@ -14,12 +14,12 @@ Die API ist öffentlich und braucht weder Konto noch Schlüssel.
 
 ## HACS (benutzerdefiniertes Repository)
 
-[![In HACS öffnen](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=CodeBrauer&repository=ha-mannheim-climate&category=integration)
+[![In HACS öffnen](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=CodeBrauer&repository=ha-urban-weather&category=integration)
 
 Oder von Hand:
 
 1. HACS → ⋮ → *Benutzerdefinierte Repositories* →
-   `https://github.com/CodeBrauer/ha-mannheim-climate` mit Typ *Integration* hinzufügen.
+   `https://github.com/CodeBrauer/ha-urban-weather` mit Typ *Integration* hinzufügen.
 2. *Klimamessnetz Mannheim* installieren und Home Assistant neu starten.
 
 HACS installiert die ZIP-Datei, die an jedem GitHub-Release hängt, und zeigt neue Versionen

@@ -1,4 +1,4 @@
-<!-- source: 8a939fc4e23999e6a4ebf3f89deae62b80840351 -->
+<!-- source: 07d7c0b1ab543387f4350b4ae6a2736656bf1ce8 -->
 # Datenquellen und Lizenzen
 
 | Daten | Quelle | Lizenz |
@@ -13,4 +13,4 @@
 Die Entitäten tragen die Quellenangabe *Smart City Mannheim GmbH, dl-de/by-2-0*.
 
 Die Integration und diese Doku stehen unter der
-[MIT-Lizenz](https://github.com/CodeBrauer/ha-mannheim-climate/blob/main/LICENSE).
+[MIT-Lizenz](https://github.com/CodeBrauer/ha-urban-weather/blob/main/LICENSE).

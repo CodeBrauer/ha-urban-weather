@@ -2,7 +2,7 @@
 
 # Klimamessnetz Mannheim für Home Assistant
 
-**Deutsch** · [English](README.en.md) · [Dokumentation](https://codebrauer.github.io/ha-mannheim-climate/de/)
+**Deutsch** · [English](README.en.md) · [Dokumentation](https://codebrauer.github.io/ha-urban-weather/de/)
 
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz)
 
@@ -84,12 +84,12 @@ entsprechend klein.
 
 ### HACS (benutzerdefiniertes Repository)
 
-[![In HACS öffnen](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=CodeBrauer&repository=ha-mannheim-climate&category=integration)
+[![In HACS öffnen](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=CodeBrauer&repository=ha-urban-weather&category=integration)
 
 Oder von Hand:
 
 1. HACS → ⋮ → *Benutzerdefinierte Repositories* →
-   `https://github.com/CodeBrauer/ha-mannheim-climate` mit Typ *Integration* hinzufügen.
+   `https://github.com/CodeBrauer/ha-urban-weather` mit Typ *Integration* hinzufügen.
 2. *Klimamessnetz Mannheim* installieren und Home Assistant neu starten.
 
 ### Manuell

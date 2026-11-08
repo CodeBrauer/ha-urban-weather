@@ -1,7 +1,7 @@
 # Contributing
 
 Rules for code, tests, commits, pull requests and versioning are in
-[`AGENTS.md`](https://github.com/CodeBrauer/ha-mannheim-climate/blob/main/AGENTS.md). They
+[`AGENTS.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/AGENTS.md). They
 apply to humans and AI agents alike.
 
 ## Development environment
@@ -46,7 +46,7 @@ SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/
 | Release | published release | Attaches `mannheim_climate.zip`, which HACS installs |
 
 Releases follow the runbook in
-[`.claude/skills/release/SKILL.md`](https://github.com/CodeBrauer/ha-mannheim-climate/blob/main/.claude/skills/release/SKILL.md).
+[`.claude/skills/release/SKILL.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/.claude/skills/release/SKILL.md).
 
 ## Documentation
 
@@ -73,4 +73,4 @@ scripts/docs build                                          # check and strict b
 ```
 
 The workflow for updating a translation with as little effort as possible is in
-[`.claude/skills/docs-site/SKILL.md`](https://github.com/CodeBrauer/ha-mannheim-climate/blob/main/.claude/skills/docs-site/SKILL.md).
+[`.claude/skills/docs-site/SKILL.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/.claude/skills/docs-site/SKILL.md).

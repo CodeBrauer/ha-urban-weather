@@ -1,4 +1,4 @@
-<!-- source: 7102eaaca25bc3183e75cda09002e45c146656e1 -->
+<!-- source: 39960c9bee4558f2895b86f5a6b9f6fd38e7447f -->
 # Reparaturen und Fehlersuche
 
 ## Reparaturhinweise
@@ -109,5 +109,5 @@ logger:
     custom_components.mannheim_climate: debug
 ```
 
-Wenn du [ein Problem meldest](https://github.com/CodeBrauer/ha-mannheim-climate/issues),
+Wenn du [ein Problem meldest](https://github.com/CodeBrauer/ha-urban-weather/issues),
 häng die Diagnose und das Debug-Log an.

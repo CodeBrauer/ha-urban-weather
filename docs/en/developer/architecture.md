@@ -2,7 +2,7 @@
 
 The integration lives in `custom_components/mannheim_climate/`. Conventions for working on
 it (commands, tests, commits, versioning) are in
-[`AGENTS.md`](https://github.com/CodeBrauer/ha-mannheim-climate/blob/main/AGENTS.md).
+[`AGENTS.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/AGENTS.md).
 
 ## Components
 
@@ -117,7 +117,7 @@ sequenceDiagram
 ## Config entry
 
 `VERSION = 1`, no migrations yet. Changes to this format need a migration (see
-[`AGENTS.md`](https://github.com/CodeBrauer/ha-mannheim-climate/blob/main/AGENTS.md#home-assistant-specifics)).
+[`AGENTS.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/AGENTS.md#home-assistant-specifics)).
 
 | Part | Key | Content |
 |---|---|---|

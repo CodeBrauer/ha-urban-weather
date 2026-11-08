@@ -10,7 +10,7 @@ LOGGER: Logger = getLogger(__package__)
 
 DOMAIN = "mannheim_climate"
 ATTRIBUTION = "Smart City Mannheim GmbH, dl-de/by-2-0 (opendata.smartmannheim.de)"
-REPOSITORY_URL = "https://github.com/CodeBrauer/ha-mannheim-climate"
+REPOSITORY_URL = "https://github.com/CodeBrauer/ha-urban-weather"
 
 API_BASE_URL = "https://api.smartmannheim.de/climate"
 REQUEST_TIMEOUT_S = 15
