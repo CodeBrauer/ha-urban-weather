@@ -3,3 +3,5 @@ colorlog==6.10.1
 homeassistant==2026.11.0
 # Pins homeassistant exactly: bump both together (same version number).
 pytest-homeassistant==2026.11.0
+coverage==7.16.2
+pytest-cov==7.1.0
