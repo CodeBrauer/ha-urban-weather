@@ -107,5 +107,5 @@ logger:
     custom_components.mannheim_climate: debug
 ```
 
-When you [report a problem](https://github.com/CodeBrauer/ha-mannheim-climate/issues),
+When you [report a problem](https://github.com/CodeBrauer/ha-urban-weather/issues),
 attach the diagnostics and the debug log.

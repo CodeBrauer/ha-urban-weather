@@ -37,7 +37,7 @@ DATA_DIR = PACKAGE_DIR / "data"
 DEFAULT_CACHE_DIR = ROOT / ".cache" / "reference-build"
 
 USER_AGENT = (
-    "ha-mannheim-climate-build/0.1 (+https://github.com/CodeBrauer/ha-mannheim-climate)"
+    "ha-urban-weather-build/0.1 (+https://github.com/CodeBrauer/ha-urban-weather)"
 )
 HTTP_TIMEOUT_S = 60
 
