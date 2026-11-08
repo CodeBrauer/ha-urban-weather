@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any
 
 from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_RADIUS
 from homeassistant.util import dt as dt_util
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from pytest_homeassistant.common import MockConfigEntry
 
 from custom_components.mannheim_climate.api import ApiSensor, Measurement
 from custom_components.mannheim_climate.const import (

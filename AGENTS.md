@@ -17,7 +17,7 @@ Home Assistant custom integration `mannheim_climate` ("Klimamessnetz Mannheim").
 | `config_flow.py`, `map_view.py`, `www/` | Config/options flow; the station map page is an external step |
 | `coordinator.py` | Polling per location, catch-up of deferred requests, repair issues |
 | `sensor.py`, `weather.py`, `diagnostics.py` | Entities and diagnostics |
-| `tests/` | pytest with `pytest-homeassistant-custom-component` |
+| `tests/` | pytest with `pytest-homeassistant` |
 | `docs/`, `mkdocs*.yml` | Documentation site (Zensical, GitHub Pages): `docs/en/` source, `docs/de/` German translation |
 | `config/` | Local dev instance (gitignored) |
 
@@ -78,7 +78,7 @@ Release steps: [`.claude/skills/release/SKILL.md`](.claude/skills/release/SKILL.
 
 ## Home Assistant specifics
 
-- Minimum Home Assistant version: `hacs.json`. Dev and test version: `requirements_dev.txt`, pinned exactly together with `pytest-homeassistant-custom-component`; bump both together.
+- Minimum Home Assistant version: `hacs.json`. Dev and test version: `requirements_dev.txt`, pinned exactly together with `pytest-homeassistant`; bump both together.
 - Flow schemas use `probatio` (Home Assistant 2026.9+), not `voluptuous`.
 - `manifest.json`: `domain` and `name` first, other keys alphabetical (hassfest).
 - Config entry format changes need a migration (`VERSION`/`MINOR_VERSION` of the config flow).
