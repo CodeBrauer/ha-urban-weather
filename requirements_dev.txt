@@ -1,5 +1,5 @@
 -r requirements_lint.txt
 colorlog==6.10.1
-homeassistant==2026.10.2
-# Pins homeassistant exactly: bump both together (plugin release for that HA version).
-pytest-homeassistant-custom-component==0.13.373
+homeassistant==2026.11.0
+# Pins homeassistant exactly: bump both together (same version number).
+pytest-homeassistant==2026.11.0

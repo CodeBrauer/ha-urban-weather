@@ -17,7 +17,7 @@ from homeassistant.const import (
     CONF_RADIUS,
 )
 from homeassistant.data_entry_flow import FlowResultType
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from pytest_homeassistant.common import MockConfigEntry
 
 from custom_components.mannheim_climate.api import ApiConnectionError
 from custom_components.mannheim_climate.const import (
@@ -50,7 +50,7 @@ if TYPE_CHECKING:
     from freezegun.api import FrozenDateTimeFactory
     from homeassistant.config_entries import ConfigFlowResult
     from homeassistant.core import HomeAssistant
-    from pytest_homeassistant_custom_component.typing import ClientSessionGenerator
+    from pytest_homeassistant.typing import ClientSessionGenerator
 
 pytestmark = pytest.mark.usefixtures("enable_custom_integrations", "api")
 
