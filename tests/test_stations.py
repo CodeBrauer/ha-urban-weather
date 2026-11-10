@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from custom_components.mannheim_climate.api import ApiSensor, parse_sensors
-from custom_components.mannheim_climate.const import Environment, Field, MountZone
-from custom_components.mannheim_climate.reference import load_reference_data
-from custom_components.mannheim_climate.stations import (
+from custom_components.urban_weather.api import ApiSensor, parse_sensors
+from custom_components.urban_weather.const import Environment, Field, MountZone
+from custom_components.urban_weather.reference import load_reference_data
+from custom_components.urban_weather.stations import (
     LczSource,
     Recommendation,
     RecommendationReason,

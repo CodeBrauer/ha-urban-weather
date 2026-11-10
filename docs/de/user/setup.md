@@ -1,7 +1,7 @@
-<!-- source: 737abcb824056b007dd3bedae7d153292322c222 -->
+<!-- source: 266e614412f2a756349ec52b21c0f35dd8f9bb21 -->
 # Einrichtung
 
-*Einstellungen → Geräte & Dienste → Integration hinzufügen → Klimamessnetz Mannheim*
+*Einstellungen → Geräte & Dienste → Integration hinzufügen → Urban Weather (Stadtklima)*
 
 Jeder Standort, den du hinzufügst, wird ein eigenes Gerät mit eigenen Entitäten.
 

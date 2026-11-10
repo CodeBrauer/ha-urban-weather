@@ -1,4 +1,4 @@
-/* Interactive station selection for the Klimamessnetz Mannheim config flow. */
+/* Interactive station selection for the Urban Weather config flow. */
 (() => {
   "use strict";
 

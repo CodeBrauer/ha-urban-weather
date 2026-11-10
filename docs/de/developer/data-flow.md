@@ -1,4 +1,4 @@
-<!-- source: 4010184b037e8117806da2962c48dba0753fd7b1 -->
+<!-- source: c92c9082527254ec1bef72cfb3052cd124cf97ab -->
 # Abfragen und API-Zugriff
 
 Jeder API-Zugriff läuft über `ClimateHub` (`hub.py`). Die Limits in `const.py` bilden die
@@ -83,7 +83,7 @@ flowchart TD
     Build[build_stations] --> Return
 ```
 
-Die gespeicherte Kopie (`.storage/mannheim_climate.sensors`) enthält den rohen Payload, den
+Die gespeicherte Kopie (`.storage/urban_weather.sensors`) enthält den rohen Payload, den
 Abrufzeitpunkt und für jeden Sensor, wann er zum ersten Mal auftauchte. Beim ersten Abruf
 ohne Historie gelten alle Sensoren als bekannt, neu sind also nur später hinzugekommene. Ein
 Sensor gilt `NEW_STATION_PERIOD` lang als neu.

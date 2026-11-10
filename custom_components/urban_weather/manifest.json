@@ -1,6 +1,10 @@
 {
-  "domain": "mannheim_climate",
-  "name": "Klimamessnetz Mannheim",
+  "domain": "urban_weather",
+  "name": "Urban Weather (Stadtklima)",
+  "categories": [
+    "sensors.temperature_humidity",
+    "weather_alerts"
+  ],
   "codeowners": [
     "@CodeBrauer"
   ],

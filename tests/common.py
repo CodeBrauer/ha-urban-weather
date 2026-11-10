@@ -12,8 +12,8 @@ from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_RADIUS
 from homeassistant.util import dt as dt_util
 from pytest_homeassistant.common import MockConfigEntry
 
-from custom_components.mannheim_climate.api import ApiSensor, Measurement
-from custom_components.mannheim_climate.const import (
+from custom_components.urban_weather.api import ApiSensor, Measurement
+from custom_components.urban_weather.const import (
     CONF_DEW_POINT_OFFSET,
     CONF_ENVIRONMENT,
     CONF_SCAN_INTERVAL,
@@ -26,7 +26,7 @@ from custom_components.mannheim_climate.const import (
     Field,
     MountZone,
 )
-from custom_components.mannheim_climate.stations import LczSource, Station
+from custom_components.urban_weather.stations import LczSource, Station
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable, Mapping

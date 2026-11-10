@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 def api() -> Generator[MagicMock]:
     """Replace the API client created by the hub."""
     with patch(
-        "custom_components.mannheim_climate.hub.MannheimClimateApi", autospec=True
+        "custom_components.urban_weather.hub.MannheimClimateApi", autospec=True
     ) as api_class:
         client = api_class.return_value
         client.async_get_sensors_payload.return_value = sensors_payload()

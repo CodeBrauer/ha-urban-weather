@@ -1,4 +1,4 @@
-<!-- source: 7e9f7e00bd895e2431cefef2733a751f82d85cd6 -->
+<!-- source: 87c4520d586c7cfdf21232c7596c9fce9fcccff0 -->
 # API-Limits
 
 Die [Klima-API](https://api.smartmannheim.de/doc) ist öffentlich und braucht keinen
@@ -55,7 +55,7 @@ das Budget es zulässt.
 sich aber das Limit von 30 Abfragen pro Stunde. Diese Integration plant nur ihre eigenen
 Abfragen, halte die Zahl der Stationen deshalb in beiden klein.
 
-| | Klimamessnetz Mannheim | Smart City Mannheim |
+| | Urban Weather (Stadtklima) | Smart City Mannheim |
 |---|---|---|
 | Ansatz | Ein Standort, Werte, die ihn am besten abbilden: passende Station oder Kombination mehrerer | Einzelne Sensoren wählen, Werte pro Station |
 | Stationswahl | Empfehlung nach Entfernung, Umgebung und Montagehöhe; interaktive Karte | Suche nach Sensorcode oder Straße, Liste nach Entfernung |

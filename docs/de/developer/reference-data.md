@@ -1,9 +1,9 @@
-<!-- source: 45a1c661c2490160c51d3e3de36e9d0731ce4128 -->
+<!-- source: 16044c88a7d4e6f2823a533f49eccdb59fde55f0 -->
 # Stationen und Referenzdaten
 
 Die API listet Sensoren (Module), keine Stationen, und hat keine Metadaten zum Standort der
 Messung. `stations.py` gruppiert die Sensoren und ergänzt Daten, die in
-`custom_components/mannheim_climate/data/` mitgeliefert werden.
+`custom_components/urban_weather/data/` mitgeliefert werden.
 
 ## Von Sensoren zu Stationen
 

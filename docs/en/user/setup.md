@@ -1,6 +1,6 @@
 # Setup
 
-*Settings → Devices & services → Add integration → Klimamessnetz Mannheim*
+*Settings → Devices & services → Add integration → Urban Weather (Stadtklima)*
 
 Each location you add becomes its own device with its own entities.
 

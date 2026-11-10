@@ -1,4 +1,4 @@
-<!-- source: 36ade8f8d98af4da1036870c6ce161cbe41288b8 -->
+<!-- source: 7b4c7b8eeef031c57191aad52b26c7c990131d91 -->
 # Mitarbeit
 
 Die Regeln für Code, Tests, Commits, Pull Requests und Versionierung stehen in
@@ -46,7 +46,7 @@ SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/
 | Test | Push, Pull Request | pytest mit Coverage |
 | Validate | Push, Pull Request, täglich | hassfest, HACS-Validierung |
 | Docs | Änderungen an der Doku | Übersetzungs-Check, strikter Build beider Sprachen; Deploy auf GitHub Pages von `main` |
-| Release | veröffentlichtes Release | Hängt `mannheim_climate.zip` an, das HACS installiert |
+| Release | veröffentlichtes Release | Hängt `urban_weather.zip` an, das HACS installiert |
 
 Releases folgen dem Runbook in
 [`.claude/skills/release/SKILL.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/.claude/skills/release/SKILL.md).

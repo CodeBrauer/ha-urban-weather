@@ -1,4 +1,4 @@
-"""Base entity for the Klimamessnetz Mannheim integration."""
+"""Base entity for the Urban Weather integration."""
 
 from __future__ import annotations
 

@@ -104,7 +104,7 @@ actions:
 ```yaml
 logger:
   logs:
-    custom_components.mannheim_climate: debug
+    custom_components.urban_weather: debug
 ```
 
 When you [report a problem](https://github.com/CodeBrauer/ha-urban-weather/issues),

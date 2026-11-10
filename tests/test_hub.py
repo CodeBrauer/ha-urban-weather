@@ -11,17 +11,17 @@ from unittest.mock import MagicMock
 import pytest
 from homeassistant.util import dt as dt_util
 
-from custom_components.mannheim_climate.api import (
+from custom_components.urban_weather.api import (
     ApiConnectionError,
     ApiRateLimitError,
     Measurement,
 )
-from custom_components.mannheim_climate.const import (
+from custom_components.urban_weather.const import (
     MEASUREMENT_LIMITS,
     NEW_STATION_PERIOD,
     STORAGE_KEY,
 )
-from custom_components.mannheim_climate.hub import (
+from custom_components.urban_weather.hub import (
     ClimateHub,
     RateLimiter,
     RequestDeferredError,

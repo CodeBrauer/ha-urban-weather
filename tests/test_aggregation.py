@@ -7,7 +7,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from custom_components.mannheim_climate.aggregation import (
+from custom_components.urban_weather.aggregation import (
     Estimate,
     StationReading,
     absolute_humidity,
@@ -17,8 +17,8 @@ from custom_components.mannheim_climate.aggregation import (
     latest_valid,
     relative_humidity,
 )
-from custom_components.mannheim_climate.api import Measurement
-from custom_components.mannheim_climate.const import MAX_MEASUREMENT_AGE, Field
+from custom_components.urban_weather.api import Measurement
+from custom_components.urban_weather.const import MAX_MEASUREMENT_AGE, Field
 
 NOW = datetime(2026, 10, 26, 12, 0, tzinfo=UTC)
 
