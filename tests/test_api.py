@@ -173,6 +173,34 @@ def test_parse_sensors_unknown_param_set(param_set: Any) -> None:
     assert sensor.parameters == frozenset()
 
 
+def test_api_fields_are_mapped() -> None:
+    """Known API fields get the integration's names, others keep their API name."""
+    [sensor] = parse_sensors(
+        {
+            "paramSets": [["airHumidity", "averageWindSpeed", "maxIrradiation"]],
+            "sensors": [{"id": "s1", "position": [8.5, 49.5], "paramSet": 0}],
+        }
+    )
+    assert sensor.parameters == {Field.HUMIDITY, Field.WIND_SPEED, "maxIrradiation"}
+    [measurement] = parse_measurements(
+        {
+            "data": [
+                {
+                    "timestamp": "2026-10-26T12:00:00Z",
+                    "atmosphericPressure": 1013.2,
+                    "windGust3s": 7.5,
+                    "precipitationTick": 1,
+                }
+            ]
+        }
+    )
+    assert measurement.values == {
+        Field.PRESSURE: 1013.2,
+        Field.WIND_GUST: 7.5,
+        "precipitationTick": 1.0,
+    }
+
+
 @pytest.mark.parametrize("parse", [parse_sensors, parse_measurements])
 def test_parse_rejects_non_object_payload(parse: Any) -> None:
     """A list or error string instead of an object is an API error."""

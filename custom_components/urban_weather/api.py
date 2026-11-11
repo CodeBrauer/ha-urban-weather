@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any
 
 import aiohttp
 
-from .const import API_BASE_URL, DEFAULT_RETRY_AFTER_S, LOGGER, REQUEST_TIMEOUT_S
+from .const import API_BASE_URL, DEFAULT_RETRY_AFTER_S, LOGGER, REQUEST_TIMEOUT_S, Field
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -18,6 +18,23 @@ HTTP_BAD_REQUEST = 400
 HTTP_NOT_FOUND = 404
 HTTP_TOO_MANY_REQUESTS = 429
 POSITION_LENGTH = 2
+
+# API field name -> Field. Other fields keep their API name: they still count for
+# the hardware generation of a sensor and show up in the diagnostics.
+FIELDS: dict[str, Field] = {
+    "temperature": Field.TEMPERATURE,
+    "minTemperature": Field.MIN_TEMPERATURE,
+    "maxTemperature": Field.MAX_TEMPERATURE,
+    "airHumidity": Field.HUMIDITY,
+    "dewPoint": Field.DEW_POINT,
+    "atmosphericPressure": Field.PRESSURE,
+    "irradiation": Field.IRRADIANCE,
+    "averageWindSpeed": Field.WIND_SPEED,
+    "windGust3s": Field.WIND_GUST,
+    "windGust1s": Field.WIND_GUST_1S,
+    "averageWindDirection": Field.WIND_DIRECTION,
+    "windGustDirection": Field.WIND_GUST_DIRECTION,
+}
 
 
 class ApiError(Exception):
@@ -102,7 +119,7 @@ def parse_sensors(payload: Any) -> list[ApiSensor]:
                 name=str(raw.get("name") or sensor_id).strip(),
                 latitude=float(latitude),
                 longitude=float(longitude),
-                parameters=frozenset(parameters),
+                parameters=frozenset(FIELDS.get(name, name) for name in parameters),
             )
         )
     return sensors
@@ -120,7 +137,7 @@ def parse_measurements(payload: Any) -> list[Measurement]:
         except KeyError, TypeError, ValueError:
             continue
         values = {
-            key: float(value)
+            FIELDS.get(key, key): float(value)
             for key, value in raw.items()
             if key != "timestamp" and _is_number(value)
         }
