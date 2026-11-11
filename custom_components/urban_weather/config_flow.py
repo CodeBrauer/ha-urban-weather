@@ -65,7 +65,6 @@ if TYPE_CHECKING:
     from collections.abc import Mapping
 
 HOME_MATCH_RADIUS_M = 100
-FALLBACK_TITLE = "Mannheim"
 DEFAULT_ENVIRONMENT = Environment.OPEN_BUILT
 SOURCE_RECONFIGURE = "reconfigure"
 
@@ -151,7 +150,7 @@ def _environment_schema(default: Environment) -> probatio.Schema:
 
 def detected_environment(hub: ClimateHub, location: Location) -> Environment:
     """Return the surroundings at a location according to the LCZ map."""
-    lcz = hub.reference.lcz(location.latitude, location.longitude)
+    lcz = hub.provider.lcz(location.latitude, location.longitude)
     return LCZ_ENVIRONMENT.get(lcz, DEFAULT_ENVIRONMENT) if lcz else DEFAULT_ENVIRONMENT
 
 
@@ -404,11 +403,12 @@ class MannheimClimateConfigFlow(ConfigFlow, domain=DOMAIN):
             <= HOME_MATCH_RADIUS_M
         ):
             return self.hass.config.location_name
-        district = self._hub.reference.district(location.latitude, location.longitude)
+        provider = self._hub.provider
+        district = provider.district(location.latitude, location.longitude)
         if district:
             return district
         closest = nearest(self._stations, location.latitude, location.longitude)
-        return next((s.district for s in closest if s.district), FALLBACK_TITLE)
+        return next((s.district for s in closest if s.district), provider.network.area)
 
 
 class MannheimClimateOptionsFlow(OptionsFlowWithReload):

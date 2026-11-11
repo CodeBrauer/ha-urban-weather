@@ -9,19 +9,18 @@ import aiohttp
 import pytest
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from custom_components.urban_weather.api import (
+from custom_components.urban_weather.const import DEFAULT_RETRY_AFTER_S, Field
+from custom_components.urban_weather.provider import (
     ApiConnectionError,
     ApiError,
     ApiRateLimitError,
-    MannheimClimateApi,
     SensorNotFoundError,
+)
+from custom_components.urban_weather.providers.mannheim import MANNHEIM
+from custom_components.urban_weather.providers.mannheim.api import (
+    MannheimClimateApi,
     parse_measurements,
     parse_sensors,
-)
-from custom_components.urban_weather.const import (
-    API_BASE_URL,
-    DEFAULT_RETRY_AFTER_S,
-    Field,
 )
 
 from .common import sensors_payload
@@ -32,8 +31,9 @@ if TYPE_CHECKING:
         AiohttpClientMocker,
     )
 
-SENSORS_URL = f"{API_BASE_URL}/sensors"
-MEASUREMENTS_URL = f"{API_BASE_URL}/measurements/s1"
+FIELDS = MANNHEIM.fields
+SENSORS_URL = f"{MANNHEIM.endpoint}/sensors"
+MEASUREMENTS_URL = f"{MANNHEIM.endpoint}/measurements/s1"
 
 
 @pytest.fixture
@@ -42,7 +42,7 @@ async def client(
     aioclient_mock: AiohttpClientMocker,  # noqa: ARG001
 ) -> MannheimClimateApi:
     """Return a client using the mocked aiohttp session."""
-    return MannheimClimateApi(async_get_clientsession(hass))
+    return MannheimClimateApi(async_get_clientsession(hass), MANNHEIM)
 
 
 async def test_sensor_list_is_returned_unchanged(
@@ -133,7 +133,7 @@ async def test_rate_limit_retry_after(
 
 def test_parse_real_sensor_list() -> None:
     """The recorded list: one sensor without position is skipped, swaps are fixed."""
-    sensors = {sensor.name: sensor for sensor in parse_sensors(sensors_payload())}
+    sensors = {s.name: s for s in parse_sensors(sensors_payload(), FIELDS)}
     assert len(sensors) == 53
     assert "2303LH085" not in sensors
     swapped = sensors["2306LH126"]
@@ -156,7 +156,7 @@ def test_parse_real_sensor_list() -> None:
 )
 def test_parse_sensors_skips_unusable_entries(raw: dict[str, Any]) -> None:
     """Entries without id or a numeric position are left out."""
-    assert parse_sensors({"paramSets": [], "sensors": [raw]}) == []
+    assert parse_sensors({"paramSets": [], "sensors": [raw]}, FIELDS) == []
 
 
 @pytest.mark.parametrize("param_set", [None, 5, -1, "0"])
@@ -166,7 +166,8 @@ def test_parse_sensors_unknown_param_set(param_set: Any) -> None:
         {
             "paramSets": [[Field.TEMPERATURE]],
             "sensors": [{"id": " s1 ", "position": [8.5, 49.5], "paramSet": param_set}],
-        }
+        },
+        FIELDS,
     )
     assert sensor.id == "s1"
     assert sensor.name == "s1", "falls back to the id"
@@ -179,7 +180,8 @@ def test_api_fields_are_mapped() -> None:
         {
             "paramSets": [["airHumidity", "averageWindSpeed", "maxIrradiation"]],
             "sensors": [{"id": "s1", "position": [8.5, 49.5], "paramSet": 0}],
-        }
+        },
+        FIELDS,
     )
     assert sensor.parameters == {Field.HUMIDITY, Field.WIND_SPEED, "maxIrradiation"}
     [measurement] = parse_measurements(
@@ -192,7 +194,8 @@ def test_api_fields_are_mapped() -> None:
                     "precipitationTick": 1,
                 }
             ]
-        }
+        },
+        FIELDS,
     )
     assert measurement.values == {
         Field.PRESSURE: 1013.2,
@@ -205,7 +208,7 @@ def test_api_fields_are_mapped() -> None:
 def test_parse_rejects_non_object_payload(parse: Any) -> None:
     """A list or error string instead of an object is an API error."""
     with pytest.raises(ApiError):
-        parse(["unexpected"])
+        parse(["unexpected"], FIELDS)
 
 
 def test_parse_measurements() -> None:
@@ -219,7 +222,8 @@ def test_parse_measurements() -> None:
                 {"temperature": 99},
                 {"timestamp": "2026-10-26T11:40:00Z", "airHumidity": "80", "ok": True},
             ]
-        }
+        },
+        FIELDS,
     )
     assert [m.timestamp.minute for m in measurements] == [0, 50, 40]
     assert [dict(m.values) for m in measurements] == [

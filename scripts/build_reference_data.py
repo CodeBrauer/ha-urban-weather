@@ -1,5 +1,7 @@
 """
-Generate the static reference data shipped in custom_components/urban_weather/data/.
+Generate the static reference data of the Mannheim provider.
+
+The files go to custom_components/urban_weather/providers/mannheim/data/.
 
 Run rarely (when the city publishes a new metadata catalogue or many new stations):
 
@@ -33,7 +35,7 @@ from rasterio.windows import from_bounds
 
 ROOT = Path(__file__).resolve().parent.parent
 PACKAGE_DIR = ROOT / "custom_components" / "urban_weather"
-DATA_DIR = PACKAGE_DIR / "data"
+DATA_DIR = PACKAGE_DIR / "providers" / "mannheim" / "data"
 DEFAULT_CACHE_DIR = ROOT / ".cache" / "reference-build"
 
 USER_AGENT = (

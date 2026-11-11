@@ -7,27 +7,24 @@ import time
 from collections import deque
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
+from urllib.parse import urlsplit
 
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.singleton import singleton
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 from homeassistant.util.hass_dict import HassKey
 
-from .api import ApiError, ApiRateLimitError, MannheimClimateApi, parse_sensors
 from .const import (
     DOMAIN,
     LOGGER,
     MEASUREMENT_CACHE_TTL,
-    MEASUREMENT_LIMITS,
     NEW_STATION_PERIOD,
-    SENSOR_LIST_LIMITS,
     SENSOR_LIST_MAX_AGE,
     STORAGE_KEY,
     STORAGE_VERSION,
 )
-from .reference import ReferenceData, load_reference_data
-from .stations import Station, build_stations
+from .provider import ApiError, ApiRateLimitError
+from .providers import async_create_provider
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -35,7 +32,8 @@ if TYPE_CHECKING:
 
     from homeassistant.core import HomeAssistant
 
-    from .api import Measurement
+    from .provider import Measurement, Provider
+    from .stations import Station
 
 DATA_HUB: HassKey[ClimateHub] = HassKey(DOMAIN)
 MINUTES_PER_HOUR = 60
@@ -96,9 +94,9 @@ class _CachedMeasurements:
     measurements: list[Measurement]
 
 
-def requests_per_hour(sensor_count: int, interval_minutes: int) -> int:
+def requests_per_hour(requests_per_refresh: int, interval_minutes: int) -> int:
     """Return the planned measurement requests per hour of one config entry."""
-    return round(sensor_count * MINUTES_PER_HOUR / interval_minutes)
+    return round(requests_per_refresh * MINUTES_PER_HOUR / interval_minutes)
 
 
 def track_first_seen(
@@ -123,18 +121,13 @@ def track_first_seen(
 class ClimateHub:
     """One instance per Home Assistant, shared by all config entries."""
 
-    def __init__(
-        self,
-        hass: HomeAssistant,
-        reference: ReferenceData,
-        store: Store[dict[str, Any]],
-    ) -> None:
-        """Set up limiter and caches."""
-        self._api = MannheimClimateApi(async_get_clientsession(hass))
-        self.reference = reference
+    def __init__(self, provider: Provider, store: Store[dict[str, Any]]) -> None:
+        """Set up limiters with the network's limits, and the caches."""
+        self.provider = provider
         self._store = store
-        self._measurement_limiter = RateLimiter(MEASUREMENT_LIMITS)
-        self._sensor_limiter = RateLimiter(SENSOR_LIST_LIMITS)
+        limits = provider.network.limits
+        self._measurement_limiter = RateLimiter(limits.measurements)
+        self._sensor_limiter = RateLimiter(limits.station_list)
         self._measurements: dict[str, _CachedMeasurements] = {}
         self._sensor_locks: dict[str, asyncio.Lock] = {}
         self._stations: list[Station] | None = None
@@ -187,7 +180,7 @@ class ClimateHub:
             return None
         self._sensor_limiter.acquire()
         try:
-            return await self._api.async_get_sensors_payload()
+            return await self.provider.async_get_station_payload()
         except ApiRateLimitError as err:
             self._sensor_limiter.block_for(err.retry_after)
             LOGGER.debug("Sensor list rate limited, using stored copy")
@@ -196,7 +189,7 @@ class ClimateHub:
         return None
 
     def _set_stations(self, payload: dict[str, Any], fetched_at: datetime) -> None:
-        self._stations = build_stations(parse_sensors(payload), self.reference)
+        self._stations = self.provider.build_stations(payload)
         self._stations_fetched_at = fetched_at
         self._sensor_index = {}
         for station in self._stations:
@@ -236,7 +229,7 @@ class ClimateHub:
                 raise RequestDeferredError(wait)
             self._measurement_limiter.acquire()
             try:
-                measurements = await self._api.async_get_measurements(sensor_id)
+                measurements = await self.provider.async_get_measurements(sensor_id)
             except ApiRateLimitError as err:
                 self._measurement_limiter.block_for(err.retry_after)
                 self._log_rate_limit(err.retry_after)
@@ -254,8 +247,9 @@ class ClimateHub:
         LOGGER.warning(
             "The climate API rate limit was hit (retry after %.0f s). Missing "
             "values are fetched afterwards. Other devices or scripts using "
-            "api.smartmannheim.de from the same internet connection share the limit",
+            "%s from the same internet connection share the limit",
             retry_after,
+            urlsplit(self.provider.network.endpoint).hostname,
         )
 
     def diagnostics(self) -> dict[str, Any]:
@@ -273,5 +267,5 @@ class ClimateHub:
 @singleton(DATA_HUB, async_=True)
 async def async_get_hub(hass: HomeAssistant) -> ClimateHub:
     """Create the shared hub on first use."""
-    reference = await hass.async_add_executor_job(load_reference_data)
-    return ClimateHub(hass, reference, Store(hass, STORAGE_VERSION, STORAGE_KEY))
+    provider = await async_create_provider(hass)
+    return ClimateHub(provider, Store(hass, STORAGE_VERSION, STORAGE_KEY))

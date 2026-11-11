@@ -7,12 +7,12 @@ import math
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
+from unittest.mock import MagicMock
 
 from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_RADIUS
 from homeassistant.util import dt as dt_util
 from pytest_homeassistant.common import MockConfigEntry
 
-from custom_components.urban_weather.api import ApiSensor, Measurement
 from custom_components.urban_weather.const import (
     CONF_DEW_POINT_OFFSET,
     CONF_ENVIRONMENT,
@@ -26,6 +26,11 @@ from custom_components.urban_weather.const import (
     Field,
     MountZone,
 )
+from custom_components.urban_weather.provider import ApiSensor, Measurement
+from custom_components.urban_weather.providers.mannheim import (
+    MANNHEIM,
+    MannheimProvider,
+)
 from custom_components.urban_weather.stations import LczSource, Station
 
 if TYPE_CHECKING:
@@ -33,6 +38,8 @@ if TYPE_CHECKING:
 
     from homeassistant.config_entries import ConfigEntryDisabler
     from homeassistant.core import HomeAssistant
+
+    from custom_components.urban_weather.provider import Network
 
 FIXTURES = Path(__file__).parent / "fixtures"
 HOME = (49.472, 8.565)
@@ -68,6 +75,11 @@ def sensors_payload() -> dict[str, Any]:
     2306LH126 (swapped coordinates).
     """
     return json.loads((FIXTURES / "sensors.json").read_text("utf-8"))
+
+
+def mannheim_provider(network: Network = MANNHEIM) -> MannheimProvider:
+    """Return the Mannheim provider without reference data (API client per `api`)."""
+    return MannheimProvider(network, MagicMock(), MagicMock())
 
 
 def store_sensor_list(

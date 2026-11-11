@@ -16,7 +16,7 @@ from custom_components.urban_weather.const import (
 from custom_components.urban_weather.hub import requests_per_hour
 from custom_components.urban_weather.selection import StationSelection
 
-from .common import HOME, add_location, make_station
+from .common import HOME, add_location, make_station, mannheim_provider
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -40,7 +40,7 @@ def make_selection(
     """Return the selection for HOME (the hub is only needed for wind options)."""
     return StationSelection(
         hass,
-        MagicMock(),
+        MagicMock(provider=mannheim_provider()),
         STATIONS if stations is None else stations,
         (*HOME, 3000.0, Environment.OPEN_BUILT),
         entry_id=entry_id,

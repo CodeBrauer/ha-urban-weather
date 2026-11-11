@@ -9,24 +9,11 @@ from logging import Logger, getLogger
 LOGGER: Logger = getLogger(__package__)
 
 DOMAIN = "urban_weather"
-ATTRIBUTION = "Smart City Mannheim GmbH, dl-de/by-2-0 (opendata.smartmannheim.de)"
 REPOSITORY_URL = "https://github.com/CodeBrauer/ha-urban-weather"
 
-API_BASE_URL = "https://api.smartmannheim.de/climate"
 REQUEST_TIMEOUT_S = 15
 DEFAULT_RETRY_AFTER_S = 120
-
-# Client-side mirror of the API limits (per public IP, see docs/en/user/api-limits.md).
-# Documented: 30 measurement requests per hour. Observed: short fixed windows (~5
-# requests per 2 min per server instance, at least two instances) and rejected
-# requests count too, so after a 429 we wait for Retry-After instead of retrying.
-MEASUREMENT_BUDGET_PER_HOUR = 30
-# (max requests, window in seconds); every window must have room for a request.
-MEASUREMENT_LIMITS = ((4, 120), (MEASUREMENT_BUDGET_PER_HOUR, 3600))
-SENSOR_LIST_LIMITS = ((2, 900), (4, 3600))
 CATCH_UP_MARGIN_S = 2
-# Keep part of the hourly budget free for other clients behind the same IP.
-PLANNED_BUDGET_PER_HOUR = 24
 
 SENSOR_LIST_MAX_AGE = timedelta(hours=24)
 # How long a station added to the list is suggested for existing locations.
@@ -52,7 +39,6 @@ DEFAULT_SEARCH_RADIUS_M = 3000
 MAX_SEARCH_RADIUS_M = 10_000
 
 # Station selection
-STATION_CLUSTER_RADIUS_M = 15
 SINGLE_STATION_MAX_DISTANCE_M = 1000
 MAX_SELECTED_STATIONS = 6
 RECOMMENDED_STATIONS = 4
@@ -60,19 +46,11 @@ CANDIDATE_STATIONS = 15
 MAP_CANDIDATE_STATIONS = 60
 WIND_CANDIDATE_STATIONS = 8
 MAX_COVERAGE_DISTANCE_M = 10_000
-CATALOG_MATCH_RADIUS_M = 30
-DISTRICT_MATCH_RADIUS_M = 750
 
 # Interactive station map (external step of the config flow)
 MAP_SESSION_TTL = timedelta(minutes=30)
 MAP_URL = f"/api/{DOMAIN}/map/{{token}}"
 STATIC_URL = f"/{DOMAIN}_static"
-# Official German basemap (BKG), open data under CC BY 4.0, no API key needed.
-TILE_URL = (
-    "https://sgx.geodatenzentrum.de/wmts_basemapde/tile/1.0.0/"
-    "de_basemapde_web_raster_farbe/default/GLOBAL_WEBMERCATOR/{z}/{y}/{x}.png"
-)
-TILE_ATTRIBUTION = "© basemap.de / BKG (CC BY 4.0)"
 
 # Aggregation
 MAX_MEASUREMENT_AGE = timedelta(minutes=40)
@@ -115,18 +93,11 @@ LCZ_ENVIRONMENT: dict[int, Environment] = {
 
 
 class MountZone(StrEnum):
-    """Vertical zone of a station (metadata catalogue Tab. 43)."""
+    """Vertical zone of a station."""
 
     STREET = "street"
     ROOF = "roof"
     HIGH_POINT = "high_point"
-
-
-CATALOG_ZONES: dict[int, MountZone] = {
-    1: MountZone.STREET,
-    2: MountZone.ROOF,
-    3: MountZone.HIGH_POINT,
-}
 
 
 class Field(StrEnum):

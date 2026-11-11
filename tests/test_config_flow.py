@@ -19,7 +19,6 @@ from homeassistant.const import (
 from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant.common import MockConfigEntry
 
-from custom_components.urban_weather.api import ApiConnectionError
 from custom_components.urban_weather.const import (
     CONF_DEW_POINT_OFFSET,
     CONF_ENVIRONMENT,
@@ -30,6 +29,7 @@ from custom_components.urban_weather.const import (
     NO_WIND_SENSOR,
     Environment,
 )
+from custom_components.urban_weather.provider import ApiConnectionError
 
 from .common import (
     CATALOG_SENSOR,

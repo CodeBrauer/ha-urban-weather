@@ -3,78 +3,35 @@
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
 import aiohttp
 
-from .const import API_BASE_URL, DEFAULT_RETRY_AFTER_S, LOGGER, REQUEST_TIMEOUT_S, Field
+from custom_components.urban_weather.const import (
+    DEFAULT_RETRY_AFTER_S,
+    LOGGER,
+    REQUEST_TIMEOUT_S,
+)
+from custom_components.urban_weather.provider import (
+    ApiConnectionError,
+    ApiError,
+    ApiRateLimitError,
+    ApiSensor,
+    Measurement,
+    SensorNotFoundError,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
+
+    from custom_components.urban_weather.const import Field
+    from custom_components.urban_weather.provider import Network
 
 HTTP_BAD_REQUEST = 400
 HTTP_NOT_FOUND = 404
 HTTP_TOO_MANY_REQUESTS = 429
 POSITION_LENGTH = 2
-
-# API field name -> Field. Other fields keep their API name: they still count for
-# the hardware generation of a sensor and show up in the diagnostics.
-FIELDS: dict[str, Field] = {
-    "temperature": Field.TEMPERATURE,
-    "minTemperature": Field.MIN_TEMPERATURE,
-    "maxTemperature": Field.MAX_TEMPERATURE,
-    "airHumidity": Field.HUMIDITY,
-    "dewPoint": Field.DEW_POINT,
-    "atmosphericPressure": Field.PRESSURE,
-    "irradiation": Field.IRRADIANCE,
-    "averageWindSpeed": Field.WIND_SPEED,
-    "windGust3s": Field.WIND_GUST,
-    "windGust1s": Field.WIND_GUST_1S,
-    "averageWindDirection": Field.WIND_DIRECTION,
-    "windGustDirection": Field.WIND_GUST_DIRECTION,
-}
-
-
-class ApiError(Exception):
-    """Unexpected API response."""
-
-
-class ApiConnectionError(ApiError):
-    """The API could not be reached."""
-
-
-class ApiRateLimitError(ApiError):
-    """The API rejected the request because of its rate limit."""
-
-    def __init__(self, retry_after: float) -> None:
-        """Store how long the API asks us to wait."""
-        super().__init__(f"Rate limited, retry after {retry_after:.0f} s")
-        self.retry_after = retry_after
-
-
-class SensorNotFoundError(ApiError):
-    """The sensor does not exist (any more)."""
-
-
-@dataclass(frozen=True, slots=True)
-class ApiSensor:
-    """A sensor as listed by the API."""
-
-    id: str
-    name: str
-    latitude: float
-    longitude: float
-    parameters: frozenset[str]
-
-
-@dataclass(frozen=True, slots=True)
-class Measurement:
-    """One timestamped set of values of a sensor."""
-
-    timestamp: datetime
-    values: Mapping[str, float]
 
 
 def _is_number(value: Any) -> bool:
@@ -85,8 +42,13 @@ def _is_number(value: Any) -> bool:
     )
 
 
-def parse_sensors(payload: Any) -> list[ApiSensor]:
-    """Parse the /sensors response, skipping entries without a usable position."""
+def parse_sensors(payload: Any, fields: Mapping[str, Field]) -> list[ApiSensor]:
+    """
+    Parse the /sensors response, skipping entries without a usable position.
+
+    Parameters in `fields` get the integration's names. Other parameters keep their
+    API name: they still count for the hardware generation of a sensor.
+    """
     if not isinstance(payload, dict):
         msg = "Unexpected sensor list format"
         raise ApiError(msg)
@@ -119,14 +81,14 @@ def parse_sensors(payload: Any) -> list[ApiSensor]:
                 name=str(raw.get("name") or sensor_id).strip(),
                 latitude=float(latitude),
                 longitude=float(longitude),
-                parameters=frozenset(FIELDS.get(name, name) for name in parameters),
+                parameters=frozenset(fields.get(name, name) for name in parameters),
             )
         )
     return sensors
 
 
-def parse_measurements(payload: Any) -> list[Measurement]:
-    """Parse the /measurements response, newest first."""
+def parse_measurements(payload: Any, fields: Mapping[str, Field]) -> list[Measurement]:
+    """Parse the /measurements response, newest first (names as in parse_sensors)."""
     if not isinstance(payload, dict):
         msg = "Unexpected measurement format"
         raise ApiError(msg)
@@ -137,7 +99,7 @@ def parse_measurements(payload: Any) -> list[Measurement]:
         except KeyError, TypeError, ValueError:
             continue
         values = {
-            FIELDS.get(key, key): float(value)
+            fields.get(key, key): float(value)
             for key, value in raw.items()
             if key != "timestamp" and _is_number(value)
         }
@@ -149,9 +111,10 @@ def parse_measurements(payload: Any) -> list[Measurement]:
 class MannheimClimateApi:
     """Thin async wrapper around the two API endpoints."""
 
-    def __init__(self, session: aiohttp.ClientSession) -> None:
+    def __init__(self, session: aiohttp.ClientSession, network: Network) -> None:
         """Use the shared Home Assistant client session."""
         self._session = session
+        self._network = network
 
     async def async_get_sensors_payload(self) -> dict[str, Any]:
         """Return the raw sensor list (cached as-is by the hub)."""
@@ -165,10 +128,12 @@ class MannheimClimateApi:
 
     async def async_get_measurements(self, sensor_id: str) -> list[Measurement]:
         """Return the measurements of the last 60 minutes, newest first."""
-        return parse_measurements(await self._get(f"/measurements/{sensor_id}"))
+        return parse_measurements(
+            await self._get(f"/measurements/{sensor_id}"), self._network.fields
+        )
 
     async def _get(self, path: str) -> Any:
-        url = f"{API_BASE_URL}{path}"
+        url = f"{self._network.endpoint}{path}"
         try:
             async with self._session.get(
                 url, timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT_S)

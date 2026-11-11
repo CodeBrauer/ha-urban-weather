@@ -27,7 +27,7 @@ if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant
 
-    from .api import ApiSensor
+    from .provider import ApiSensor
     from .stations import Station
 
 
