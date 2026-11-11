@@ -33,12 +33,12 @@ scripts/docs       # docs on http://localhost:8000 (`de`: German, `build`: check
 uv run --no-project --with playwright python scripts/screenshots.py  # docs screenshots, needs scripts/develop
 ```
 
-Run `scripts/lint` and `scripts/test` before every push. CI runs lint, pytest, hassfest, HACS validation and, for docs changes, the strict docs build; all must pass.
+Run `scripts/lint` and `scripts/test` before every push. CI runs lint, pytest, hassfest, HACS validation, the PR title check and, for docs changes, the strict docs build; all must pass.
 
 ## Language
 
 - Code, comments, commits, issues, PRs and release notes are written in English.
-- `README.md` is German (shown by HACS), `README.en.md` is its English version. Change both together.
+- `README.md` is English (shown by GitHub and HACS), `README.de.md` is its German version. Change both together.
 - UI strings: `strings.json` is the source, `translations/en.json` an identical copy, `translations/de.json` the German translation. Change all three together with identical keys.
 - Docs site: `docs/en/` is the source, `docs/de/` its German translation with the same files and outline. A PR that changes documented behaviour updates both, and the READMEs where they describe it; `scripts/check_docs.py` enforces the sync of the docs. Workflow (translate only the diff): [`.claude/skills/docs-site/SKILL.md`](.claude/skills/docs-site/SKILL.md).
 
@@ -69,6 +69,7 @@ Release steps: [`.claude/skills/release/SKILL.md`](.claude/skills/release/SKILL.
   - Fixtures that create an aiohttp client session must depend on `aioclient_mock`.
   - Use the `freezer` fixture for time; it also moves `time.monotonic` used by the rate limiter.
 - Conventional Commits; branches `type/<issue>-short-description`; reference issues (`Refs #1`, `Fixes #1`). Open PRs as drafts first.
+- PRs are squash-merged with their title as the commit message, so PR titles follow Conventional Commits too (checked by `.github/workflows/pr-title.yml`). `next` reaches `main` by fast-forward, not by a PR merge, so each squashed commit stays on its own.
 - AI agents: never commit, push or open PRs without explicit approval of the person you work for. Commits substantially written by an agent get a `Co-authored-by:` trailer.
 
 ## The API is a shared, rate-limited resource

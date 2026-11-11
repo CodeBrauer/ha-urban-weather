@@ -1,235 +1,226 @@
 <img src="custom_components/urban_weather/brand/icon@2x.png" alt="" width="96" align="right">
 
-# Urban Weather (Stadtklima) für Home Assistant
+# Urban Weather (Stadtklima) for Home Assistant
 
-**Deutsch** · [English](README.en.md) · [Dokumentation](https://codebrauer.github.io/ha-urban-weather/de/)
+**English** · [Deutsch](README.de.md) · [Documentation](https://codebrauer.github.io/ha-urban-weather/)
 
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz)
 
-Klimawerte für deinen Standort aus dem dichten Stadtklima-Messnetz von
-[Smart City Mannheim](https://smartmannheim.de/) (über 400 Stationen): Temperatur,
-Luftfeuchte, Taupunkt, absolute Feuchte, gefühlte Temperatur, Luftdruck, Globalstrahlung
-und Wind.
+Climate values for your location from the dense urban climate network of
+[Smart City Mannheim](https://smartmannheim.de/) (400+ stations): temperature, humidity,
+dew point, absolute humidity, apparent temperature, air pressure, global irradiance and wind.
 
-Die Integration wählt die Station, die deinen Ort am besten abbildet. Passt die nächste
-nicht (zu weit weg, andere Umgebung, auf einem Dach montiert), kombiniert sie stattdessen
-mehrere Stationen um dich herum.
+The integration picks the station that represents your place best. If the nearest one does
+not fit (too far away, different surroundings, mounted on a roof), it combines several
+stations around you instead.
 
-> Inoffizielles Projekt, nicht verbunden mit der Smart City Mannheim GmbH oder der Stadt
-> Mannheim.
+> Unofficial project. Not affiliated with Smart City Mannheim GmbH or the city of Mannheim.
 
-<p align="center"><img src="docs/screenshots/de/04-map.jpg" alt="Interaktive Stationskarte" width="800"></p>
+<p align="center"><img src="docs/screenshots/en/04-map.jpg" alt="Interactive station map" width="800"></p>
 
-## Warum?
+## Why?
 
-Die Idee entstand aus einem einfachen Wunsch: eine gute Außentemperatur in Home Assistant,
-die vor Ort gemessen und nicht über die globale Anbindung eines Wetterdienstes aus
-Wettermodellen geschätzt wird. Die üblichen Alternativen überzeugen dafür kaum:
+It started with a simple wish: a good outdoor temperature in Home Assistant that is
+measured on site, not estimated from weather models by a global weather service. The usual
+alternatives fall short:
 
-- **Zigbee- und Tuya-Klimasensoren** taugen draußen meist wenig: keine aktive Belüftung,
-  der Montagepunkt oder Untergrund heizt sich auf, die Sensoren sind teils ungenau, und
-  die Batterien müssen oft gewechselt werden.
-- **Eine eigene Wetterstation** ist vergleichsweise teuer und muss zusätzlich
-  Smart-Home-fähig sein.
+- **Zigbee and Tuya climate sensors** are mostly a poor fit outdoors: no active
+  ventilation, the mounting point or surface heats up, some sensors are imprecise, and the
+  batteries need frequent changes.
+- **A weather station of your own** is comparatively expensive and also has to work with
+  your smart home.
 
-Immer mehr Städte betreiben eigene Stadtklima-Messnetze. Diese Integration macht das Netz
-von Smart City Mannheim in Home Assistant nutzbar.
+More and more cities run their own urban climate networks. This integration makes the
+network of Smart City Mannheim usable in Home Assistant.
 
-## Funktionen
+## Features
 
-- **Standort auf der Karte**, vorbelegt mit deinem Zuhause aus Home Assistant.
-- **Stationsempfehlung** nach Entfernung, Umgebung (lokale Klimazonen) und Montagehöhe,
-  mit einem Klick übernehmen oder selbst wählen.
-- **Interaktive Stationskarte**: zoomen, Stationen anklicken, Windstation wählen. Die Karte
-  lässt nur so viele Stationen zu, wie ins API-Budget passen, und zeigt das resultierende
-  Aktualisierungsintervall live an.
-- **Eine Station oder eine Kombination**: Median mehrerer Stationen ohne Ausreißer; die
-  Luftfeuchte wird über den Median-Taupunkt berechnet.
-- **Sensoren**: Temperatur, Luftfeuchte, Taupunkt, absolute Feuchte, gefühlte Temperatur,
-  Luftdruck\*, Globalstrahlung\*, Windgeschwindigkeit, Böe und Windrichtung (\*wenn die
-  gewählten Stationen sie messen), dazu Diagnose-Sensoren (verwendete Stationen,
-  Temperatur-Spannweite, letzte Messung). Standardmäßig deaktiviert: Minimum und Maximum
-  der Temperatur im letzten 10-Minuten-Intervall und die Böenrichtung.
-- **Wetter-Entität** mit allen aktuellen Werten. Der Zustand (sonnig / teilweise bewölkt /
-  bewölkt) wird tagsüber aus der Globalstrahlung geschätzt, wenn mindestens 3 Stationen sie
-  liefern. Das Netz hat keine Wolken- oder Regensensoren, nachts bleibt der Zustand daher
-  unbekannt.
-- **Hält die API-Limits ein** (gemeinsames Abfrage-Budget und Cache für alle Standorte).
-- **Mehrere Standorte** (Zuhause, Arbeit, …), jeder als eigenes Gerät.
-- **Reparaturhinweise**, wenn eine gewählte Station keine Daten mehr liefert oder
-  verschwindet, mit Ersatzvorschlag zum direkten Übernehmen, und **Vorschläge**, wenn neue
-  Stationen in der Nähe hinzukommen.
-- **Neu konfigurieren**, um einen Standort zu verschieben, **Optionen** für Stationen,
-  Aktualisierungsintervall und eine Taupunkt-Korrektur.
-- **Diagnose-Download** (Koordinaten geschwärzt).
-- Deutsch und Englisch.
+- **Location on a map**, pre-filled with your Home Assistant home location.
+- **Station recommendation** based on distance, surroundings (Local Climate Zones) and
+  mounting height; accept it with one click or choose yourself.
+- **Interactive station map**: zoom, click stations, pick a wind station. The map only allows
+  as many stations as fit the API budget and shows the resulting update interval live.
+- **One station or a combination**: the median of several stations, outliers removed;
+  humidity is derived from the median dew point.
+- **Sensors**: temperature, humidity, dew point, absolute humidity, apparent temperature,
+  air pressure*, global irradiance*, wind speed, gust and direction (*if the selected
+  stations measure it), plus diagnostic sensors (stations used, temperature spread, last
+  measurement). Disabled by default: minimum and maximum temperature of the last
+  10-minute interval and the gust direction.
+- **Weather entity** with all current values. The condition (sunny / partly cloudy /
+  cloudy) is estimated from irradiance during the day when at least 3 stations deliver it;
+  the network has no cloud or rain sensors, so it stays unknown at night.
+- **Respects the API limits** (shared request budget and cache across all locations).
+- **Several locations** (home, work, ...), each as its own device.
+- **Repairs** when a selected station stops delivering data or disappears, with a
+  replacement you can apply directly, and **suggestions** when new stations are added
+  nearby.
+- **Reconfigure** to move a location, **options** to change stations, update interval and
+  a dew point correction.
+- **Diagnostics** download (coordinates redacted).
+- English and German.
 
-## Verwandte Integration
+## Related integration
 
-Für dieselbe Klima-API gibt es auch [Smart City Mannheim](https://github.com/smartmannheim/smartmannheim)
-(Domain `smartmannheim_klima`, in HACS als „Smart City Mannheim“). Dieses Projekt ist
-inoffiziell und unabhängig davon.
+[Smart City Mannheim](https://github.com/smartmannheim/smartmannheim) (domain
+`smartmannheim_klima`, in HACS as "Smart City Mannheim") uses the same climate API. This
+project is unofficial and independent of it.
 
-| | Urban Weather (Stadtklima) (dieses Repo) | Smart City Mannheim |
+| | Urban Weather (Stadtklima) (this repository) | Smart City Mannheim |
 |---|---|---|
-| Ansatz | Ein Standort, Werte, die ihn am besten abbilden: passende Station oder Kombination mehrerer | Einzelne Sensoren wählen, Werte pro Station |
-| Stationswahl | Empfehlung nach Entfernung, Umgebung und Montagehöhe; interaktive Karte | Suche nach Sensorcode oder Straße, Liste nach Entfernung |
-| Zusätzliche Werte | Absolute Feuchte, gefühlte Temperatur, Wetter-Entität | Pollenflug, Luftqualität, DWD-Station Mannheim |
+| Approach | One location, values that represent it best: a fitting station or a combination | Pick individual sensors, values per station |
+| Choosing stations | Recommendation by distance, surroundings and mounting height; interactive map | Search by sensor code or street, list sorted by distance |
+| Additional values | Absolute humidity, apparent temperature, weather entity | Pollen, air quality, DWD station Mannheim |
 
-Beide lassen sich parallel installieren, teilen sich aber das API-Limit pro
-Internetanschluss (30 Abfragen pro Stunde). Wer beide nutzt, hält die Zahl der Stationen
-entsprechend klein.
+Both can be installed side by side but share the API limit per internet connection
+(30 requests per hour). If you use both, keep the number of stations small.
 
 ## Installation
 
-### HACS (benutzerdefiniertes Repository)
+### HACS (custom repository)
 
-[![In HACS öffnen](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=CodeBrauer&repository=ha-urban-weather&category=integration)
+[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=CodeBrauer&repository=ha-urban-weather&category=integration)
 
-Oder von Hand:
+Or manually:
 
-1. HACS → ⋮ → *Benutzerdefinierte Repositories* →
-   `https://github.com/CodeBrauer/ha-urban-weather` mit Typ *Integration* hinzufügen.
-2. *Urban Weather (Stadtklima)* installieren und Home Assistant neu starten.
+1. HACS → ⋮ → *Custom repositories* → add `https://github.com/CodeBrauer/ha-urban-weather`
+   with type *Integration*.
+2. Install *Urban Weather (Stadtklima)* and restart Home Assistant.
 
-### Manuell
+### Manual
 
-`custom_components/urban_weather` in deinen Ordner `config/custom_components/`
-kopieren und Home Assistant neu starten.
+Copy `custom_components/urban_weather` into your `config/custom_components/` folder and
+restart Home Assistant.
 
-## Einrichtung
+## Setup
 
-*Einstellungen → Geräte & Dienste → Integration hinzufügen → Urban Weather (Stadtklima)*
+*Settings → Devices & services → Add integration → Urban Weather (Stadtklima)*
 
-1. **Standort**: Pin verschieben, der Kreis ist der Suchradius.
-2. **Umgebung**: Wie ist die Gegend um den Standort bebaut? Vorausgewählt aus der Karte
-   der lokalen Klimazonen.
-3. **Stationen**: Die Empfehlung wird begründet angezeigt. Du kannst sie übernehmen, auf
-   der interaktiven Karte selbst wählen (öffnet sich in einem neuen Fenster, nach dem
-   Speichern geht die Einrichtung automatisch weiter) oder aus einer Liste wählen.
+1. **Location**: move the pin, the circle is the search radius.
+2. **Surroundings**: how the area around the location is built up. Pre-selected from the
+   Local Climate Zone map.
+3. **Stations**: the recommendation is shown with its reason. Accept it, choose on the
+   interactive map (opens in a new window; after saving, setup continues automatically) or
+   choose from a list.
 
-| Standort | Stationen |
+| Location | Stations |
 |---|---|
-| ![Standort wählen](docs/screenshots/de/01-location.jpg) | ![Empfehlung und Auswahlwege](docs/screenshots/de/03-menu.png) |
-| **Gerät mit Sensoren** | **Dashboard** |
-| ![Gerät mit allen Sensoren](docs/screenshots/de/06-device.png) | ![Werte im Dashboard](docs/screenshots/de/07-dashboard.png) |
+| ![Choose the location](docs/screenshots/en/01-location.jpg) | ![Recommendation and ways to choose](docs/screenshots/en/03-menu.png) |
+| **Device with sensors** | **Dashboard** |
+| ![Device with all sensors](docs/screenshots/en/06-device.png) | ![Values on a dashboard](docs/screenshots/en/07-dashboard.png) |
 
-Später änderst du Stationen, Intervall und Taupunkt-Korrektur unter *Konfigurieren*. Die
-interaktive Karte erreichst du dort über *Neu konfigurieren* (Home Assistant zeigt externe
-Fenster in Options-Dialogen nicht zuverlässig an).
+Later you change stations, update interval and dew point correction under *Configure*. The
+interactive map is available via *Reconfigure* (Home Assistant does not reliably show
+external windows in options dialogs).
 
-### So entsteht die Empfehlung
+### How the recommendation works
 
-- Stationen auf Dächern oder Hochpunkten werden für die Temperatur nicht empfohlen.
-- Ist die nächste Station im Straßenraum höchstens 1 km entfernt und hat dieselbe
-  Umgebung, wird sie allein verwendet.
-- Sonst werden bis zu 4 Stationen im Suchradius kombiniert, Stationen mit gleicher
-  Umgebung zuerst.
+- Stations on roofs or high points are not recommended for temperature.
+- If the nearest street-level station is at most 1 km away and has the same surroundings,
+  it is used on its own.
+- Otherwise up to 4 stations within the search radius are combined, stations with the same
+  surroundings first.
 
-Die Umgebung wird aus lokalen Klimazonen (LCZ) gruppiert: dicht bebaut (LCZ 1–3), locker
-bebaut (4–6, 9), Industrie/Gewerbe (7, 8, 10) und grün/offen (11–17). Die Zone einer
-Station stammt, wo vorhanden, aus dem Metadatenkatalog der Stadt, sonst aus der globalen
-LCZ-Karte.
+Surroundings are grouped from Local Climate Zones: densely built (LCZ 1–3), open built-up
+(4–6, 9), industrial (7, 8, 10) and green/open (11–17). The zone of a station comes from the
+city's metadata catalogue where available, otherwise from the global LCZ map.
 
-Kommen neue Stationen hinzu, die zur Empfehlung für einen eingerichteten Standort gehören,
-erscheint 30 Tage lang ein Reparaturhinweis mit dem Vorschlag. Die Auswahl ändert sich nur,
-wenn du ihn übernimmst: Andere Stationen verändern die Werte (Sprünge in
-Langzeitstatistiken) und das API-Budget. Behältst du deine Stationen, kommt der Hinweis
-erst bei einem anderen Vorschlag wieder.
+When new stations are added that are part of the recommendation for a configured location,
+a repair issue suggests them for 30 days. The selection only changes if you apply it:
+other stations change the values (jumps in long-term statistics) and the API budget. If you
+keep your stations, it only comes back for a different suggestion.
 
-## API-Limits
+## API limits
 
-Die [Klima-API](https://api.smartmannheim.de/doc) ist öffentlich und braucht keinen
-Schlüssel. Dokumentiert sind **30 Messwert-Abfragen pro Stunde und Internetanschluss**
-(plus wenige Abfragen der Stationsliste). In der Praxis begrenzt die API zusätzlich kurze
-Bursts (etwa 5 Abfragen pro 2 Minuten) und antwortet mit `429` und `Retry-After`.
+The [Klima API](https://api.smartmannheim.de/doc) is public and needs no key. Its documented
+limit is **30 measurement requests per hour per internet connection** (and a few station
+list requests). In practice the API also limits short bursts (about 5 requests per 2 minutes)
+and answers `429` with a `Retry-After` header.
 
-Die Integration
+The integration therefore:
 
-- lädt die Stationsliste höchstens einmal am Tag und speichert sie lokal,
-- speichert Messwerte 9 Minuten zwischen und teilt sie zwischen Standorten,
-- sendet höchstens 4 Abfragen pro 2 Minuten und 30 pro Stunde und holt übersprungene
-  Stationen kurz danach nach,
-- plant für alle Standorte zusammen höchstens 24 Abfragen pro Stunde und wählt das
-  Aktualisierungsintervall entsprechend (Standard 15 Minuten; neue Werte kommen ohnehin
-  nur alle 10 Minuten mit 10–20 Minuten Verzögerung),
-- behält bei einem `429` oder API-Ausfall die letzten Werte, bis die letzte Messung
-  60 Minuten (bzw. drei Aktualisierungsintervalle, wenn das länger ist) alt ist; erst dann
-  werden die Entitäten nicht verfügbar.
+- refreshes the station list at most once a day and caches it on disk,
+- caches measurements for 9 minutes and shares them between locations,
+- sends at most 4 requests per 2 minutes and 30 per hour, and fetches skipped stations
+  shortly afterwards,
+- plans at most 24 requests per hour for all locations together and picks the update
+  interval accordingly (default 15 minutes; values arrive every 10 minutes with
+  10–20 minutes delay anyway),
+- keeps the last values during a `429` or an API outage until the last measurement is
+  60 minutes old (or three update intervals, if that is longer); only then do the entities
+  become unavailable.
 
-Andere Skripte oder Geräte, die die API über denselben Internetanschluss nutzen, teilen
-sich das Limit.
+Other scripts or devices that use the API from the same internet connection share the limit.
 
-## Wenn keine Daten mehr kommen
+## When data stops
 
-- Liefert eine gewählte Station 24 Stunden lang keine Daten oder kennt die API sie nicht
-  mehr, erscheint ein Reparaturhinweis. Über *Beheben* übernimmst du die Empfehlung ohne
-  diese Station oder wählst selbst aus einer Liste.
-- Fällt die API aus, bleiben die letzten Werte stehen (siehe oben), danach werden die
-  Entitäten nicht verfügbar. Dafür gibt es keinen Reparaturhinweis, weil du nichts beheben
-  kannst.
+- If a selected station delivers no data for 24 hours or the API no longer knows it, a
+  repair issue appears. *Fix* lets you use the recommendation without this station or
+  choose from a list.
+- During an API outage the last values stay (see above), then the entities become
+  unavailable. There is no repair issue for this, because there is nothing you can fix.
 
-Automationen, die die Temperatur verwenden, können auf den Ausfall reagieren, zum Beispiel
-mit einer Push-Nachricht aufs Handy. Entität und Benachrichtigungsdienst passt du an deine
-Installation an:
+Automations that use the temperature can react to an outage, for example with a push
+notification to your phone. Adjust the entity and the notification service to your
+installation:
 
 ```yaml
-alias: "Klimamessnetz: keine Temperatur"
+alias: "Klimamessnetz: no temperature"
 triggers:
   - trigger: state
-    entity_id: sensor.seckenheim_temperatur
+    entity_id: sensor.seckenheim_temperature
     to: unavailable
     for:
       minutes: 30
 actions:
-  - action: notify.mobile_app_mein_handy
+  - action: notify.mobile_app_my_phone
     data:
-      message: Seit 30 Minuten keine Temperatur vom Klimamessnetz Mannheim.
+      message: No temperature from Klimamessnetz Mannheim for 30 minutes.
 ```
 
-## Datenquellen und Lizenzen
+## Data sources and licences
 
-| Daten | Quelle | Lizenz |
+| Data | Source | Licence |
 |---|---|---|
-| Messwerte, Stationsliste | [Klima-API Smart City Mannheim](https://opendata.smartmannheim.de/dataset/klimadaten-echtzeit-api) | dl-de/by-2-0 |
-| Standort-Metadaten der Stationen | [Metadatenkatalog Stadtklimamessnetze Mannheim](https://opendata.smartmannheim.de/dataset/metadaten-stadtklimamessnetze-mannheim) | dl-de/by-2-0 |
-| Lokale Klimazonen | Demuzere et al. (2022), [Global map of LCZ](https://doi.org/10.5281/zenodo.6364594) | CC BY 4.0 |
-| Stadtteilnamen | © OpenStreetMap-Mitwirkende über Nominatim | ODbL 1.0 |
-| Kartenkacheln der Stationskarte | [basemap.de](https://basemap.de/) / BKG | CC BY 4.0 |
-| Kartenbibliothek (mitgeliefert) | [Leaflet 1.9.4](https://leafletjs.com/) | BSD-2-Clause |
+| Measurements, station list | [Smart City Mannheim Klima API](https://opendata.smartmannheim.de/dataset/klimadaten-echtzeit-api) | dl-de/by-2-0 |
+| Station siting metadata | [Metadatenkatalog Stadtklimamessnetze Mannheim](https://opendata.smartmannheim.de/dataset/metadaten-stadtklimamessnetze-mannheim) | dl-de/by-2-0 |
+| Local Climate Zones | Demuzere et al. (2022), [Global map of LCZ](https://doi.org/10.5281/zenodo.6364594) | CC BY 4.0 |
+| District names | © OpenStreetMap contributors via Nominatim | ODbL 1.0 |
+| Map tiles of the station map | [basemap.de](https://basemap.de/) / BKG | CC BY 4.0 |
+| Map library (bundled) | [Leaflet 1.9.4](https://leafletjs.com/) | BSD-2-Clause |
 
-Die statischen Referenzdateien in `custom_components/urban_weather/providers/mannheim/data/`
-erzeugt `scripts/build_reference_data.py` (Quelle und Datum stehen jeweils im Feld `source`).
+The static reference files in `custom_components/urban_weather/providers/mannheim/data/`
+are generated by `scripts/build_reference_data.py` (source and date in each file's `source`
+header).
 
-## Entwicklung
+## Development
 
 ```bash
-scripts/setup      # legt .venv mit Home Assistant an (uv)
-scripts/develop    # startet Home Assistant auf http://localhost:8123 mit dieser Integration
+scripts/setup      # creates .venv with Home Assistant (uv)
+scripts/develop    # starts Home Assistant on http://localhost:8123 with this integration
 scripts/lint       # ruff format + check
-scripts/test       # pytest (Argumente werden durchgereicht, z. B. -k recommend)
+scripts/test       # pytest (arguments are passed on, e.g. -k recommend)
 ```
 
-Auf macOS gibt es für einige Abhängigkeiten von Home Assistant (`pymicro-vad`,
-`pyspeex-noise`) keine Wheels für Python 3.14, und der Build scheitert. Einmal mit
-SDK-Pfad bauen:
+On macOS some Home Assistant core dependencies (`pymicro-vad`, `pyspeex-noise`) have no
+wheels for Python 3.14 and fail to compile. Build them once with the SDK path:
 
 ```bash
 SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/include/c++/v1" uv pip install --python .venv/bin/python pymicro-vad pyspeex-noise
 ```
 
-Referenzdaten neu erzeugen (selten nötig, z. B. nach einem neuen Metadatenkatalog):
+Regenerate the reference data (rarely needed, e.g. after a new metadata catalogue):
 
 ```bash
 uv run --no-project --with openpyxl --with rasterio python scripts/build_reference_data.py
 ```
 
-## Unterstützen
+## Support
 
-Wenn dir die Integration gefällt, kannst du mir ein Bier ausgeben:
+If you like the integration, you can buy me a beer:
 
 [![Buy me a beer](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20beer&emoji=%F0%9F%8D%BA&slug=codebrauer&button_colour=ffe500&font_colour=000000&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00)](https://buymeacoffee.com/codebrauer)
 
-## Lizenz
+## License
 
-MIT, siehe [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).
