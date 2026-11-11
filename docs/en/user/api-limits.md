@@ -52,7 +52,7 @@ Bold: the interval chosen automatically for a single location (the shortest of 1
 limit of 30 requests per hour. This integration only plans its own requests, so keep the
 number of stations small in both.
 
-| | Klimamessnetz Mannheim | Smart City Mannheim |
+| | Urban Weather (Stadtklima) | Smart City Mannheim |
 |---|---|---|
 | Approach | One location, values that represent it best: a fitting station or a combination | Pick individual sensors, values per station |
 | Choosing stations | Recommendation by distance, surroundings and mounting height; interactive map | Search by sensor code or street, list sorted by distance |

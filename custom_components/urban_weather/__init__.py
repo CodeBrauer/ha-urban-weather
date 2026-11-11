@@ -1,4 +1,4 @@
-"""The Klimamessnetz Mannheim integration."""
+"""The Urban Weather integration."""
 
 from __future__ import annotations
 

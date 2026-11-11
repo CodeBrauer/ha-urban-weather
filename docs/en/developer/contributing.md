@@ -43,7 +43,7 @@ SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/
 | Test | push, pull request | pytest with coverage |
 | Validate | push, pull request, daily | hassfest, HACS validation |
 | Docs | changes to the documentation | translation check, strict build of both languages; deploys to GitHub Pages from `main` |
-| Release | published release | Attaches `mannheim_climate.zip`, which HACS installs |
+| Release | published release | Attaches `urban_weather.zip`, which HACS installs |
 
 Releases follow the runbook in
 [`.claude/skills/release/SKILL.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/.claude/skills/release/SKILL.md).

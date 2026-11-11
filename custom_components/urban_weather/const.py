@@ -1,4 +1,4 @@
-"""Constants for the Klimamessnetz Mannheim integration."""
+"""Constants for the Urban Weather integration."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from logging import Logger, getLogger
 
 LOGGER: Logger = getLogger(__package__)
 
-DOMAIN = "mannheim_climate"
+DOMAIN = "urban_weather"
 ATTRIBUTION = "Smart City Mannheim GmbH, dl-de/by-2-0 (opendata.smartmannheim.de)"
 REPOSITORY_URL = "https://github.com/CodeBrauer/ha-urban-weather"
 
@@ -65,8 +65,8 @@ DISTRICT_MATCH_RADIUS_M = 750
 
 # Interactive station map (external step of the config flow)
 MAP_SESSION_TTL = timedelta(minutes=30)
-MAP_URL = "/api/mannheim_climate/map/{token}"
-STATIC_URL = "/mannheim_climate_static"
+MAP_URL = f"/api/{DOMAIN}/map/{{token}}"
+STATIC_URL = f"/{DOMAIN}_static"
 # Official German basemap (BKG), open data under CC BY 4.0, no API key needed.
 TILE_URL = (
     "https://sgx.geodatenzentrum.de/wmts_basemapde/tile/1.0.0/"

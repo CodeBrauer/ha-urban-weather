@@ -3,7 +3,7 @@
 # source) and mkdocs.de.yml (German, built into site/de/) inherit this file. INHERIT
 # appends lists instead of replacing them, so lists that differ per language (nav,
 # palette) live only in the language files. Build both with `scripts/docs build`.
-site_name: Klimamessnetz Mannheim
+site_name: Urban Weather (Stadtklima)
 site_description: Home Assistant integration for the Smart City Mannheim urban climate network
 repo_url: https://github.com/CodeBrauer/ha-urban-weather
 repo_name: CodeBrauer/ha-urban-weather
@@ -15,7 +15,7 @@ repo_name: CodeBrauer/ha-urban-weather
 watch:
   - docs/screenshots
   - docs/assets
-  - custom_components/mannheim_climate/brand
+  - custom_components/urban_weather/brand
 
 extra_css:
   - assets/extra.css

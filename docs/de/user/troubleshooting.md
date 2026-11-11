@@ -1,4 +1,4 @@
-<!-- source: 39960c9bee4558f2895b86f5a6b9f6fd38e7447f -->
+<!-- source: 6370ef457065b41c3c61714754bd5cd897e0cfa4 -->
 # Reparaturen und Fehlersuche
 
 ## Reparaturhinweise
@@ -106,7 +106,7 @@ actions:
 ```yaml
 logger:
   logs:
-    custom_components.mannheim_climate: debug
+    custom_components.urban_weather: debug
 ```
 
 Wenn du [ein Problem meldest](https://github.com/CodeBrauer/ha-urban-weather/issues),

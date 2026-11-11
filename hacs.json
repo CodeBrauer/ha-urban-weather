@@ -1,9 +1,9 @@
 {
-    "name": "Klimamessnetz Mannheim",
+    "name": "Urban Weather (Stadtklima)",
     "homeassistant": "2026.9.0",
     "hacs": "2.0.5",
     "country": ["DE"],
     "zip_release": true,
-    "filename": "mannheim_climate.zip",
+    "filename": "urban_weather.zip",
     "hide_default_branch": true
 }

@@ -1,6 +1,6 @@
-<img src="custom_components/mannheim_climate/brand/icon@2x.png" alt="" width="96" align="right">
+<img src="custom_components/urban_weather/brand/icon@2x.png" alt="" width="96" align="right">
 
-# Klimamessnetz Mannheim für Home Assistant
+# Urban Weather (Stadtklima) für Home Assistant
 
 **Deutsch** · [English](README.en.md) · [Dokumentation](https://codebrauer.github.io/ha-urban-weather/de/)
 
@@ -70,7 +70,7 @@ Für dieselbe Klima-API gibt es auch [Smart City Mannheim](https://github.com/sm
 (Domain `smartmannheim_klima`, in HACS als „Smart City Mannheim“). Dieses Projekt ist
 inoffiziell und unabhängig davon.
 
-| | Klimamessnetz Mannheim (dieses Repo) | Smart City Mannheim |
+| | Urban Weather (Stadtklima) (dieses Repo) | Smart City Mannheim |
 |---|---|---|
 | Ansatz | Ein Standort, Werte, die ihn am besten abbilden: passende Station oder Kombination mehrerer | Einzelne Sensoren wählen, Werte pro Station |
 | Stationswahl | Empfehlung nach Entfernung, Umgebung und Montagehöhe; interaktive Karte | Suche nach Sensorcode oder Straße, Liste nach Entfernung |
@@ -90,16 +90,16 @@ Oder von Hand:
 
 1. HACS → ⋮ → *Benutzerdefinierte Repositories* →
    `https://github.com/CodeBrauer/ha-urban-weather` mit Typ *Integration* hinzufügen.
-2. *Klimamessnetz Mannheim* installieren und Home Assistant neu starten.
+2. *Urban Weather (Stadtklima)* installieren und Home Assistant neu starten.
 
 ### Manuell
 
-`custom_components/mannheim_climate` in deinen Ordner `config/custom_components/`
+`custom_components/urban_weather` in deinen Ordner `config/custom_components/`
 kopieren und Home Assistant neu starten.
 
 ## Einrichtung
 
-*Einstellungen → Geräte & Dienste → Integration hinzufügen → Klimamessnetz Mannheim*
+*Einstellungen → Geräte & Dienste → Integration hinzufügen → Urban Weather (Stadtklima)*
 
 1. **Standort**: Pin verschieben, der Kreis ist der Suchradius.
 2. **Umgebung**: Wie ist die Gegend um den Standort bebaut? Vorausgewählt aus der Karte
@@ -198,7 +198,7 @@ actions:
 | Kartenkacheln der Stationskarte | [basemap.de](https://basemap.de/) / BKG | CC BY 4.0 |
 | Kartenbibliothek (mitgeliefert) | [Leaflet 1.9.4](https://leafletjs.com/) | BSD-2-Clause |
 
-Die statischen Referenzdateien in `custom_components/mannheim_climate/data/` erzeugt
+Die statischen Referenzdateien in `custom_components/urban_weather/data/` erzeugt
 `scripts/build_reference_data.py` (Quelle und Datum stehen jeweils im Feld `source`).
 
 ## Entwicklung

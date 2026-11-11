@@ -82,7 +82,7 @@ flowchart TD
     Build[build_stations] --> Return
 ```
 
-The stored copy (`.storage/mannheim_climate.sensors`) holds the raw payload, the fetch time
+The stored copy (`.storage/urban_weather.sensors`) holds the raw payload, the fetch time
 and the time each sensor first appeared. On the first fetch without history all sensors
 count as known, so only sensors added later are new. A sensor is new for
 `NEW_STATION_PERIOD`.

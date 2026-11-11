@@ -19,8 +19,8 @@ from homeassistant.const import (
 from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant.common import MockConfigEntry
 
-from custom_components.mannheim_climate.api import ApiConnectionError
-from custom_components.mannheim_climate.const import (
+from custom_components.urban_weather.api import ApiConnectionError
+from custom_components.urban_weather.const import (
     CONF_DEW_POINT_OFFSET,
     CONF_ENVIRONMENT,
     CONF_SCAN_INTERVAL,
@@ -63,7 +63,7 @@ DENSE_SENSOR = "846c0b2b-4a6f-48ed-9383-d975cae2823f"  # 2306LH126
 def setup_entry() -> Generator[AsyncMock]:
     """Do not set up created or reloaded entries (see test_init)."""
     with patch(
-        "custom_components.mannheim_climate.async_setup_entry", return_value=True
+        "custom_components.urban_weather.async_setup_entry", return_value=True
     ) as setup:
         yield setup
 

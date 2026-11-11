@@ -9,7 +9,7 @@ import aiohttp
 import pytest
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from custom_components.mannheim_climate.api import (
+from custom_components.urban_weather.api import (
     ApiConnectionError,
     ApiError,
     ApiRateLimitError,
@@ -18,7 +18,7 @@ from custom_components.mannheim_climate.api import (
     parse_measurements,
     parse_sensors,
 )
-from custom_components.mannheim_climate.const import (
+from custom_components.urban_weather.const import (
     API_BASE_URL,
     DEFAULT_RETRY_AFTER_S,
     Field,

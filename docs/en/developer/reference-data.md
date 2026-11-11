@@ -1,7 +1,7 @@
 # Stations and reference data
 
 The API lists sensors (modules), not stations, and has no siting metadata. `stations.py`
-groups the sensors and attaches data bundled in `custom_components/mannheim_climate/data/`.
+groups the sensors and attaches data bundled in `custom_components/urban_weather/data/`.
 
 ## From sensors to stations
 

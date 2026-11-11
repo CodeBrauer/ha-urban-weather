@@ -1,5 +1,5 @@
-<!-- source: 79a92e4bb5eb6f2b53c6f3194ca0701b382c71cd -->
-# Klimamessnetz Mannheim
+<!-- source: c6b799bc6014a582ed696c58d1454f406732c555 -->
+# Urban Weather (Stadtklima)
 
 Home-Assistant-Integration für das dichte Stadtklima-Messnetz von
 [Smart City Mannheim](https://smartmannheim.de/) (über 400 Stationen). Sie liefert Klimawerte

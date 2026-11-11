@@ -19,13 +19,13 @@ jobs:
         with:
           persist-credentials: false
 
-      # HACS extracts the ZIP into custom_components/mannheim_climate (hacs.json).
+      # HACS extracts the ZIP into custom_components/urban_weather (hacs.json).
       - name: Build the ZIP
-        working-directory: custom_components/mannheim_climate
-        run: zip -r "$RUNNER_TEMP/mannheim_climate.zip" .
+        working-directory: custom_components/urban_weather
+        run: zip -r "$RUNNER_TEMP/urban_weather.zip" .
 
       - name: Attach the ZIP to the release
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ github.event.release.tag_name }}
-        run: gh release upload "$TAG" "$RUNNER_TEMP/mannheim_climate.zip" --clobber --repo "$GITHUB_REPOSITORY"
+        run: gh release upload "$TAG" "$RUNNER_TEMP/urban_weather.zip" --clobber --repo "$GITHUB_REPOSITORY"

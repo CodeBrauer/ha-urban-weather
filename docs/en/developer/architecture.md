@@ -1,6 +1,6 @@
 # Architecture
 
-The integration lives in `custom_components/mannheim_climate/`. Conventions for working on
+The integration lives in `custom_components/urban_weather/`. Conventions for working on
 it (commands, tests, commits, versioning) are in
 [`AGENTS.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/AGENTS.md).
 
@@ -19,7 +19,7 @@ flowchart TB
             List[Station list<br>Store + first seen]
             Ref[ReferenceData<br>catalogue, LCZ, districts]
         end
-        Store[(.storage/<br>mannheim_climate.sensors)]
+        Store[(.storage/<br>urban_weather.sensors)]
         subgraph Entry[Per config entry]
             Coord[ClimateCoordinator]
             Sensors[Sensor entities]
@@ -96,7 +96,7 @@ sequenceDiagram
     participant Map as MapView
     participant Browser
     Flow->>Map: MapSessions.create(flow, selection, payload)
-    Flow-->>Browser: external step with /api/mannheim_climate/map/{token}
+    Flow-->>Browser: external step with /api/urban_weather/map/{token}
     Browser->>Map: GET page (payload embedded)
     Browser->>Browser: Leaflet map, tiles from basemap.de
     Browser->>Map: POST stations and wind station

@@ -1,4 +1,4 @@
-<!-- source: 9762fb56584b7c74a6a5fe652c06b4982dbd0b92 -->
+<!-- source: 4f0e4f0d797368c55bac2de8da2adf5047e710af -->
 # Installation
 
 ## Voraussetzungen
@@ -20,7 +20,7 @@ Oder von Hand:
 
 1. HACS → ⋮ → *Benutzerdefinierte Repositories* →
    `https://github.com/CodeBrauer/ha-urban-weather` mit Typ *Integration* hinzufügen.
-2. *Klimamessnetz Mannheim* installieren und Home Assistant neu starten.
+2. *Urban Weather (Stadtklima)* installieren und Home Assistant neu starten.
 
 HACS installiert die ZIP-Datei, die an jedem GitHub-Release hängt, und zeigt neue Versionen
 als Updates an. Die Release Notes nennen Breaking Changes und was du nach dem Update tun
@@ -28,7 +28,7 @@ musst.
 
 ## Manuell
 
-`custom_components/mannheim_climate` in deinen Ordner `config/custom_components/` kopieren
+`custom_components/urban_weather` in deinen Ordner `config/custom_components/` kopieren
 und Home Assistant neu starten. Updates funktionieren genauso: Ordner ersetzen und neu
 starten.
 
@@ -38,10 +38,10 @@ starten.
 
 ## Deinstallieren
 
-1. *Einstellungen → Geräte & Dienste → Klimamessnetz Mannheim*: alle Standorte löschen.
+1. *Einstellungen → Geräte & Dienste → Urban Weather (Stadtklima)*: alle Standorte löschen.
    Ihre Reparaturhinweise werden mit entfernt.
 2. Die Integration in HACS entfernen (oder den Ordner löschen) und Home Assistant neu
    starten.
 
-Die zwischengespeicherte Stationsliste bleibt in `.storage/mannheim_climate.sensors`; die
+Die zwischengespeicherte Stationsliste bleibt in `.storage/urban_weather.sensors`; die
 Datei kannst du löschen.

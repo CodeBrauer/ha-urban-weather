@@ -8,12 +8,12 @@ from typing import TYPE_CHECKING, Any
 import pytest
 from pytest_homeassistant.common import async_fire_time_changed
 
-from custom_components.mannheim_climate.api import (
+from custom_components.urban_weather.api import (
     ApiConnectionError,
     ApiRateLimitError,
     SensorNotFoundError,
 )
-from custom_components.mannheim_climate.const import (
+from custom_components.urban_weather.const import (
     CATCH_UP_MARGIN_S,
     CONF_SCAN_INTERVAL,
     CONF_TEMPERATURE_SENSORS,
@@ -24,7 +24,7 @@ from custom_components.mannheim_climate.const import (
     NEW_STATION_PERIOD,
     Field,
 )
-from custom_components.mannheim_climate.coordinator import issue_id
+from custom_components.urban_weather.coordinator import issue_id
 
 from .common import (
     CATALOG_SENSOR,
@@ -45,7 +45,7 @@ if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers import issue_registry as ir
 
-    from custom_components.mannheim_climate.coordinator import ClimateCoordinator
+    from custom_components.urban_weather.coordinator import ClimateCoordinator
 
 pytestmark = pytest.mark.usefixtures("enable_custom_integrations")
 

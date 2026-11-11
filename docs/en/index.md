@@ -1,4 +1,4 @@
-# Klimamessnetz Mannheim
+# Urban Weather (Stadtklima)
 
 Home Assistant integration for the dense urban climate network of
 [Smart City Mannheim](https://smartmannheim.de/) (400+ stations). It provides climate values

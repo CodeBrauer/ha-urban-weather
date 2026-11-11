@@ -8,13 +8,13 @@ from unittest.mock import MagicMock
 import pytest
 from homeassistant.config_entries import ConfigEntryDisabler
 
-from custom_components.mannheim_climate.const import (
+from custom_components.urban_weather.const import (
     CONF_TEMPERATURE_SENSORS,
     NO_WIND_SENSOR,
     Environment,
 )
-from custom_components.mannheim_climate.hub import requests_per_hour
-from custom_components.mannheim_climate.selection import StationSelection
+from custom_components.urban_weather.hub import requests_per_hour
+from custom_components.urban_weather.selection import StationSelection
 
 from .common import HOME, add_location, make_station
 

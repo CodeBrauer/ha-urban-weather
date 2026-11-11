@@ -12,8 +12,8 @@ from homeassistant.config_entries import ConfigEntryState
 from homeassistant.helpers import issue_registry as ir
 from homeassistant.setup import async_setup_component
 
-from custom_components.mannheim_climate.api import SensorNotFoundError
-from custom_components.mannheim_climate.const import (
+from custom_components.urban_weather.api import SensorNotFoundError
+from custom_components.urban_weather.const import (
     CONF_SCAN_INTERVAL,
     CONF_TEMPERATURE_SENSORS,
     CONF_WIND_SENSOR,
@@ -23,7 +23,7 @@ from custom_components.mannheim_climate.const import (
     NO_WIND_SENSOR,
     Field,
 )
-from custom_components.mannheim_climate.coordinator import issue_id
+from custom_components.urban_weather.coordinator import issue_id
 
 from .common import (
     NEAREST_SENSOR,

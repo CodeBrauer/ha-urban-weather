@@ -17,4 +17,4 @@ homeassistant:
 logger:
   default: info
   logs:
-    custom_components.mannheim_climate: debug
+    custom_components.urban_weather: debug
