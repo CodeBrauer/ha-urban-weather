@@ -1,7 +1,8 @@
 # Stations and reference data
 
-The API lists sensors (modules), not stations, and has no siting metadata. `stations.py`
-groups the sensors and attaches data bundled in `custom_components/urban_weather/data/`.
+The Mannheim API lists sensors (modules), not stations, and has no siting metadata. The
+Mannheim provider groups the sensors (`providers/mannheim/stations.py`) and attaches data
+bundled in `custom_components/urban_weather/providers/mannheim/data/`.
 
 ## From sensors to stations
 

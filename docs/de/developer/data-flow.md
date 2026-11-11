@@ -1,8 +1,9 @@
-<!-- source: c92c9082527254ec1bef72cfb3052cd124cf97ab -->
+<!-- source: da505ed0c78d3ae5594479395f8c227b5ddf1e6c -->
 # Abfragen und API-Zugriff
 
-Jeder API-Zugriff läuft über `ClimateHub` (`hub.py`). Die Limits in `const.py` bilden die
-Limits der API pro IP nach; [API-Limits](../user/api-limits.md) erklärt sie für Nutzer.
+Jeder API-Zugriff läuft über `ClimateHub` (`hub.py`). Die Limits des Messnetzes
+(`RequestLimits`, für Mannheim in `providers/mannheim/`) bilden die Limits der API pro IP
+nach; [API-Limits](../user/api-limits.md) erklärt sie für Nutzer.
 
 ## Aktualisierungszyklus
 
@@ -51,7 +52,7 @@ sequenceDiagram
 
 `RateLimiter` merkt sich die Zeitpunkte der letzten Abfragen und prüft gleitende Fenster:
 
-| Limiter | Fenster (`const.py`) |
+| Limiter | Fenster (Mannheim) |
 |---|---|
 | Messwerte | 4 pro 120 s, 30 pro 3600 s (`MEASUREMENT_LIMITS`) |
 | Stationsliste | 2 pro 900 s, 4 pro 3600 s (`SENSOR_LIST_LIMITS`) |
