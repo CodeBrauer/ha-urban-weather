@@ -9,7 +9,12 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from unittest.mock import MagicMock
 
-from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_RADIUS
+from homeassistant.const import (
+    CONF_LATITUDE,
+    CONF_LOCATION,
+    CONF_LONGITUDE,
+    CONF_RADIUS,
+)
 from homeassistant.util import dt as dt_util
 from pytest_homeassistant.common import MockConfigEntry
 
@@ -36,7 +41,7 @@ from custom_components.urban_weather.stations import LczSource, Station
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable, Mapping
 
-    from homeassistant.config_entries import ConfigEntryDisabler
+    from homeassistant.config_entries import ConfigEntryDisabler, ConfigFlowResult
     from homeassistant.core import HomeAssistant
 
     from custom_components.urban_weather.provider import Network
@@ -201,6 +206,24 @@ def add_home_entry(hass: HomeAssistant, **options: Any) -> MockConfigEntry:
     )
     entry.add_to_hass(hass)
     return entry
+
+
+def location(latitude: float, longitude: float, radius: float = 3000) -> dict:
+    """Return the input of the location step."""
+    return {
+        CONF_LOCATION: {
+            CONF_LATITUDE: latitude,
+            CONF_LONGITUDE: longitude,
+            CONF_RADIUS: radius,
+        }
+    }
+
+
+async def configure(
+    hass: HomeAssistant, result: ConfigFlowResult, user_input: dict | None = None
+) -> ConfigFlowResult:
+    """Submit a step of a running config flow."""
+    return await hass.config_entries.flow.async_configure(result["flow_id"], user_input)
 
 
 def respond(
