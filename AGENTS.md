@@ -32,7 +32,7 @@ scripts/docs       # docs on http://localhost:8000 (`de`: German, `build`: check
 uv run --no-project --with playwright python scripts/screenshots.py  # docs screenshots, needs scripts/develop
 ```
 
-Run `scripts/lint` and `scripts/test` before every push. CI runs lint, pytest, hassfest, HACS validation and, for docs changes, the strict docs build; all must pass.
+Run `scripts/lint` and `scripts/test` before every push. CI runs lint, pytest, hassfest, HACS validation, the PR title check and, for docs changes, the strict docs build; all must pass.
 
 ## Language
 
@@ -68,6 +68,7 @@ Release steps: [`.claude/skills/release/SKILL.md`](.claude/skills/release/SKILL.
   - Fixtures that create an aiohttp client session must depend on `aioclient_mock`.
   - Use the `freezer` fixture for time; it also moves `time.monotonic` used by the rate limiter.
 - Conventional Commits; branches `type/<issue>-short-description`; reference issues (`Refs #1`, `Fixes #1`). Open PRs as drafts first.
+- PRs are squash-merged with their title as the commit message, so PR titles follow Conventional Commits too (checked by `.github/workflows/pr-title.yml`). `next` reaches `main` by fast-forward, not by a PR merge, so each squashed commit stays on its own.
 - AI agents: never commit, push or open PRs without explicit approval of the person you work for. Commits substantially written by an agent get a `Co-authored-by:` trailer.
 
 ## The API is a shared, rate-limited resource
