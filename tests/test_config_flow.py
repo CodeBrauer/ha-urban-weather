@@ -180,6 +180,7 @@ async def test_cannot_connect(hass: HomeAssistant, api: MagicMock) -> None:
     )
     assert result["type"] is FlowResultType.ABORT
     assert result["reason"] == "cannot_connect"
+    assert result["description_placeholders"] == {"host": "api.smartmannheim.de"}
 
 
 async def test_menu_without_accept_when_recommendation_does_not_fit(

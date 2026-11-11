@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
-from homeassistant.config_entries import SOURCE_USER
+from homeassistant.config_entries import SOURCE_USER, ConfigEntryState
 from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.data_entry_flow import FlowResultType
 from homeassistant.util import dt as dt_util
@@ -22,6 +22,7 @@ from custom_components.urban_weather.const import (
 )
 from custom_components.urban_weather.hub import RequestDeferredError, async_get_hub
 from custom_components.urban_weather.provider import (
+    ApiConnectionError,
     Measurement,
     Network,
     Provider,
@@ -220,3 +221,21 @@ async def test_entities_name_the_network(
     assert state.attributes[ATTR_ATTRIBUTION] == "Fake data (CC0)"
     device = device_registry.async_get(entity_registry.async_get(temperature).device_id)
     assert (device.manufacturer, device.model) == ("Fake operator", "Fake network")
+
+
+async def test_errors_name_the_host_of_the_network(
+    hass: HomeAssistant, provider: FakeProvider
+) -> None:
+    """Without a station list, flow and setup name the host of the network."""
+    provider.async_get_station_payload = AsyncMock(
+        side_effect=ApiConnectionError("down")
+    )
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": SOURCE_USER}
+    )
+    assert result["type"] is FlowResultType.ABORT
+    assert result["description_placeholders"] == {"host": "fake.example"}
+    entry = add_home_entry(hass, **{CONF_TEMPERATURE_SENSORS: [FAKE_SENSOR]})
+    assert not await hass.config_entries.async_setup(entry.entry_id)
+    assert entry.state is ConfigEntryState.SETUP_RETRY
+    assert entry.reason == "The station list could not be loaded from fake.example"

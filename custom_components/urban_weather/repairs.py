@@ -81,7 +81,10 @@ class StationRepairFlow(RepairsFlow):
         try:
             stations = await hub.async_get_stations()
         except StationListUnavailableError:
-            return self.async_abort(reason="cannot_connect")
+            return self.async_abort(
+                reason="cannot_connect",
+                description_placeholders={"host": hub.provider.network.host},
+            )
         selection = self._selection = StationSelection(
             self.hass,
             hub,

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import asdict
 from typing import TYPE_CHECKING, Any
 
 import probatio
@@ -44,6 +45,8 @@ def planned_requests_of_others(
     hass: HomeAssistant, provider: Provider, exclude_entry_id: str | None
 ) -> int:
     """Return planned requests per hour of all other enabled config entries."""
+    # Assumes a single network: with several (#41), only the entries of the same
+    # network share its budget, each at the cost of its own provider.
     total = 0
     for entry in hass.config_entries.async_entries(DOMAIN):
         if entry.entry_id == exclude_entry_id or entry.disabled_by:
@@ -73,7 +76,6 @@ class StationSelection:
         """Compute the recommendation and the budget used by other entries once."""
         self._hass = hass
         self._hub = hub
-        self._provider = hub.provider
         self._budget = hub.provider.network.limits.planned_per_hour
         self._stations = stations
         self.latitude, self.longitude, self.radius, environment = location
@@ -89,7 +91,7 @@ class StationSelection:
     def planned_requests(self, count: int, wind: str, interval: int) -> int:
         """Return planned requests per hour of all entries with this selection."""
         sensors = count + (wind != NO_WIND_SENSOR)
-        requests = self._provider.requests_per_refresh(sensors)
+        requests = self._hub.provider.requests_per_refresh(sensors)
         return requests_per_hour(requests, interval) + self.others
 
     def fitting_interval(self, count: int, wind: str) -> int | None:
@@ -310,7 +312,7 @@ class StationSelection:
             "interval": str(shown_interval),
             "planned": str(self.planned_requests(len(selected), wind, shown_interval)),
             "budget": str(self._budget),
-            "api_limit": str(self._provider.network.limits.per_hour),
+            "api_limit": str(self._hub.provider.network.limits.per_hour),
         }
 
     async def async_map_payload(self, selected: list[str], wind: str) -> dict[str, Any]:
@@ -351,10 +353,7 @@ class StationSelection:
                 "max_stations": MAX_SELECTED_STATIONS,
                 "no_wind": NO_WIND_SENSOR,
             },
-            "tiles": {
-                "url": self._provider.network.tiles.url,
-                "attribution": self._provider.network.tiles.attribution,
-            },
+            "tiles": asdict(self._hub.provider.network.tiles),
             "recommendation": self.recommendation_text().replace("**", ""),
             "text": {
                 key.removeprefix(prefix): value

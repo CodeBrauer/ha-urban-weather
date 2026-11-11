@@ -12,8 +12,8 @@ from custom_components.urban_weather.provider import (
     TileLayer,
 )
 
+from . import stations
 from .api import MannheimClimateApi, parse_sensors
-from .stations import build_stations
 
 if TYPE_CHECKING:
     import aiohttp
@@ -92,7 +92,7 @@ class MannheimProvider(Provider):
 
     def build_stations(self, payload: dict[str, Any]) -> list[Station]:
         """Group the listed sensors into stations with siting metadata."""
-        return build_stations(
+        return stations.build_stations(
             parse_sensors(payload, self.network.fields), self._reference
         )
 

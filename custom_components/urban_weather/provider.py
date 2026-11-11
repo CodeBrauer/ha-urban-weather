@@ -5,6 +5,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
+from urllib.parse import urlsplit
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -95,6 +96,11 @@ class Network:
     def measurements(self) -> frozenset[Field]:
         """Return the values the network can measure."""
         return frozenset(self.fields.values())
+
+    @property
+    def host(self) -> str:
+        """Return the host of the endpoint, as named in messages to the user."""
+        return urlsplit(self.endpoint).hostname or self.endpoint
 
 
 class Provider(ABC):

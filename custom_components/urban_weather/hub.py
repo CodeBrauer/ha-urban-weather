@@ -7,7 +7,6 @@ import time
 from collections import deque
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
-from urllib.parse import urlsplit
 
 from homeassistant.helpers.singleton import singleton
 from homeassistant.helpers.storage import Store
@@ -249,7 +248,7 @@ class ClimateHub:
             "values are fetched afterwards. Other devices or scripts using "
             "%s from the same internet connection share the limit",
             retry_after,
-            urlsplit(self.provider.network.endpoint).hostname,
+            self.provider.network.host,
         )
 
     def diagnostics(self) -> dict[str, Any]:

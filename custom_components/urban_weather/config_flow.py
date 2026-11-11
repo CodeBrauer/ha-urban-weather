@@ -213,7 +213,10 @@ class MannheimClimateConfigFlow(ConfigFlow, domain=DOMAIN):
     ) -> ConfigFlowResult:
         """Pick the location on a map."""
         if not await self._async_load():
-            return self.async_abort(reason="cannot_connect")
+            return self.async_abort(
+                reason="cannot_connect",
+                description_placeholders={"host": self._hub.provider.network.host},
+            )
         errors: dict[str, str] = {}
         if user_input is not None:
             location = _parse_location(user_input)
@@ -241,7 +244,10 @@ class MannheimClimateConfigFlow(ConfigFlow, domain=DOMAIN):
     ) -> ConfigFlowResult:
         """Move an existing location."""
         if not await self._async_load():
-            return self.async_abort(reason="cannot_connect")
+            return self.async_abort(
+                reason="cannot_connect",
+                description_placeholders={"host": self._hub.provider.network.host},
+            )
         entry = self._get_reconfigure_entry()
         errors: dict[str, str] = {}
         if user_input is not None:
@@ -428,7 +434,10 @@ class MannheimClimateOptionsFlow(OptionsFlowWithReload):
             try:
                 stations = await hub.async_get_stations()
             except StationListUnavailableError:
-                return self.async_abort(reason="cannot_connect")
+                return self.async_abort(
+                    reason="cannot_connect",
+                    description_placeholders={"host": hub.provider.network.host},
+                )
             self._selection = StationSelection(
                 self.hass,
                 hub,
