@@ -37,7 +37,7 @@ Run `scripts/lint` and `scripts/test` before every push. CI runs lint, pytest, h
 ## Language
 
 - Code, comments, commits, issues, PRs and release notes are written in English.
-- `README.md` is German (shown by HACS), `README.en.md` is its English version. Change both together.
+- `README.md` is English (shown by GitHub and HACS), `README.de.md` is its German version. Change both together.
 - UI strings: `strings.json` is the source, `translations/en.json` an identical copy, `translations/de.json` the German translation. Change all three together with identical keys.
 - Docs site: `docs/en/` is the source, `docs/de/` its German translation with the same files and outline. A PR that changes documented behaviour updates both, and the READMEs where they describe it; `scripts/check_docs.py` enforces the sync of the docs. Workflow (translate only the diff): [`.claude/skills/docs-site/SKILL.md`](.claude/skills/docs-site/SKILL.md).
 
