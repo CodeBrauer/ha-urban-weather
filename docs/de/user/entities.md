@@ -1,4 +1,4 @@
-<!-- source: e999ef4bda6bbeeec2264ecfdf1c8d437d1fec44 -->
+<!-- source: 63bbae45e7488d8c6741127762575b4de38f12ab -->
 # Entitäten
 
 Jeder Standort liefert Sensoren und eine Wetter-Entität. Gemessen wird alle 10 Minuten, die
@@ -21,7 +21,7 @@ Ein Sensor wird nur angelegt, wenn eine der gewählten Stationen seinen Wert mis
 | Luftdruck | hPa | die Stationen ihn messen | Median der Stationen |
 | Globalstrahlung | W/m² | die Stationen sie messen | Maximum der Stationen, weil Sensoren im Straßenraum oft verschattet sind |
 | Windgeschwindigkeit | km/h | Windstation | Mittlere Windgeschwindigkeit (die API liefert m/s) |
-| Windböe | km/h | Windstation | 3-Sekunden-Böe, sonst 1-Sekunden-Böe |
+| Windböe | km/h | die Windstation eine Böe misst | 3-Sekunden-Böe, sonst 1-Sekunden-Böe |
 | Windrichtung | ° | die Windstation sie misst | Mittlere Windrichtung |
 | Böenrichtung | ° | die Windstation sie misst | Richtung der Böe. Standardmäßig deaktiviert. |
 | Verwendete Stationen | | immer | Diagnose: Stationen mit aktuellen Daten, ohne Ausreißer |
@@ -34,15 +34,15 @@ Wie die Stationen kombiniert werden, beschreibt [Aggregation](../developer/aggre
 
 | Attribut | Inhalt |
 |---|---|
-| `stations` | Pro Stationscode: `temperature`, `humidity`, `distance_km` und `timestamp` der verwendeten Messung |
+| `stations` | Pro Stationscode: `temperature`, `humidity` (nur wenn die Stationen sie messen), `distance_km` und `timestamp` der verwendeten Messung |
 | `dropped_outliers` | Codes der Stationen, die als Ausreißer verworfen wurden |
-| `humidity_uncorrected` | Luftfeuchte ohne Taupunkt-Korrektur |
+| `humidity_uncorrected` | Luftfeuchte ohne Taupunkt-Korrektur (nur wenn die Stationen Luftfeuchte messen) |
 
 ## Wetter-Entität
 
 Die Wetter-Entität zeigt die aktuelle Temperatur, gefühlte Temperatur, Taupunkt,
-Luftfeuchte, Luftdruck, Windgeschwindigkeit, Böe und Windrichtung. Eine Vorhersage hat sie
-nicht.
+Luftfeuchte, Luftdruck, Windgeschwindigkeit, Böe und Windrichtung, soweit die gewählten Stationen sie messen.
+Eine Vorhersage hat sie nicht.
 
 Der Zustand wird aus der Globalstrahlung geschätzt, weil das Netz keine Wolken- oder
 Regensensoren hat:
