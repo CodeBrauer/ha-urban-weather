@@ -17,9 +17,13 @@
       name in values ? String(values[name]) : match,
     );
 
-  // Same budget rules as StationSelection in selection.py.
+  // Same budget rules as StationSelection in selection.py; the cost per refresh
+  // comes from the provider (budget.requests), indexed by the number of sensors.
   const requestsPerHour = (count, interval) =>
-    Math.round(((count + (wind === budget.no_wind ? 0 : 1)) * 60) / interval);
+    Math.round(
+      ((budget.requests[count + (wind === budget.no_wind ? 0 : 1)] ?? Infinity) * 60) /
+        interval,
+    );
   const fittingInterval = (count) =>
     budget.intervals.find(
       (interval) =>

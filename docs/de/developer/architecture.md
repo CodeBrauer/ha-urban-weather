@@ -1,4 +1,4 @@
-<!-- source: 3a24ece98fdb2840f61fa00e7304645ae495b907 -->
+<!-- source: c69b9372b62bf1e023818e76d31c3f79eba77eb6 -->
 # Architektur
 
 Die Integration liegt in `custom_components/urban_weather/`. Die Konventionen für die
@@ -78,9 +78,16 @@ Provider-Klasse setzt eine Art von API um; ein Messnetz auf dieser API ist Konfi
 | `area` | Titel eines Standorts ohne bekannten Stadtteil |
 | `tiles` | Hintergrundkarte der Stationskarte |
 
-Der Provider liefert die rohe Stationsliste (der Hub speichert sie unverändert), baut daraus
-die Stationen, holt Messwerte und sagt, wie viele Abfragen eine Aktualisierung kostet.
-Referenzdaten sind optional: Ohne sie geben `lcz()` und `district()` `None` zurück, und der
+Der Provider liefert die rohe Stationsliste (der Hub speichert sie unverändert) und baut
+daraus die Stationen. Seine Basisklasse legt das Abfragemodell für Messwerte fest:
+
+| Basisklasse | Messwerte | Abfragen pro Aktualisierung |
+|---|---|---|
+| `SensorProvider` | `async_get_measurements(sensor_id)`: ein Sensor pro Abfrage (Mannheim) | Eine pro Sensor |
+| `BulkProvider` | `async_get_all_measurements(sensors)`: alle Sensoren in einer Abfrage; der Provider darf sie auf die übergebenen Sensoren filtern, z. B. nach Gebiet | Eine, egal wie viele Stationen |
+
+Stationsauswahl und Kartenseite planen mit `requests_per_refresh()`, der Hub fragt je nach
+Basisklasse ab ([Abfragen und API-Zugriff](data-flow.md)). Referenzdaten sind optional: Ohne sie geben `lcz()` und `district()` `None` zurück, und der
 Flow nimmt `DEFAULT_ENVIRONMENT` und den `area` des Messnetzes.
 
 ## Einrichten eines Standorts
@@ -135,7 +142,8 @@ sequenceDiagram
   nicht gecacht.
 - Der Server prüft die Auswahl erneut; die Seite hilft nur, im Budget zu bleiben.
 - `www/map.js` wiederholt die Budget-Regeln von `StationSelection`, um das Intervall live
-  anzuzeigen. Ändere beide zusammen.
+  anzuzeigen. Die Kosten pro Aktualisierung kommen mit dem Payload (`budget.requests`), so
+  folgt die Seite dem Abfragemodell des Providers. Ändere beide zusammen.
 - Die Texte kommen aus dem Selector `map_page` in `strings.json`, in der Systemsprache.
 - Leaflet liegt mitgeliefert in `www/leaflet/`; die statischen Dateien werden unter
   `STATIC_URL` mit einem Inhalts-Hash als Cache-Buster ausgeliefert.

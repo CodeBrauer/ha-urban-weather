@@ -29,7 +29,7 @@ from .const import (
     Environment,
 )
 from .geo import bearing_deg, direction_arrow
-from .hub import requests_per_hour
+from .hub import requests_per_hour, selected_sensor_ids
 from .stations import Recommendation, Station, nearest, recommend
 
 if TYPE_CHECKING:
@@ -51,9 +51,7 @@ def planned_requests_of_others(
     for entry in hass.config_entries.async_entries(DOMAIN):
         if entry.entry_id == exclude_entry_id or entry.disabled_by:
             continue
-        sensors = len(entry.options.get(CONF_TEMPERATURE_SENSORS, []))
-        if entry.options.get(CONF_WIND_SENSOR):
-            sensors += 1
+        sensors = len(selected_sensor_ids(entry.options))
         total += requests_per_hour(
             provider.requests_per_refresh(sensors),
             entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL_MIN),
@@ -351,6 +349,11 @@ class StationSelection:
                 "intervals": list(SCAN_INTERVAL_CHOICES_MIN),
                 "min_interval": self.min_interval,
                 "max_stations": MAX_SELECTED_STATIONS,
+                # Requests per refresh by number of sensors (stations + wind).
+                "requests": [
+                    self._hub.provider.requests_per_refresh(sensors)
+                    for sensors in range(MAX_SELECTED_STATIONS + 2)
+                ],
                 "no_wind": NO_WIND_SENSOR,
             },
             "tiles": asdict(self._hub.provider.network.tiles),
