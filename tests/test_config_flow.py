@@ -13,13 +13,11 @@ from homeassistant.config_entries import SOURCE_USER
 from homeassistant.const import (
     CONF_LATITUDE,
     CONF_LOCATION,
-    CONF_LONGITUDE,
     CONF_RADIUS,
 )
 from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant.common import MockConfigEntry
 
-from custom_components.urban_weather.api import ApiConnectionError
 from custom_components.urban_weather.const import (
     CONF_DEW_POINT_OFFSET,
     CONF_ENVIRONMENT,
@@ -30,6 +28,7 @@ from custom_components.urban_weather.const import (
     NO_WIND_SENSOR,
     Environment,
 )
+from custom_components.urban_weather.provider import ApiConnectionError
 
 from .common import (
     CATALOG_SENSOR,
@@ -41,6 +40,8 @@ from .common import (
     SECOND_SENSOR,
     add_home_entry,
     add_location,
+    configure,
+    location,
 )
 
 if TYPE_CHECKING:
@@ -66,24 +67,6 @@ def setup_entry() -> Generator[AsyncMock]:
         "custom_components.urban_weather.async_setup_entry", return_value=True
     ) as setup:
         yield setup
-
-
-def location(latitude: float, longitude: float, radius: float = 3000) -> dict:
-    """Return the input of the location step."""
-    return {
-        CONF_LOCATION: {
-            CONF_LATITUDE: latitude,
-            CONF_LONGITUDE: longitude,
-            CONF_RADIUS: radius,
-        }
-    }
-
-
-async def configure(
-    hass: HomeAssistant, result: ConfigFlowResult, user_input: dict | None = None
-) -> ConfigFlowResult:
-    """Submit a step of a running config flow."""
-    return await hass.config_entries.flow.async_configure(result["flow_id"], user_input)
 
 
 async def start_at_stations_menu(
@@ -197,6 +180,7 @@ async def test_cannot_connect(hass: HomeAssistant, api: MagicMock) -> None:
     )
     assert result["type"] is FlowResultType.ABORT
     assert result["reason"] == "cannot_connect"
+    assert result["description_placeholders"] == {"host": "api.smartmannheim.de"}
 
 
 async def test_menu_without_accept_when_recommendation_does_not_fit(

@@ -7,12 +7,17 @@ import math
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
+from unittest.mock import MagicMock
 
-from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_RADIUS
+from homeassistant.const import (
+    CONF_LATITUDE,
+    CONF_LOCATION,
+    CONF_LONGITUDE,
+    CONF_RADIUS,
+)
 from homeassistant.util import dt as dt_util
 from pytest_homeassistant.common import MockConfigEntry
 
-from custom_components.urban_weather.api import ApiSensor, Measurement
 from custom_components.urban_weather.const import (
     CONF_DEW_POINT_OFFSET,
     CONF_ENVIRONMENT,
@@ -26,13 +31,20 @@ from custom_components.urban_weather.const import (
     Field,
     MountZone,
 )
+from custom_components.urban_weather.provider import ApiSensor, Measurement
+from custom_components.urban_weather.providers.mannheim import (
+    MANNHEIM,
+    MannheimProvider,
+)
 from custom_components.urban_weather.stations import LczSource, Station
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable, Mapping
 
-    from homeassistant.config_entries import ConfigEntryDisabler
+    from homeassistant.config_entries import ConfigEntryDisabler, ConfigFlowResult
     from homeassistant.core import HomeAssistant
+
+    from custom_components.urban_weather.provider import Network
 
 FIXTURES = Path(__file__).parent / "fixtures"
 HOME = (49.472, 8.565)
@@ -68,6 +80,11 @@ def sensors_payload() -> dict[str, Any]:
     2306LH126 (swapped coordinates).
     """
     return json.loads((FIXTURES / "sensors.json").read_text("utf-8"))
+
+
+def mannheim_provider(network: Network = MANNHEIM) -> MannheimProvider:
+    """Return the Mannheim provider without reference data (API client per `api`)."""
+    return MannheimProvider(network, MagicMock(), MagicMock())
 
 
 def store_sensor_list(
@@ -189,6 +206,24 @@ def add_home_entry(hass: HomeAssistant, **options: Any) -> MockConfigEntry:
     )
     entry.add_to_hass(hass)
     return entry
+
+
+def location(latitude: float, longitude: float, radius: float = 3000) -> dict:
+    """Return the input of the location step."""
+    return {
+        CONF_LOCATION: {
+            CONF_LATITUDE: latitude,
+            CONF_LONGITUDE: longitude,
+            CONF_RADIUS: radius,
+        }
+    }
+
+
+async def configure(
+    hass: HomeAssistant, result: ConfigFlowResult, user_input: dict | None = None
+) -> ConfigFlowResult:
+    """Submit a step of a running config flow."""
+    return await hass.config_entries.flow.async_configure(result["flow_id"], user_input)
 
 
 def respond(

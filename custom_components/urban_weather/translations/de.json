@@ -60,7 +60,7 @@
     },
     "abort": {
       "already_configured": "Dieser Standort ist bereits eingerichtet.",
-      "cannot_connect": "Die Stationsliste konnte nicht von api.smartmannheim.de geladen werden. Versuche es später erneut.",
+      "cannot_connect": "Die Stationsliste konnte nicht von {host} geladen werden. Versuche es später erneut.",
       "reconfigure_successful": "Der Standort wurde aktualisiert."
     }
   },
@@ -90,7 +90,7 @@
       "unknown_station": "Eine der gewählten Stationen ist unbekannt. Lade die Seite neu und versuche es erneut."
     },
     "abort": {
-      "cannot_connect": "Die Stationsliste konnte nicht von api.smartmannheim.de geladen werden. Versuche es später erneut."
+      "cannot_connect": "Die Stationsliste konnte nicht von {host} geladen werden. Versuche es später erneut."
     }
   },
   "selector": {
@@ -191,7 +191,7 @@
       "message": "Das Abfrage-Budget der API ist gerade aufgebraucht. Neuer Versuch in {seconds} Sekunden."
     },
     "station_list_unavailable": {
-      "message": "Die Stationsliste konnte nicht von api.smartmannheim.de geladen werden."
+      "message": "Die Stationsliste konnte nicht von {host} geladen werden."
     },
     "no_stations_available": {
       "message": "Keine der gewählten Stationen existiert mehr. Wähle in den Optionen der Integration neue Stationen."
@@ -230,7 +230,7 @@
           "unknown_station": "Eine der gewählten Stationen ist unbekannt. Lade die Seite neu und versuche es erneut."
         },
         "abort": {
-          "cannot_connect": "Die Stationsliste konnte nicht von api.smartmannheim.de geladen werden. Versuche es später erneut.",
+          "cannot_connect": "Die Stationsliste konnte nicht von {host} geladen werden. Versuche es später erneut.",
           "entry_not_found": "Den Standort gibt es nicht mehr."
         }
       }
@@ -267,7 +267,7 @@
           "unknown_station": "Eine der gewählten Stationen ist unbekannt. Lade die Seite neu und versuche es erneut."
         },
         "abort": {
-          "cannot_connect": "Die Stationsliste konnte nicht von api.smartmannheim.de geladen werden. Versuche es später erneut.",
+          "cannot_connect": "Die Stationsliste konnte nicht von {host} geladen werden. Versuche es später erneut.",
           "entry_not_found": "Den Standort gibt es nicht mehr."
         }
       }
@@ -286,7 +286,7 @@
           }
         },
         "abort": {
-          "cannot_connect": "Die Stationsliste konnte nicht von api.smartmannheim.de geladen werden. Versuche es später erneut.",
+          "cannot_connect": "Die Stationsliste konnte nicht von {host} geladen werden. Versuche es später erneut.",
           "entry_not_found": "Den Standort gibt es nicht mehr.",
           "kept": "Deine Stationen bleiben, wie sie sind. Dieser Vorschlag wird nicht mehr angezeigt, du findest ihn unter den ignorierten Reparaturen."
         }

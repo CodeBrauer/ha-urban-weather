@@ -27,7 +27,9 @@ async def async_setup_entry(
         await hub.async_get_stations()
     except StationListUnavailableError as err:
         raise ConfigEntryNotReady(
-            translation_domain=DOMAIN, translation_key="station_list_unavailable"
+            translation_domain=DOMAIN,
+            translation_key="station_list_unavailable",
+            translation_placeholders={"host": hub.provider.network.host},
         ) from err
 
     stations = [

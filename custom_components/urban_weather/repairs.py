@@ -27,7 +27,7 @@ if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant
 
-    from .api import ApiSensor
+    from .provider import ApiSensor
     from .stations import Station
 
 
@@ -81,7 +81,10 @@ class StationRepairFlow(RepairsFlow):
         try:
             stations = await hub.async_get_stations()
         except StationListUnavailableError:
-            return self.async_abort(reason="cannot_connect")
+            return self.async_abort(
+                reason="cannot_connect",
+                description_placeholders={"host": hub.provider.network.host},
+            )
         selection = self._selection = StationSelection(
             self.hass,
             hub,

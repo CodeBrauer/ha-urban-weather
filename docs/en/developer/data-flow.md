@@ -1,7 +1,8 @@
 # Polling and API access
 
-All API access goes through `ClimateHub` (`hub.py`). The limits in `const.py` mirror the
-API's per-IP limits; [API limits](../user/api-limits.md) explains them for users.
+All API access goes through `ClimateHub` (`hub.py`). The limits of the network
+(`RequestLimits`, for Mannheim in `providers/mannheim/`) mirror the API's per-IP limits;
+[API limits](../user/api-limits.md) explains them for users.
 
 ## Update cycle
 
@@ -50,7 +51,7 @@ sequenceDiagram
 
 `RateLimiter` keeps the timestamps of recent requests and checks sliding windows:
 
-| Limiter | Windows (`const.py`) |
+| Limiter | Windows (Mannheim) |
 |---|---|
 | Measurements | 4 per 120 s, 30 per 3600 s (`MEASUREMENT_LIMITS`) |
 | Station list | 2 per 900 s, 4 per 3600 s (`SENSOR_LIST_LIMITS`) |

@@ -9,7 +9,6 @@ from homeassistant.config_entries import ConfigEntryState
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers import issue_registry as ir
 
-from custom_components.urban_weather.api import ApiConnectionError
 from custom_components.urban_weather.const import (
     CONF_TEMPERATURE_SENSORS,
     CONF_WIND_SENSOR,
@@ -19,6 +18,7 @@ from custom_components.urban_weather.const import (
     Field,
 )
 from custom_components.urban_weather.coordinator import issue_id
+from custom_components.urban_weather.provider import ApiConnectionError
 
 from .common import (
     NEAREST_SENSOR,

@@ -17,8 +17,8 @@ from custom_components.urban_weather.aggregation import (
     latest_valid,
     relative_humidity,
 )
-from custom_components.urban_weather.api import Measurement
 from custom_components.urban_weather.const import MAX_MEASUREMENT_AGE, Field
+from custom_components.urban_weather.provider import Measurement
 
 NOW = datetime(2026, 10, 26, 12, 0, tzinfo=UTC)
 

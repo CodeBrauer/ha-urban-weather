@@ -198,8 +198,8 @@ actions:
 | Kartenkacheln der Stationskarte | [basemap.de](https://basemap.de/) / BKG | CC BY 4.0 |
 | Kartenbibliothek (mitgeliefert) | [Leaflet 1.9.4](https://leafletjs.com/) | BSD-2-Clause |
 
-Die statischen Referenzdateien in `custom_components/urban_weather/data/` erzeugt
-`scripts/build_reference_data.py` (Quelle und Datum stehen jeweils im Feld `source`).
+Die statischen Referenzdateien in `custom_components/urban_weather/providers/mannheim/data/`
+erzeugt `scripts/build_reference_data.py` (Quelle und Datum stehen jeweils im Feld `source`).
 
 ## Entwicklung
 

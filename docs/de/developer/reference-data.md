@@ -1,9 +1,10 @@
-<!-- source: 16044c88a7d4e6f2823a533f49eccdb59fde55f0 -->
+<!-- source: 0cc35d7872b30c02bff25d7e2002055b118b6d24 -->
 # Stationen und Referenzdaten
 
-Die API listet Sensoren (Module), keine Stationen, und hat keine Metadaten zum Standort der
-Messung. `stations.py` gruppiert die Sensoren und ergänzt Daten, die in
-`custom_components/urban_weather/data/` mitgeliefert werden.
+Die Mannheimer API listet Sensoren (Module), keine Stationen, und hat keine Metadaten zum
+Standort der Messung. Der Mannheim-Provider gruppiert die Sensoren
+(`providers/mannheim/stations.py`) und ergänzt Daten, die in
+`custom_components/urban_weather/providers/mannheim/data/` mitgeliefert werden.
 
 ## Von Sensoren zu Stationen
 

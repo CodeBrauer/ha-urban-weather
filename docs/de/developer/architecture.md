@@ -1,4 +1,4 @@
-<!-- source: 7e84b8af03af9afe0eb38cfed95988f6e853037f -->
+<!-- source: 3a24ece98fdb2840f61fa00e7304645ae495b907 -->
 # Architektur
 
 Die Integration liegt in `custom_components/urban_weather/`. Die Konventionen für die
@@ -18,6 +18,9 @@ flowchart TB
             Limiter[RateLimiter<br>Messwerte + Stationsliste]
             Cache[Messwert-Cache]
             List[Stationsliste<br>Store + erstes Auftauchen]
+        end
+        subgraph ProviderBox[MannheimProvider]
+            Client[MannheimClimateApi]
             Ref[ReferenceData<br>Katalog, LCZ, Stadtteile]
         end
         Store[(.storage/<br>urban_weather.sensors)]
@@ -31,7 +34,8 @@ flowchart TB
         MapView[MapView<br>HTTP-Seite ohne Login]
     end
     Browser[Browser]
-    API <--> Limiter
+    Limiter --> ProviderBox
+    Client <--> API
     List <--> Store
     Coord --> HubBox
     Coord --> Sensors
@@ -44,10 +48,11 @@ flowchart TB
 
 | Modul | Aufgabe |
 |---|---|
-| `api.py` | HTTP-Client für `/sensors` und `/measurements/{id}`, Parsen der Antworten, Fehlertypen (`ApiRateLimitError`, `SensorNotFoundError`, …) |
+| `provider.py` | Interface `Provider`, Konfiguration `Network`, gemeinsame Typen (`ApiSensor`, `Measurement`) und Fehlertypen (`ApiRateLimitError`, `SensorNotFoundError`, …) |
+| `providers/` | `async_create_provider()`, ein Paket pro Messnetz |
+| `providers/mannheim/` | Messnetz `MANNHEIM` und `MannheimProvider`: HTTP-Client für `/sensors` und `/measurements/{id}` (`api.py`), Gruppieren der Sensoren zu Stationen (`stations.py`), mitgelieferter Metadatenkatalog, LCZ-Raster und Stadtteilnamen (`reference.py`, `data/`) |
 | `hub.py` | Singleton `ClimateHub`: Rate-Limiter, Messwert-Cache, Stationsliste mit gespeicherter Kopie und Zeitpunkt des ersten Auftauchens |
-| `stations.py` | Gruppieren der Sensoren zu `Station`s, `recommend()` |
-| `reference.py`, `data/` | Mitgelieferter Metadatenkatalog, LCZ-Raster und Stadtteilnamen |
+| `stations.py` | `Station`, `recommend()` |
 | `selection.py` | `StationSelection`: Empfehlung, Abfrage-Budget und Beschriftungen, gemeinsam für alle Flows und die Karte |
 | `config_flow.py` | Config Flow (Standort, Umgebung, Stationen), Reconfigure, Options Flow |
 | `map_view.py`, `www/` | Kartenseite als externer Schritt des Config Flows |
@@ -57,7 +62,26 @@ flowchart TB
 | `repairs.py` | Fix-Flows für die Reparaturhinweise |
 | `diagnostics.py` | Diagnose mit entfernten Koordinaten |
 | `geo.py` | Entfernung, Richtung und Clustering ohne Home-Assistant-Imports (auch vom Build-Skript genutzt) |
-| `const.py` | Alle Limits, Intervalle und Schwellen, die diese Doku nennt |
+| `const.py` | Intervalle und Schwellen, die für alle Messnetze gelten; die Limits eines Messnetzes stehen in seinem Provider |
+
+## Provider
+
+Hub, Stationsauswahl, Flows und Entitäten nutzen nur das Interface `Provider`. Eine
+Provider-Klasse setzt eine Art von API um; ein Messnetz auf dieser API ist Konfiguration
+(`Network`):
+
+| `Network` | Wofür |
+|---|---|
+| `endpoint`, `fields` | Basis-URL und Feld-Zuordnung: Feldnamen des Messnetzes zu `Field` |
+| `limits` | `RequestLimits`: Fenster der Rate-Limiter, dokumentierte und geplante Abfragen pro Stunde |
+| `attribution`, `name`, `operator` | Quellenangabe und Geräteinfo der Entitäten |
+| `area` | Titel eines Standorts ohne bekannten Stadtteil |
+| `tiles` | Hintergrundkarte der Stationskarte |
+
+Der Provider liefert die rohe Stationsliste (der Hub speichert sie unverändert), baut daraus
+die Stationen, holt Messwerte und sagt, wie viele Abfragen eine Aktualisierung kostet.
+Referenzdaten sind optional: Ohne sie geben `lcz()` und `district()` `None` zurück, und der
+Flow nimmt `DEFAULT_ENVIRONMENT` und den `area` des Messnetzes.
 
 ## Einrichten eines Standorts
 

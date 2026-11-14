@@ -11,16 +11,7 @@ from unittest.mock import MagicMock
 import pytest
 from homeassistant.util import dt as dt_util
 
-from custom_components.urban_weather.api import (
-    ApiConnectionError,
-    ApiRateLimitError,
-    Measurement,
-)
-from custom_components.urban_weather.const import (
-    MEASUREMENT_LIMITS,
-    NEW_STATION_PERIOD,
-    STORAGE_KEY,
-)
+from custom_components.urban_weather.const import NEW_STATION_PERIOD, STORAGE_KEY
 from custom_components.urban_weather.hub import (
     ClimateHub,
     RateLimiter,
@@ -29,12 +20,19 @@ from custom_components.urban_weather.hub import (
     async_get_hub,
     track_first_seen,
 )
+from custom_components.urban_weather.provider import (
+    ApiConnectionError,
+    ApiRateLimitError,
+    Measurement,
+)
+from custom_components.urban_weather.providers.mannheim import MEASUREMENT_LIMITS
 
 from .common import (
     MEASURED_AT,
     MEASUREMENTS,
     NEAREST_SENSOR,
     NEAREST_WIND_SENSOR,
+    mannheim_provider,
     sensors_payload,
     store_sensor_list,
 )
@@ -98,9 +96,9 @@ def test_rate_limiter_blocks_after_rate_limit(freezer: FrozenDateTimeFactory) ->
 
 
 @pytest.fixture
-async def hub(hass: HomeAssistant, api: MagicMock) -> ClimateHub:  # noqa: ARG001
+async def hub(api: MagicMock) -> ClimateHub:  # noqa: ARG001
     """Return a hub using the mocked API (reference data and store are unused)."""
-    return ClimateHub(hass, MagicMock(), MagicMock())
+    return ClimateHub(mannheim_provider(), MagicMock())
 
 
 async def test_measurements_are_cached_for_nine_minutes(

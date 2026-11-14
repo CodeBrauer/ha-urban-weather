@@ -4,15 +4,21 @@ from __future__ import annotations
 
 import pytest
 
-from custom_components.urban_weather.api import ApiSensor, parse_sensors
 from custom_components.urban_weather.const import Environment, Field, MountZone
-from custom_components.urban_weather.reference import load_reference_data
+from custom_components.urban_weather.provider import ApiSensor
+from custom_components.urban_weather.providers.mannheim import MANNHEIM
+from custom_components.urban_weather.providers.mannheim.api import parse_sensors
+from custom_components.urban_weather.providers.mannheim.reference import (
+    load_reference_data,
+)
+from custom_components.urban_weather.providers.mannheim.stations import (
+    build_stations,
+)
 from custom_components.urban_weather.stations import (
     LczSource,
     Recommendation,
     RecommendationReason,
     Station,
-    build_stations,
     recommend,
 )
 
@@ -166,7 +172,9 @@ def test_no_wind_station_without_wind_sensors() -> None:
 @pytest.fixture(scope="module")
 def stations() -> dict[str, Station]:
     """Stations around HOME by the name of their temperature (else wind) sensor."""
-    built = build_stations(parse_sensors(sensors_payload()), load_reference_data())
+    built = build_stations(
+        parse_sensors(sensors_payload(), MANNHEIM.fields), load_reference_data()
+    )
     return {
         (station.temperature_sensor or station.wind_sensor).name: station
         for station in built

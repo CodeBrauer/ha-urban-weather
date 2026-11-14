@@ -8,11 +8,6 @@ from typing import TYPE_CHECKING, Any
 import pytest
 from pytest_homeassistant.common import async_fire_time_changed
 
-from custom_components.urban_weather.api import (
-    ApiConnectionError,
-    ApiRateLimitError,
-    SensorNotFoundError,
-)
 from custom_components.urban_weather.const import (
     CATCH_UP_MARGIN_S,
     CONF_SCAN_INTERVAL,
@@ -25,6 +20,11 @@ from custom_components.urban_weather.const import (
     Field,
 )
 from custom_components.urban_weather.coordinator import issue_id
+from custom_components.urban_weather.provider import (
+    ApiConnectionError,
+    ApiRateLimitError,
+    SensorNotFoundError,
+)
 
 from .common import (
     CATALOG_SENSOR,

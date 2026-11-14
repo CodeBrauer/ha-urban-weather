@@ -17,6 +17,9 @@ flowchart TB
             Limiter[RateLimiter<br>measurements + station list]
             Cache[Measurement cache]
             List[Station list<br>Store + first seen]
+        end
+        subgraph ProviderBox[MannheimProvider]
+            Client[MannheimClimateApi]
             Ref[ReferenceData<br>catalogue, LCZ, districts]
         end
         Store[(.storage/<br>urban_weather.sensors)]
@@ -30,7 +33,8 @@ flowchart TB
         MapView[MapView<br>HTTP page, no login]
     end
     Browser[Browser]
-    API <--> Limiter
+    Limiter --> ProviderBox
+    Client <--> API
     List <--> Store
     Coord --> HubBox
     Coord --> Sensors
@@ -43,10 +47,11 @@ flowchart TB
 
 | Module | Responsibility |
 |---|---|
-| `api.py` | HTTP client for `/sensors` and `/measurements/{id}`, response parsing, error types (`ApiRateLimitError`, `SensorNotFoundError`, ...) |
+| `provider.py` | `Provider` interface, `Network` configuration, shared types (`ApiSensor`, `Measurement`) and error types (`ApiRateLimitError`, `SensorNotFoundError`, ...) |
+| `providers/` | `async_create_provider()`, one package per network |
+| `providers/mannheim/` | `MANNHEIM` network and `MannheimProvider`: HTTP client for `/sensors` and `/measurements/{id}` (`api.py`), grouping sensors into stations (`stations.py`), bundled metadata catalogue, LCZ grid and district names (`reference.py`, `data/`) |
 | `hub.py` | `ClimateHub` singleton: rate limiters, measurement cache, station list with stored copy and first-seen times |
-| `stations.py` | Grouping sensors into `Station`s, `recommend()` |
-| `reference.py`, `data/` | Bundled metadata catalogue, LCZ grid and district names |
+| `stations.py` | `Station`, `recommend()` |
 | `selection.py` | `StationSelection`: recommendation, request budget and labels, shared by all flows and the map |
 | `config_flow.py` | Config flow (location, surroundings, stations), reconfigure, options flow |
 | `map_view.py`, `www/` | Map page served as external step of the config flow |
@@ -56,7 +61,25 @@ flowchart TB
 | `repairs.py` | Fix flows for the repair issues |
 | `diagnostics.py` | Diagnostics with redacted coordinates |
 | `geo.py` | Distance, bearing and clustering without Home Assistant imports (also used by the build script) |
-| `const.py` | All limits, intervals and thresholds named in this documentation |
+| `const.py` | Intervals and thresholds shared by all networks; the limits of a network are in its provider |
+
+## Providers
+
+Hub, station selection, flows and entities only use the `Provider` interface. A provider
+class implements one type of API; a network on that API is configuration (`Network`):
+
+| `Network` | Used for |
+|---|---|
+| `endpoint`, `fields` | Base URL and field mapping: field names of the network to `Field` |
+| `limits` | `RequestLimits`: rate limiter windows, documented and planned requests per hour |
+| `attribution`, `name`, `operator` | Attribution and device info of the entities |
+| `area` | Title of a location without a known district |
+| `tiles` | Background map of the station map page |
+
+The provider returns the raw station list (the hub stores it as is), builds the stations
+from it, fetches measurements and says how many requests one refresh costs. Reference data
+is optional: without it, `lcz()` and `district()` return `None` and the flow falls back to
+`DEFAULT_ENVIRONMENT` and the network's `area`.
 
 ## Setting up a location
 

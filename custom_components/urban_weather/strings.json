@@ -60,7 +60,7 @@
     },
     "abort": {
       "already_configured": "This location is already configured.",
-      "cannot_connect": "The station list could not be loaded from api.smartmannheim.de. Try again later.",
+      "cannot_connect": "The station list could not be loaded from {host}. Try again later.",
       "reconfigure_successful": "The location was updated."
     }
   },
@@ -90,7 +90,7 @@
       "unknown_station": "One of the selected stations is unknown. Reload the page and try again."
     },
     "abort": {
-      "cannot_connect": "The station list could not be loaded from api.smartmannheim.de. Try again later."
+      "cannot_connect": "The station list could not be loaded from {host}. Try again later."
     }
   },
   "selector": {
@@ -191,7 +191,7 @@
       "message": "The API request budget is used up for the moment. Retrying in {seconds} seconds."
     },
     "station_list_unavailable": {
-      "message": "The station list could not be loaded from api.smartmannheim.de."
+      "message": "The station list could not be loaded from {host}."
     },
     "no_stations_available": {
       "message": "None of the selected stations exists any more. Reconfigure the stations in the integration options."
@@ -230,7 +230,7 @@
           "unknown_station": "One of the selected stations is unknown. Reload the page and try again."
         },
         "abort": {
-          "cannot_connect": "The station list could not be loaded from api.smartmannheim.de. Try again later.",
+          "cannot_connect": "The station list could not be loaded from {host}. Try again later.",
           "entry_not_found": "The location no longer exists."
         }
       }
@@ -267,7 +267,7 @@
           "unknown_station": "One of the selected stations is unknown. Reload the page and try again."
         },
         "abort": {
-          "cannot_connect": "The station list could not be loaded from api.smartmannheim.de. Try again later.",
+          "cannot_connect": "The station list could not be loaded from {host}. Try again later.",
           "entry_not_found": "The location no longer exists."
         }
       }
@@ -286,7 +286,7 @@
           }
         },
         "abort": {
-          "cannot_connect": "The station list could not be loaded from api.smartmannheim.de. Try again later.",
+          "cannot_connect": "The station list could not be loaded from {host}. Try again later.",
           "entry_not_found": "The location no longer exists.",
           "kept": "Your stations stay as they are. This suggestion is no longer shown; you find it under the ignored repairs."
         }

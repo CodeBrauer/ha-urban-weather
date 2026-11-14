@@ -12,7 +12,6 @@ from homeassistant.config_entries import ConfigEntryState
 from homeassistant.helpers import issue_registry as ir
 from homeassistant.setup import async_setup_component
 
-from custom_components.urban_weather.api import SensorNotFoundError
 from custom_components.urban_weather.const import (
     CONF_SCAN_INTERVAL,
     CONF_TEMPERATURE_SENSORS,
@@ -24,6 +23,7 @@ from custom_components.urban_weather.const import (
     Field,
 )
 from custom_components.urban_weather.coordinator import issue_id
+from custom_components.urban_weather.provider import SensorNotFoundError
 
 from .common import (
     NEAREST_SENSOR,
