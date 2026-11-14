@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any
 from urllib.parse import urlsplit
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Collection, Mapping
     from datetime import datetime
 
     from .const import Field
@@ -104,7 +104,12 @@ class Network:
 
 
 class Provider(ABC):
-    """Access to one network; one subclass per platform (type of API)."""
+    """
+    Access to one network; one subclass per platform (type of API).
+
+    A provider declares its request model by its base class: SensorProvider (one
+    request per sensor) or BulkProvider (one request for all sensors).
+    """
 
     def __init__(self, network: Network) -> None:
         """Keep the network configuration."""
@@ -119,6 +124,22 @@ class Provider(ABC):
         """Return the stations of a raw station list (fresh or stored)."""
 
     @abstractmethod
+    def requests_per_refresh(self, sensors: int) -> int:
+        """Return the measurement requests one refresh of these sensors costs."""
+
+    def lcz(self, latitude: float, longitude: float) -> int | None:  # noqa: ARG002
+        """Return the Local Climate Zone at a coordinate, if the network has a map."""
+        return None
+
+    def district(self, latitude: float, longitude: float) -> str | None:  # noqa: ARG002
+        """Return the district name at a coordinate, if the network knows it."""
+        return None
+
+
+class SensorProvider(Provider):
+    """A network that returns the measurements of one sensor per request."""
+
+    @abstractmethod
     async def async_get_measurements(self, sensor_id: str) -> list[Measurement]:
         """
         Return the recent measurements of a sensor, newest first.
@@ -128,13 +149,25 @@ class Provider(ABC):
         """
 
     def requests_per_refresh(self, sensors: int) -> int:
-        """Return the measurement requests one refresh of these sensors costs."""
+        """Return one request per sensor."""
         return sensors
 
-    def lcz(self, latitude: float, longitude: float) -> int | None:  # noqa: ARG002
-        """Return the Local Climate Zone at a coordinate, if the network has a map."""
-        return None
 
-    def district(self, latitude: float, longitude: float) -> str | None:  # noqa: ARG002
-        """Return the district name at a coordinate, if the network knows it."""
-        return None
+class BulkProvider(Provider):
+    """A network that returns the measurements of all sensors in one request."""
+
+    @abstractmethod
+    async def async_get_all_measurements(
+        self, sensors: Collection[ApiSensor]
+    ) -> dict[str, list[Measurement]]:
+        """
+        Return recent measurements by sensor id, newest first.
+
+        `sensors` are the sensors the locations use; the provider may restrict its
+        request to them (e.g. a geo filter around them) or return more. Raises
+        ApiRateLimitError, ApiConnectionError or ApiError.
+        """
+
+    def requests_per_refresh(self, sensors: int) -> int:
+        """Return one request for any number of sensors."""
+        return min(sensors, 1)
