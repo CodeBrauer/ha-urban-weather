@@ -19,7 +19,7 @@ A sensor is only created if one of the selected stations measures its value.
 | Atmospheric pressure | hPa | stations measure it | Median of the stations |
 | Global irradiance | W/m² | stations measure it | Maximum of the stations, because street-level sensors are often shaded |
 | Wind speed | km/h | wind station | Mean wind speed (the API delivers m/s) |
-| Wind gust | km/h | wind station | 3-second gust, else 1-second gust |
+| Wind gust | km/h | wind station measures a gust | 3-second gust, else 1-second gust |
 | Wind direction | ° | wind station measures it | Mean wind direction |
 | Wind gust direction | ° | wind station measures it | Direction of the gust. Disabled by default. |
 | Stations used | | always | Diagnostic: stations that delivered current data, without outliers |
@@ -32,14 +32,15 @@ How the stations are combined is described in [Aggregation](../developer/aggrega
 
 | Attribute | Content |
 |---|---|
-| `stations` | Per station code: `temperature`, `humidity`, `distance_km` and `timestamp` of the reading used |
+| `stations` | Per station code: `temperature`, `humidity` (only if stations measure it), `distance_km` and `timestamp` of the reading used |
 | `dropped_outliers` | Codes of stations left out as outliers |
-| `humidity_uncorrected` | Humidity without the dew point correction |
+| `humidity_uncorrected` | Humidity without the dew point correction (only if stations measure humidity) |
 
 ## Weather entity
 
 The weather entity shows the current temperature, apparent temperature, dew point, humidity,
-pressure, wind speed, gust and direction. It has no forecast.
+pressure, wind speed, gust and direction, as far as the selected stations measure them.
+It has no forecast.
 
 The condition is estimated from the global irradiance, because the network has no cloud or
 rain sensors:
