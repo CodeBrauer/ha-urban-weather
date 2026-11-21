@@ -16,7 +16,7 @@ from custom_components.urban_weather.const import (
     DOMAIN,
     Field,
 )
-from custom_components.urban_weather.provider import Measurement, Provider
+from custom_components.urban_weather.provider import Measurement, SensorProvider
 from custom_components.urban_weather.sensor import SENSORS
 
 from .common import (
@@ -67,7 +67,7 @@ FULL_WIND_VALUES = {
 }
 
 
-class ValuesProvider(Provider):
+class ValuesProvider(SensorProvider):
     """One station of the fake network measuring exactly the given values."""
 
     def __init__(
