@@ -98,7 +98,7 @@ def test_rate_limiter_blocks_after_rate_limit(freezer: FrozenDateTimeFactory) ->
 @pytest.fixture
 async def hub(api: MagicMock) -> ClimateHub:  # noqa: ARG001
     """Return a hub using the mocked API (reference data and store are unused)."""
-    return ClimateHub(mannheim_provider(), MagicMock())
+    return ClimateHub(MagicMock(), mannheim_provider(), MagicMock())
 
 
 async def test_measurements_are_cached_for_nine_minutes(

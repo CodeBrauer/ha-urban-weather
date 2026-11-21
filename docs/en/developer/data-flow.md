@@ -46,6 +46,10 @@ sequenceDiagram
   pending at a time.
 - A lock per sensor prevents two locations from fetching the same sensor at once; the
   second one gets the cached result.
+- With a `BulkProvider` one lock covers the network: a cache miss fetches the sensors of all
+  enabled locations with one request and caches each of them, so the locations share one
+  request per refresh. A sensor missing from the response is cached without measurements;
+  removed sensors show up through the station list instead of a `404`.
 
 ## Rate limiter
 
@@ -63,7 +67,9 @@ level.
 
 The limiter only enforces the hard limits. Staying below them in normal operation is the job
 of the planned budget (`PLANNED_BUDGET_PER_HOUR`), which `StationSelection` checks when
-stations are chosen.
+stations are chosen. Each location costs `requests_per_refresh()` of the provider per
+refresh: one request per sensor, or one for a bulk provider, where only
+`MAX_SELECTED_STATIONS` limits the number of stations.
 
 ## Station list
 

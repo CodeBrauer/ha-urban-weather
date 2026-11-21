@@ -14,6 +14,8 @@ from homeassistant.util import dt as dt_util
 from homeassistant.util.hass_dict import HassKey
 
 from .const import (
+    CONF_TEMPERATURE_SENSORS,
+    CONF_WIND_SENSOR,
     DOMAIN,
     LOGGER,
     MEASUREMENT_CACHE_TTL,
@@ -22,16 +24,16 @@ from .const import (
     STORAGE_KEY,
     STORAGE_VERSION,
 )
-from .provider import ApiError, ApiRateLimitError
+from .provider import ApiError, ApiRateLimitError, SensorProvider
 from .providers import async_create_provider
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    from collections.abc import Iterable, Mapping
     from datetime import datetime
 
     from homeassistant.core import HomeAssistant
 
-    from .provider import Measurement, Provider
+    from .provider import ApiSensor, Measurement, Provider
     from .stations import Station
 
 DATA_HUB: HassKey[ClimateHub] = HassKey(DOMAIN)
@@ -98,6 +100,12 @@ def requests_per_hour(requests_per_refresh: int, interval_minutes: int) -> int:
     return round(requests_per_refresh * MINUTES_PER_HOUR / interval_minutes)
 
 
+def selected_sensor_ids(options: Mapping[str, Any]) -> list[str]:
+    """Return the temperature sensors and the wind sensor a location polls."""
+    wind = options.get(CONF_WIND_SENSOR)
+    return [*options.get(CONF_TEMPERATURE_SENSORS, []), *([wind] if wind else [])]
+
+
 def track_first_seen(
     first_seen: dict[str, str | None] | None,
     sensor_ids: Iterable[str],
@@ -120,8 +128,11 @@ def track_first_seen(
 class ClimateHub:
     """One instance per Home Assistant, shared by all config entries."""
 
-    def __init__(self, provider: Provider, store: Store[dict[str, Any]]) -> None:
+    def __init__(
+        self, hass: HomeAssistant, provider: Provider, store: Store[dict[str, Any]]
+    ) -> None:
         """Set up limiters with the network's limits, and the caches."""
+        self._hass = hass
         self.provider = provider
         self._store = store
         limits = provider.network.limits
@@ -129,10 +140,12 @@ class ClimateHub:
         self._sensor_limiter = RateLimiter(limits.station_list)
         self._measurements: dict[str, _CachedMeasurements] = {}
         self._sensor_locks: dict[str, asyncio.Lock] = {}
+        self._bulk_lock = asyncio.Lock()
         self._stations: list[Station] | None = None
         self._stations_fetched_at: datetime | None = None
         self._stations_lock = asyncio.Lock()
         self._sensor_index: dict[str, Station] = {}
+        self._sensors: dict[str, ApiSensor] = {}
         self._first_seen: dict[str, str | None] = {}
         self._rate_limit_logged = False
 
@@ -191,10 +204,12 @@ class ClimateHub:
         self._stations = self.provider.build_stations(payload)
         self._stations_fetched_at = fetched_at
         self._sensor_index = {}
+        self._sensors = {}
         for station in self._stations:
             for sensor in (station.temperature_sensor, station.wind_sensor):
                 if sensor:
                     self._sensor_index[sensor.id] = station
+                    self._sensors[sensor.id] = sensor
 
     def station_for_sensor(self, sensor_id: str) -> Station | None:
         """Return the station a sensor belongs to (after async_get_stations)."""
@@ -218,7 +233,11 @@ class ClimateHub:
         Raises RequestDeferredError when the request budget is used up or the API
         asked us to back off, SensorNotFoundError and ApiConnectionError otherwise.
         """
-        lock = self._sensor_locks.setdefault(sensor_id, asyncio.Lock())
+        lock = (
+            self._sensor_locks.setdefault(sensor_id, asyncio.Lock())
+            if isinstance(self.provider, SensorProvider)
+            else self._bulk_lock
+        )
         async with lock:
             cached = self._measurements.get(sensor_id)
             now = dt_util.utcnow()
@@ -228,14 +247,38 @@ class ClimateHub:
                 raise RequestDeferredError(wait)
             self._measurement_limiter.acquire()
             try:
-                measurements = await self.provider.async_get_measurements(sensor_id)
+                fetched = await self._async_fetch_measurements(sensor_id)
             except ApiRateLimitError as err:
                 self._measurement_limiter.block_for(err.retry_after)
                 self._log_rate_limit(err.retry_after)
                 raise RequestDeferredError(err.retry_after) from err
             self._rate_limit_logged = False
-            self._measurements[sensor_id] = _CachedMeasurements(now, measurements)
-            return measurements
+            for fetched_id, measurements in fetched.items():
+                self._measurements[fetched_id] = _CachedMeasurements(now, measurements)
+            return fetched[sensor_id]
+
+    async def _async_fetch_measurements(
+        self, sensor_id: str
+    ) -> dict[str, list[Measurement]]:
+        """Fetch one sensor, or all sensors in use with one bulk request."""
+        provider = self.provider
+        if isinstance(provider, SensorProvider):
+            return {sensor_id: await provider.async_get_measurements(sensor_id)}
+        sensor_ids = self._sensor_ids_in_use() | {sensor_id}
+        fetched = await provider.async_get_all_measurements(
+            [self._sensors[s] for s in sensor_ids if s in self._sensors]
+        )
+        # A sensor missing from the response has no recent measurements.
+        return {s: fetched.get(s, []) for s in sensor_ids}
+
+    def _sensor_ids_in_use(self) -> set[str]:
+        """Return the sensors of all enabled locations, set up or not."""
+        return {
+            sensor_id
+            for entry in self._hass.config_entries.async_entries(DOMAIN)
+            if not entry.disabled_by
+            for sensor_id in selected_sensor_ids(entry.options)
+        }
 
     def _log_rate_limit(self, retry_after: float) -> None:
         # Warn once per streak; other clients on the same IP may cause this.
@@ -267,4 +310,4 @@ class ClimateHub:
 async def async_get_hub(hass: HomeAssistant) -> ClimateHub:
     """Create the shared hub on first use."""
     provider = await async_create_provider(hass)
-    return ClimateHub(provider, Store(hass, STORAGE_VERSION, STORAGE_KEY))
+    return ClimateHub(hass, provider, Store(hass, STORAGE_VERSION, STORAGE_KEY))

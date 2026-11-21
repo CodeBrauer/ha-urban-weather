@@ -76,9 +76,16 @@ class implements one type of API; a network on that API is configuration (`Netwo
 | `area` | Title of a location without a known district |
 | `tiles` | Background map of the station map page |
 
-The provider returns the raw station list (the hub stores it as is), builds the stations
-from it, fetches measurements and says how many requests one refresh costs. Reference data
-is optional: without it, `lcz()` and `district()` return `None` and the flow falls back to
+The provider returns the raw station list (the hub stores it as is) and builds the stations
+from it. Its base class declares the request model for measurements:
+
+| Base class | Measurements | Requests per refresh |
+|---|---|---|
+| `SensorProvider` | `async_get_measurements(sensor_id)`: one sensor per request (Mannheim) | One per sensor |
+| `BulkProvider` | `async_get_all_measurements(sensors)`: all sensors in one request; the provider may filter it to the given sensors, e.g. by area | One, whatever the number of stations |
+
+Station selection and map page plan with `requests_per_refresh()`, the hub fetches by the
+base class ([Polling and API access](data-flow.md)). Reference data is optional: without it, `lcz()` and `district()` return `None` and the flow falls back to
 `DEFAULT_ENVIRONMENT` and the network's `area`.
 
 ## Setting up a location
@@ -132,7 +139,8 @@ sequenceDiagram
   to the flow and expires after `MAP_SESSION_TTL`. Responses are not cached.
 - The server validates the selection again; the page only helps to stay within the budget.
 - `www/map.js` repeats the budget rules of `StationSelection` to show the interval live.
-  Change both together.
+  The cost per refresh comes with the payload (`budget.requests`), so the page follows the
+  request model of the provider. Change both together.
 - Texts come from the `map_page` selector in `strings.json`, in the system language.
 - Leaflet is vendored in `www/leaflet/`; static files are served under `STATIC_URL` with a
   content hash as cache buster.

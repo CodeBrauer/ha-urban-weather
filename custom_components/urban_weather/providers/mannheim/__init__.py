@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING, Any
 from custom_components.urban_weather.const import Field
 from custom_components.urban_weather.provider import (
     Network,
-    Provider,
     RequestLimits,
+    SensorProvider,
     TileLayer,
 )
 
@@ -72,7 +72,7 @@ MANNHEIM = Network(
 )
 
 
-class MannheimProvider(Provider):
+class MannheimProvider(SensorProvider):
     """The Mannheim API lists sensors (modules); co-located ones form a station."""
 
     def __init__(

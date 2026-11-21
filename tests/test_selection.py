@@ -120,6 +120,12 @@ async def test_max_stations(
     assert make_selection(hass).max_stations(WIND, interval) == expected
 
 
+async def test_map_counts_one_request_per_sensor(hass: HomeAssistant) -> None:
+    """The map page gets the cost per refresh of up to 6 stations and wind."""
+    payload = await make_selection(hass).async_map_payload(sensor_ids(1), WIND)
+    assert payload["budget"]["requests"] == list(range(8))
+
+
 @pytest.mark.parametrize(
     ("selected", "wind", "interval", "expected"),
     [
