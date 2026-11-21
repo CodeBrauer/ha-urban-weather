@@ -8,12 +8,12 @@ from collections import deque
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
-from homeassistant.helpers.singleton import singleton
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 from homeassistant.util.hass_dict import HassKey
 
 from .const import (
+    CONF_NETWORK,
     CONF_TEMPERATURE_SENSORS,
     CONF_WIND_SENSOR,
     DOMAIN,
@@ -25,23 +25,28 @@ from .const import (
     STORAGE_VERSION,
 )
 from .provider import ApiError, ApiRateLimitError, SensorProvider
-from .providers import async_create_provider
+from .providers import PROVIDERS, async_create_provider
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping
     from datetime import datetime
 
+    from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant
 
     from .provider import ApiSensor, Measurement, Provider
     from .stations import Station
 
-DATA_HUB: HassKey[ClimateHub] = HassKey(DOMAIN)
+DATA_HUBS: HassKey[dict[str, asyncio.Task[ClimateHub]]] = HassKey(DOMAIN)
 MINUTES_PER_HOUR = 60
 
 
 class StationListUnavailableError(ApiError):
     """Neither the API nor the local cache can provide the station list."""
+
+
+class UnknownNetworkError(Exception):
+    """A config entry names a network this version does not know."""
 
 
 class RequestDeferredError(ApiError):
@@ -126,7 +131,7 @@ def track_first_seen(
 
 
 class ClimateHub:
-    """One instance per Home Assistant, shared by all config entries."""
+    """One instance per network, shared by the config entries of that network."""
 
     def __init__(
         self, hass: HomeAssistant, provider: Provider, store: Store[dict[str, Any]]
@@ -272,11 +277,10 @@ class ClimateHub:
         return {s: fetched.get(s, []) for s in sensor_ids}
 
     def _sensor_ids_in_use(self) -> set[str]:
-        """Return the sensors of all enabled locations, set up or not."""
+        """Return the sensors of all enabled locations of the network, set up or not."""
         return {
             sensor_id
-            for entry in self._hass.config_entries.async_entries(DOMAIN)
-            if not entry.disabled_by
+            for entry in network_entries(self._hass, self.provider.network.id)
             for sensor_id in selected_sensor_ids(entry.options)
         }
 
@@ -306,8 +310,32 @@ class ClimateHub:
         }
 
 
-@singleton(DATA_HUB, async_=True)
-async def async_get_hub(hass: HomeAssistant) -> ClimateHub:
-    """Create the shared hub on first use."""
-    provider = await async_create_provider(hass)
-    return ClimateHub(hass, provider, Store(hass, STORAGE_VERSION, STORAGE_KEY))
+def network_entries(hass: HomeAssistant, network_id: str) -> list[ConfigEntry]:
+    """Return the enabled config entries (locations) of a network."""
+    return [
+        entry
+        for entry in hass.config_entries.async_entries(DOMAIN)
+        if not entry.disabled_by and entry.data.get(CONF_NETWORK) == network_id
+    ]
+
+
+async def _async_create_hub(hass: HomeAssistant, network_id: str) -> ClimateHub:
+    provider = await async_create_provider(hass, network_id)
+    store = Store(hass, STORAGE_VERSION, STORAGE_KEY.format(network=network_id))
+    return ClimateHub(hass, provider, store)
+
+
+async def async_get_hub(hass: HomeAssistant, network_id: str) -> ClimateHub:
+    """
+    Return the hub of a network, created on first use.
+
+    Raises UnknownNetworkError for a network id without provider.
+    """
+    if network_id not in PROVIDERS:
+        msg = f"Unknown network {network_id!r}"
+        raise UnknownNetworkError(msg)
+    hubs = hass.data.setdefault(DATA_HUBS, {})
+    # A task, so concurrent first calls share one hub.
+    if network_id not in hubs:
+        hubs[network_id] = hass.async_create_task(_async_create_hub(hass, network_id))
+    return await hubs[network_id]

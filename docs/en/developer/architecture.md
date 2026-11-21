@@ -13,7 +13,7 @@ flowchart TB
         Tiles[(basemap.de tiles)]
     end
     subgraph HA[Home Assistant]
-        subgraph HubBox[ClimateHub, one per Home Assistant]
+        subgraph HubBox[ClimateHub, one per network]
             Limiter[RateLimiter<br>measurements + station list]
             Cache[Measurement cache]
             List[Station list<br>Store + first seen]
@@ -22,7 +22,7 @@ flowchart TB
             Client[MannheimClimateApi]
             Ref[ReferenceData<br>catalogue, LCZ, districts]
         end
-        Store[(.storage/<br>urban_weather.sensors)]
+        Store[(.storage/<br>urban_weather.network.stations)]
         subgraph Entry[Per config entry]
             Coord[ClimateCoordinator]
             Sensors[Sensor entities]
@@ -48,12 +48,12 @@ flowchart TB
 | Module | Responsibility |
 |---|---|
 | `provider.py` | `Provider` interface, `Network` configuration, shared types (`ApiSensor`, `Measurement`) and error types (`ApiRateLimitError`, `SensorNotFoundError`, ...) |
-| `providers/` | `async_create_provider()`, one package per network |
+| `providers/` | `PROVIDERS` (network id → provider factory), `async_create_provider()`, one package per network |
 | `providers/mannheim/` | `MANNHEIM` network and `MannheimProvider`: HTTP client for `/sensors` and `/measurements/{id}` (`api.py`), grouping sensors into stations (`stations.py`), bundled metadata catalogue, LCZ grid and district names (`reference.py`, `data/`) |
-| `hub.py` | `ClimateHub` singleton: rate limiters, measurement cache, station list with stored copy and first-seen times |
-| `stations.py` | `Station`, `recommend()` |
+| `hub.py` | `ClimateHub`, one per network (`async_get_hub()`): rate limiters, measurement cache, station list with stored copy and first-seen times |
+| `stations.py` | `Station`, `recommend()`, `networks_in_range()` |
 | `selection.py` | `StationSelection`: recommendation, request budget and labels, shared by all flows and the map |
-| `config_flow.py` | Config flow (location, surroundings, stations), reconfigure, options flow |
+| `config_flow.py` | Config flow (location, network, surroundings, stations), reconfigure, options flow |
 | `map_view.py`, `www/` | Map page served as external step of the config flow |
 | `coordinator.py` | `ClimateCoordinator`: polling, catch-up, kept values, repair issues |
 | `aggregation.py` | Plausibility, outliers, medians and derived values |
@@ -97,7 +97,10 @@ sequenceDiagram
     participant Hub as ClimateHub
     participant Coord as ClimateCoordinator
     HA->>Init: config entry
-    Init->>Hub: async_get_hub (created on first use)
+    Init->>Hub: async_get_hub(network) (created on first use)
+    alt unknown network
+        Init-->>HA: ConfigEntryError
+    end
     Init->>Hub: async_get_stations()
     alt no list from API and none stored
         Hub-->>Init: StationListUnavailableError
@@ -156,6 +159,7 @@ sequenceDiagram
 | `data` | `latitude`, `longitude` | Location |
 | | `radius` | Search radius in metres (`DEFAULT_SEARCH_RADIUS_M`, at most `MAX_SEARCH_RADIUS_M`) |
 | | `environment` | `dense`, `open_built`, `industrial` or `green` (`Environment`) |
+| | `network` | Network id (`Network.id`, key of `PROVIDERS`), fixed for the life of the entry |
 | `options` | `temperature_sensors` | API sensor ids of the temperature stations |
 | | `wind_sensor` | API sensor id of the wind station or `null` |
 | | `scan_interval` | Update interval in minutes (`SCAN_INTERVAL_CHOICES_MIN`) |

@@ -34,6 +34,7 @@ from homeassistant.helpers.selector import (
 from .const import (
     CONF_DEW_POINT_OFFSET,
     CONF_ENVIRONMENT,
+    CONF_NETWORK,
     CONF_SCAN_INTERVAL,
     CONF_TEMPERATURE_SENSORS,
     CONF_WIND_SENSOR,
@@ -43,7 +44,7 @@ from .const import (
     DEW_POINT_OFFSET_LIMIT_K,
     DOMAIN,
     LCZ_ENVIRONMENT,
-    MAX_COVERAGE_DISTANCE_M,
+    LOGGER,
     MAX_SEARCH_RADIUS_M,
     NO_WIND_SENSOR,
     SCAN_INTERVAL_CHOICES_MIN,
@@ -58,11 +59,12 @@ from .map_view import (
     async_get_map_sessions,
     map_url,
 )
-from .selection import StationSelection
-from .stations import Station, nearest
+from .providers import PROVIDERS
+from .selection import StationSelection, format_distance
+from .stations import Station, nearest, networks_in_range
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Iterable, Mapping
 
 HOME_MATCH_RADIUS_M = 100
 DEFAULT_ENVIRONMENT = Environment.OPEN_BUILT
@@ -125,15 +127,6 @@ def _parse_location(user_input: Mapping[str, Any]) -> Location:
     return Location(location[CONF_LATITUDE], location[CONF_LONGITUDE], radius)
 
 
-def _is_covered(stations: list[Station], location: Location) -> bool:
-    return any(
-        station.temperature_sensor
-        and station.distance_to(location.latitude, location.longitude)
-        <= MAX_COVERAGE_DISTANCE_M
-        for station in stations
-    )
-
-
 def _environment_schema(default: Environment) -> probatio.Schema:
     return probatio.Schema(
         {
@@ -179,6 +172,9 @@ class MannheimClimateConfigFlow(ConfigFlow, domain=DOMAIN):
 
     def __init__(self) -> None:
         """Initialize the flow state."""
+        self._hubs: dict[str, ClimateHub] = {}
+        self._stations_by_network: dict[str, list[Station]] = {}
+        self._networks: list[tuple[str, float]] = []
         self._hub: ClimateHub | None = None
         self._stations: list[Station] = []
         self._location: Location | None = None
@@ -200,32 +196,49 @@ class MannheimClimateConfigFlow(ConfigFlow, domain=DOMAIN):
         if isinstance(sessions := self.hass.data.get(DATA_MAP), MapSessions):
             sessions.remove_flow(self.flow_id)
 
-    async def _async_load(self) -> bool:
-        self._hub = await async_get_hub(self.hass)
-        try:
-            self._stations = await self._hub.async_get_stations()
-        except StationListUnavailableError:
-            return False
-        return True
+    async def _async_load(self, network_ids: Iterable[str]) -> ConfigFlowResult | None:
+        """Load the station lists; abort only if none of the networks has one."""
+        for network_id in network_ids:
+            hub = self._hubs[network_id] = await async_get_hub(self.hass, network_id)
+            try:
+                self._stations_by_network[network_id] = await hub.async_get_stations()
+            except StationListUnavailableError:
+                LOGGER.debug("No station list from %s", hub.provider.network.host)
+        if self._stations_by_network:
+            return None
+        hosts = ", ".join(hub.provider.network.host for hub in self._hubs.values())
+        return self.async_abort(
+            reason="cannot_connect", description_placeholders={"host": hosts}
+        )
+
+    def _use_network(self, network_id: str) -> None:
+        self._hub = self._hubs[network_id]
+        self._stations = self._stations_by_network[network_id]
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Pick the location on a map."""
-        if not await self._async_load():
-            return self.async_abort(
-                reason="cannot_connect",
-                description_placeholders={"host": self._hub.provider.network.host},
-            )
+        if not self._stations_by_network and (
+            abort := await self._async_load(PROVIDERS)
+        ):
+            return abort
         errors: dict[str, str] = {}
         if user_input is not None:
             location = _parse_location(user_input)
-            if not _is_covered(self._stations, location):
+            networks = networks_in_range(
+                self._stations_by_network, location.latitude, location.longitude
+            )
+            if not networks:
                 errors["base"] = "outside_coverage"
             else:
                 await self.async_set_unique_id(location.unique_id)
                 self._abort_if_unique_id_configured()
                 self._location = location
+                self._networks = networks
+                if len(networks) > 1:
+                    return await self.async_step_network()
+                self._use_network(networks[0][0])
                 return await self.async_step_environment()
         return self.async_show_form(
             step_id="user",
@@ -239,16 +252,48 @@ class MannheimClimateConfigFlow(ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
+    async def async_step_network(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Choose among the networks in range, the nearest pre-selected."""
+        if user_input is not None:
+            self._use_network(user_input[CONF_NETWORK])
+            return await self.async_step_environment()
+        language = self.hass.config.language
+        options = [
+            SelectOptionDict(
+                value=network_id,
+                label=f"{self._hubs[network_id].provider.network.name} · "
+                f"{format_distance(distance, language)}",
+            )
+            for network_id, distance in self._networks
+        ]
+        return self.async_show_form(
+            step_id="network",
+            data_schema=probatio.Schema(
+                {
+                    probatio.Required(
+                        CONF_NETWORK, default=self._networks[0][0]
+                    ): SelectSelector(
+                        SelectSelectorConfig(
+                            options=options, mode=SelectSelectorMode.LIST
+                        )
+                    )
+                }
+            ),
+        )
+
     async def async_step_reconfigure(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
-        """Move an existing location."""
-        if not await self._async_load():
-            return self.async_abort(
-                reason="cannot_connect",
-                description_placeholders={"host": self._hub.provider.network.host},
-            )
+        """Move an existing location within its network."""
         entry = self._get_reconfigure_entry()
+        network_id = entry.data[CONF_NETWORK]
+        if not self._stations_by_network and (
+            abort := await self._async_load([network_id])
+        ):
+            return abort
+        self._use_network(network_id)
         errors: dict[str, str] = {}
         if user_input is not None:
             location = _parse_location(user_input)
@@ -259,8 +304,10 @@ class MannheimClimateConfigFlow(ConfigFlow, domain=DOMAIN):
             )
             if taken:
                 return self.async_abort(reason="already_configured")
-            if not _is_covered(self._stations, location):
-                errors["base"] = "outside_coverage"
+            if not networks_in_range(
+                {network_id: self._stations}, location.latitude, location.longitude
+            ):
+                errors["base"] = "outside_network"
             else:
                 self._location = location
                 return await self.async_step_environment()
@@ -275,6 +322,7 @@ class MannheimClimateConfigFlow(ConfigFlow, domain=DOMAIN):
                 }
             ),
             errors=errors,
+            description_placeholders={"network": self._hub.provider.network.name},
         )
 
     async def async_step_environment(
@@ -383,17 +431,21 @@ class MannheimClimateConfigFlow(ConfigFlow, domain=DOMAIN):
 
     def _async_finish(self, selected: list[str], wind: str) -> ConfigFlowResult:
         options = selected_options(self._selection, selected, wind)
+        data = {
+            **self._location.as_data(),
+            CONF_NETWORK: self._hub.provider.network.id,
+        }
         if self.source == SOURCE_RECONFIGURE:
             entry = self._get_reconfigure_entry()
             return self.async_update_reload_and_abort(
                 entry,
                 unique_id=self._location.unique_id,
-                data=self._location.as_data(),
+                data=data,
                 options={**entry.options, **options},
             )
         return self.async_create_entry(
             title=self._title(),
-            data=self._location.as_data(),
+            data=data,
             options={**options, CONF_DEW_POINT_OFFSET: DEFAULT_DEW_POINT_OFFSET_K},
         )
 
@@ -430,7 +482,7 @@ class MannheimClimateOptionsFlow(OptionsFlowWithReload):
         """Show the current choice; the map is available via reconfigure."""
         entry = self.config_entry
         if self._selection is None:
-            hub = await async_get_hub(self.hass)
+            hub = await async_get_hub(self.hass, entry.data[CONF_NETWORK])
             try:
                 stations = await hub.async_get_stations()
             except StationListUnavailableError:

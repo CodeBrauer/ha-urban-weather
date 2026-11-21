@@ -60,8 +60,9 @@ flowchart LR
     Hub --> C2 --> E2
 ```
 
-All locations share one hub that talks to the API, so a station used by two locations is
-fetched once and the requests of all locations together stay within the API limit. Each
+All locations of a network share one hub that talks to its API, so a station used by two
+locations is fetched once and the requests of all locations together stay within the API
+limit. Each
 location polls its stations and combines their latest values into one set of entities.
 
 ## Where to go next

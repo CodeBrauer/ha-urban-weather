@@ -1,4 +1,4 @@
-<!-- source: 4f0e4f0d797368c55bac2de8da2adf5047e710af -->
+<!-- source: a8636263ef4a777591d1e973349ded663d7def74 -->
 # Installation
 
 ## Voraussetzungen
@@ -43,5 +43,5 @@ starten.
 2. Die Integration in HACS entfernen (oder den Ordner löschen) und Home Assistant neu
    starten.
 
-Die zwischengespeicherte Stationsliste bleibt in `.storage/urban_weather.sensors`; die
-Datei kannst du löschen.
+Die zwischengespeicherten Stationslisten bleiben in `.storage/urban_weather.<network>.stations`
+(zum Beispiel `urban_weather.mannheim.stations`); die Dateien kannst du löschen.

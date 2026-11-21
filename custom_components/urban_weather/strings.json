@@ -11,9 +11,16 @@
           "location": "Defaults to your home location."
         }
       },
+      "network": {
+        "title": "Network",
+        "description": "Stations of several climate networks are in range of this place. The nearest network is pre-selected; the distance is to its nearest station.",
+        "data": {
+          "network": "Network"
+        }
+      },
       "reconfigure": {
         "title": "Move location",
-        "description": "Pick the new place. Afterwards you confirm the surroundings and the stations again.",
+        "description": "Pick the new place within the network {network}. Afterwards you confirm the surroundings and the stations again.",
         "data": {
           "location": "Location"
         }
@@ -53,6 +60,7 @@
     },
     "error": {
       "outside_coverage": "There is no station within 10 km of this place.",
+      "outside_network": "There is no station of {network} within 10 km of this place. To use another network, add the place as a new location.",
       "no_station_selected": "Select at least one station.",
       "too_many_stations": "Select at most 6 stations.",
       "over_budget": "Too many API requests per hour. Select fewer stations or a longer update interval in the options.",
@@ -195,6 +203,9 @@
     },
     "no_stations_available": {
       "message": "None of the selected stations exists any more. Reconfigure the stations in the integration options."
+    },
+    "unknown_network": {
+      "message": "This location uses the network \"{network}\", which this version of the integration does not know. Update the integration or add the location again."
     }
   },
   "issues": {

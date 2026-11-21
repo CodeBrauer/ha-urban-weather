@@ -1,4 +1,4 @@
-<!-- source: 266e614412f2a756349ec52b21c0f35dd8f9bb21 -->
+<!-- source: 2edeae56e632c17d68953fe76ff91ae78d84b61f -->
 # Einrichtung
 
 *Einstellungen → Geräte & Dienste → Integration hinzufügen → Urban Weather (Stadtklima)*
@@ -7,14 +7,16 @@ Jeder Standort, den du hinzufügst, wird ein eigenes Gerät mit eigenen Entität
 
 ```mermaid
 flowchart TD
-    Start([Integration hinzufügen]) --> List{Stationsliste<br>verfügbar?}
+    Start([Integration hinzufügen]) --> List{Stationsliste eines<br>Messnetzes verfügbar?}
     List -- nein --> Abort1([Abbruch: später erneut versuchen])
     List -- ja --> Location[Standort<br>Pin und Suchradius]
     Location --> Covered{Station im Umkreis<br>von 10 km?}
     Covered -- nein --> Location
     Covered -- ja --> Known{Standort schon<br>eingerichtet?}
     Known -- ja --> Abort2([Abbruch: bereits eingerichtet])
-    Known -- nein --> Env[Umgebung<br>vorausgewählt aus der LCZ-Karte]
+    Known -- nein --> Several{Mehrere Messnetze<br>in Reichweite?}
+    Several -- ja --> Network[Messnetz<br>nächstes vorausgewählt] --> Env
+    Several -- nein --> Env[Umgebung<br>vorausgewählt aus der LCZ-Karte]
     Env --> Menu[Stationen<br>Empfehlung mit Begründung]
     Menu -->|Empfehlung übernehmen| Done([Gerät mit Entitäten])
     Menu -->|Auf der interaktiven Karte auswählen| Map[Karte in neuem Fenster] -->|Speichern| Done
@@ -43,6 +45,10 @@ höchstens 10 km.
   Fehler.
 - Zwei Standorte, die weniger als etwa 100 m auseinander liegen, gelten als derselbe und
   lassen sich nicht doppelt anlegen.
+- Liegen Stationen mehrerer Messnetze im Umkreis von 10 km, fragt der nächste Schritt, welches
+  Messnetz der Standort nutzt. Jedes Messnetz steht mit der Entfernung zu seiner nächsten
+  Station in der Liste; das nächstgelegene ist vorausgewählt. Ist nur ein Messnetz in
+  Reichweite, entfällt dieser Schritt.
 
 ## 2. Umgebung
 
@@ -127,8 +133,12 @@ nach Umgebung und Stationen. Das ist auch der Weg zur interaktiven Karte für ei
 bestehenden Standort, weil Home Assistant externe Fenster in Options-Dialogen nicht
 zuverlässig anzeigt. Deine übrigen Optionen, etwa die Taupunkt-Korrektur, bleiben erhalten.
 
+Ein Standort bleibt in seinem Messnetz: Am neuen Ort muss eine Station dieses Messnetzes im
+Umkreis von 10 km liegen. Für ein anderes Messnetz füge den Ort als neuen Standort hinzu.
+
 ## Mehrere Standorte
 
 Füge die Integration für jeden Ort erneut hinzu (Zuhause, Arbeit, Garten, …). Alle Standorte
-teilen sich das API-Budget, jeder weitere Standort lässt den anderen also weniger Stationen
-oder ein längeres Intervall.
+eines Messnetzes teilen sich sein API-Budget, jeder weitere Standort lässt den anderen also
+weniger Stationen oder ein längeres Intervall. Standorte in verschiedenen Messnetzen
+beeinflussen sich nicht.

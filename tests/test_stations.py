@@ -19,6 +19,7 @@ from custom_components.urban_weather.stations import (
     Recommendation,
     RecommendationReason,
     Station,
+    networks_in_range,
     recommend,
 )
 
@@ -226,3 +227,19 @@ def test_sensors_without_temperature_or_wind_are_ignored() -> None:
     """Sensors measuring neither temperature nor wind do not form a station."""
     pressure = ApiSensor("p1", "p1", *HOME, frozenset({Field.PRESSURE}))
     assert build_stations([pressure], load_reference_data()) == []
+
+
+def test_networks_in_range_nearest_first() -> None:
+    """Networks with a temperature station within 10 km, by their nearest station."""
+    stations_by_network = {
+        "far": [make_station("f1", 2500), make_station("f2", 12_000)],
+        "near": [make_station("n1", 3000), make_station("n2", 800)],
+        "wind_only": [make_station("w1", 100, temperature=False, wind=True)],
+        "out_of_range": [make_station("o1", 10_500)],
+        "empty": [],
+    }
+    in_range = networks_in_range(stations_by_network, *HOME)
+    assert [network for network, _ in in_range] == ["near", "far"]
+    assert [distance for _, distance in in_range] == pytest.approx(
+        [800, 2500], rel=0.01
+    )
