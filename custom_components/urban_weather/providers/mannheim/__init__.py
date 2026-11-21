@@ -49,6 +49,7 @@ SENSOR_LIST_LIMITS = ((2, 900), (4, 3600))
 PLANNED_BUDGET_PER_HOUR = 24
 
 MANNHEIM = Network(
+    id="mannheim",
     name="Klimamessnetz Mannheim",
     operator="Smart City Mannheim (Open Data)",
     area="Mannheim",

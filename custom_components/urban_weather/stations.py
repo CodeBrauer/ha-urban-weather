@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 from .const import (
     LCZ_ENVIRONMENT,
+    MAX_COVERAGE_DISTANCE_M,
     RECOMMENDED_STATIONS,
     SINGLE_STATION_MAX_DISTANCE_M,
     Environment,
@@ -16,7 +17,7 @@ from .const import (
 from .geo import distance_m
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    from collections.abc import Iterable, Mapping
 
     from .provider import ApiSensor
 
@@ -81,6 +82,31 @@ def nearest(
     return sorted(
         stations, key=lambda station: station.distance_to(latitude, longitude)
     )
+
+
+def networks_in_range(
+    stations_by_network: Mapping[str, Iterable[Station]],
+    latitude: float,
+    longitude: float,
+) -> list[tuple[str, float]]:
+    """
+    Return the networks with a temperature station in range, nearest first.
+
+    Each network comes with the distance to its nearest temperature station.
+    """
+    in_range = []
+    for network_id, stations in stations_by_network.items():
+        distance = min(
+            (
+                station.distance_to(latitude, longitude)
+                for station in stations
+                if station.temperature_sensor
+            ),
+            default=None,
+        )
+        if distance is not None and distance <= MAX_COVERAGE_DISTANCE_M:
+            in_range.append((network_id, distance))
+    return sorted(in_range, key=lambda network: network[1])
 
 
 @dataclass(frozen=True, slots=True)

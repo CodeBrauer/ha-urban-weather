@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import replace
 from typing import TYPE_CHECKING, Any
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 from homeassistant.const import STATE_UNKNOWN
@@ -17,6 +17,7 @@ from custom_components.urban_weather.const import (
     Field,
 )
 from custom_components.urban_weather.provider import Measurement, SensorProvider
+from custom_components.urban_weather.providers import PROVIDERS
 from custom_components.urban_weather.sensor import SENSORS
 
 from .common import (
@@ -111,15 +112,13 @@ async def set_up_fake(
     provider = ValuesProvider(temperature, wind or {})
     entry = add_home_entry(
         hass,
+        network=FAKE_NETWORK.id,
         **{
             CONF_TEMPERATURE_SENSORS: [TEMPERATURE_SENSOR],
             CONF_WIND_SENSOR: WIND_SENSOR if wind else None,
         },
     )
-    with patch(
-        "custom_components.urban_weather.hub.async_create_provider",
-        return_value=provider,
-    ):
+    with patch.dict(PROVIDERS, {FAKE_NETWORK.id: AsyncMock(return_value=provider)}):
         assert await hass.config_entries.async_setup(entry.entry_id)
     return entry.entry_id
 

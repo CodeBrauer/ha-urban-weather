@@ -1,4 +1,4 @@
-<!-- source: c6b799bc6014a582ed696c58d1454f406732c555 -->
+<!-- source: 5bf29776f50d31bb33092c2620a1be7e87a1c788 -->
 # Urban Weather (Stadtklima)
 
 Home-Assistant-Integration für das dichte Stadtklima-Messnetz von
@@ -61,7 +61,7 @@ flowchart LR
     Hub --> C2 --> E2
 ```
 
-Alle Standorte teilen sich einen Hub, der mit der API spricht. Eine Station, die zwei
+Alle Standorte eines Messnetzes teilen sich einen Hub, der mit dessen API spricht. Eine Station, die zwei
 Standorte nutzen, wird deshalb nur einmal abgefragt, und die Abfragen aller Standorte
 zusammen bleiben im API-Limit. Jeder Standort fragt seine Stationen ab und kombiniert ihre
 letzten Werte zu einem Satz Entitäten.

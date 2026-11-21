@@ -80,6 +80,8 @@ class TileLayer:
 class Network:
     """Everything about a network that is configuration, not code."""
 
+    # Stable key, stored in the config entry of each location.
+    id: str
     # Device model and manufacturer of the entities.
     name: str
     operator: str

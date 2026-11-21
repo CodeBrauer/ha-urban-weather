@@ -1,6 +1,6 @@
 # Polling and API access
 
-All API access goes through `ClimateHub` (`hub.py`). The limits of the network
+All API access goes through the `ClimateHub` of the network (`hub.py`). The limits of the network
 (`RequestLimits`, for Mannheim in `providers/mannheim/`) mirror the API's per-IP limits;
 [API limits](../user/api-limits.md) explains them for users.
 

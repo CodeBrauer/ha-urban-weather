@@ -20,9 +20,11 @@ SENSOR_LIST_MAX_AGE = timedelta(hours=24)
 NEW_STATION_PERIOD = timedelta(days=30)
 MEASUREMENT_CACHE_TTL = timedelta(minutes=9)
 STORAGE_VERSION = 1
-STORAGE_KEY = f"{DOMAIN}.sensors"
+# Stored station list, one per network id.
+STORAGE_KEY = f"{DOMAIN}.{{network}}.stations"
 
 # Config entry data
+CONF_NETWORK = "network"
 CONF_ENVIRONMENT = "environment"
 # Config entry options
 CONF_TEMPERATURE_SENSORS = "temperature_sensors"

@@ -29,7 +29,7 @@ from .const import (
     Environment,
 )
 from .geo import bearing_deg, direction_arrow
-from .hub import requests_per_hour, selected_sensor_ids
+from .hub import network_entries, requests_per_hour, selected_sensor_ids
 from .stations import Recommendation, Station, nearest, recommend
 
 if TYPE_CHECKING:
@@ -44,12 +44,10 @@ METRES_PER_KM = 1000
 def planned_requests_of_others(
     hass: HomeAssistant, provider: Provider, exclude_entry_id: str | None
 ) -> int:
-    """Return planned requests per hour of all other enabled config entries."""
-    # Assumes a single network: with several (#41), only the entries of the same
-    # network share its budget, each at the cost of its own provider.
+    """Return planned requests per hour of the other enabled entries of the network."""
     total = 0
-    for entry in hass.config_entries.async_entries(DOMAIN):
-        if entry.entry_id == exclude_entry_id or entry.disabled_by:
+    for entry in network_entries(hass, provider.network.id):
+        if entry.entry_id == exclude_entry_id:
             continue
         sensors = len(selected_sensor_ids(entry.options))
         total += requests_per_hour(
@@ -57,6 +55,14 @@ def planned_requests_of_others(
             entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL_MIN),
         )
     return total
+
+
+def format_distance(distance: float, language: str) -> str:
+    """Return e.g. '444 m' or '1,2 km' (decimal comma in German)."""
+    if distance < METRES_PER_KM:
+        return f"{distance:.0f} m"
+    text = f"{distance / METRES_PER_KM:.1f} km"
+    return text.replace(".", ",") if language.startswith("de") else text
 
 
 class StationSelection:
@@ -177,13 +183,7 @@ class StationSelection:
                 self.latitude, self.longitude, station.latitude, station.longitude
             )
         )
-        if distance < METRES_PER_KM:
-            text = f"{distance:.0f} m"
-        else:
-            text = f"{distance / METRES_PER_KM:.1f} km"
-            if self._hass.config.language.startswith("de"):
-                text = text.replace(".", ",")
-        return f"{text} {arrow}"
+        return f"{format_distance(distance, self._hass.config.language)} {arrow}"
 
     def station_label(self, station: Station, *, recommended: bool) -> str:
         """Return e.g. '444 m ↙ · Seckenheim (2507LH096) · open built-up'."""

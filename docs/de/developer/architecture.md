@@ -1,4 +1,4 @@
-<!-- source: c69b9372b62bf1e023818e76d31c3f79eba77eb6 -->
+<!-- source: 196ed7dd44d761c32b9ff3b2928d8bd901205db5 -->
 # Architektur
 
 Die Integration liegt in `custom_components/urban_weather/`. Die Konventionen für die
@@ -14,7 +14,7 @@ flowchart TB
         Tiles[(basemap.de-Kacheln)]
     end
     subgraph HA[Home Assistant]
-        subgraph HubBox[ClimateHub, einer pro Home Assistant]
+        subgraph HubBox[ClimateHub, einer pro Messnetz]
             Limiter[RateLimiter<br>Messwerte + Stationsliste]
             Cache[Messwert-Cache]
             List[Stationsliste<br>Store + erstes Auftauchen]
@@ -23,7 +23,7 @@ flowchart TB
             Client[MannheimClimateApi]
             Ref[ReferenceData<br>Katalog, LCZ, Stadtteile]
         end
-        Store[(.storage/<br>urban_weather.sensors)]
+        Store[(.storage/<br>urban_weather.network.stations)]
         subgraph Entry[Pro Config Entry]
             Coord[ClimateCoordinator]
             Sensors[Sensor-Entitäten]
@@ -49,12 +49,12 @@ flowchart TB
 | Modul | Aufgabe |
 |---|---|
 | `provider.py` | Interface `Provider`, Konfiguration `Network`, gemeinsame Typen (`ApiSensor`, `Measurement`) und Fehlertypen (`ApiRateLimitError`, `SensorNotFoundError`, …) |
-| `providers/` | `async_create_provider()`, ein Paket pro Messnetz |
+| `providers/` | `PROVIDERS` (Messnetz-Id → Provider-Factory), `async_create_provider()`, ein Paket pro Messnetz |
 | `providers/mannheim/` | Messnetz `MANNHEIM` und `MannheimProvider`: HTTP-Client für `/sensors` und `/measurements/{id}` (`api.py`), Gruppieren der Sensoren zu Stationen (`stations.py`), mitgelieferter Metadatenkatalog, LCZ-Raster und Stadtteilnamen (`reference.py`, `data/`) |
-| `hub.py` | Singleton `ClimateHub`: Rate-Limiter, Messwert-Cache, Stationsliste mit gespeicherter Kopie und Zeitpunkt des ersten Auftauchens |
-| `stations.py` | `Station`, `recommend()` |
+| `hub.py` | `ClimateHub`, einer pro Messnetz (`async_get_hub()`): Rate-Limiter, Messwert-Cache, Stationsliste mit gespeicherter Kopie und Zeitpunkt des ersten Auftauchens |
+| `stations.py` | `Station`, `recommend()`, `networks_in_range()` |
 | `selection.py` | `StationSelection`: Empfehlung, Abfrage-Budget und Beschriftungen, gemeinsam für alle Flows und die Karte |
-| `config_flow.py` | Config Flow (Standort, Umgebung, Stationen), Reconfigure, Options Flow |
+| `config_flow.py` | Config Flow (Standort, Messnetz, Umgebung, Stationen), Reconfigure, Options Flow |
 | `map_view.py`, `www/` | Kartenseite als externer Schritt des Config Flows |
 | `coordinator.py` | `ClimateCoordinator`: Abfragen, Nachholen, gehaltene Werte, Reparaturhinweise |
 | `aggregation.py` | Plausibilität, Ausreißer, Mediane und abgeleitete Werte |
@@ -99,7 +99,10 @@ sequenceDiagram
     participant Hub as ClimateHub
     participant Coord as ClimateCoordinator
     HA->>Init: Config Entry
-    Init->>Hub: async_get_hub (beim ersten Aufruf angelegt)
+    Init->>Hub: async_get_hub(network) (beim ersten Aufruf angelegt)
+    alt unbekanntes Messnetz
+        Init-->>HA: ConfigEntryError
+    end
     Init->>Hub: async_get_stations()
     alt keine Liste von der API und keine gespeichert
         Hub-->>Init: StationListUnavailableError
@@ -159,6 +162,7 @@ sequenceDiagram
 | `data` | `latitude`, `longitude` | Standort |
 | | `radius` | Suchradius in Metern (`DEFAULT_SEARCH_RADIUS_M`, höchstens `MAX_SEARCH_RADIUS_M`) |
 | | `environment` | `dense`, `open_built`, `industrial` oder `green` (`Environment`) |
+| | `network` | Messnetz-Id (`Network.id`, Schlüssel von `PROVIDERS`), bleibt für die Lebensdauer des Eintrags fest |
 | `options` | `temperature_sensors` | API-Sensor-IDs der Temperaturstationen |
 | | `wind_sensor` | API-Sensor-ID der Windstation oder `null` |
 | | `scan_interval` | Aktualisierungsintervall in Minuten (`SCAN_INTERVAL_CHOICES_MIN`) |

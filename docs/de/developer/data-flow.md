@@ -1,7 +1,7 @@
-<!-- source: 38d2a6b9261af4062841db16cc276308b64d17c1 -->
+<!-- source: 901eda8c855d64af453296ab48f0429abcbcf43c -->
 # Abfragen und API-Zugriff
 
-Jeder API-Zugriff läuft über `ClimateHub` (`hub.py`). Die Limits des Messnetzes
+Jeder API-Zugriff läuft über den `ClimateHub` des Messnetzes (`hub.py`). Die Limits des Messnetzes
 (`RequestLimits`, für Mannheim in `providers/mannheim/`) bilden die Limits der API pro IP
 nach; [API-Limits](../user/api-limits.md) erklärt sie für Nutzer.
 

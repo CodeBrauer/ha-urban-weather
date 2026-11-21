@@ -39,4 +39,5 @@ restart Home Assistant. Updates work the same way: replace the folder and restar
    repair issues are removed with them.
 2. Remove the integration in HACS (or delete the folder) and restart Home Assistant.
 
-The cached station list stays in `.storage/urban_weather.sensors`; you can delete the file.
+The cached station lists stay in `.storage/urban_weather.<network>.stations` (for example
+`urban_weather.mannheim.stations`); you can delete the files.

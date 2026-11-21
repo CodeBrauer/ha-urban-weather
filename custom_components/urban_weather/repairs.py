@@ -10,6 +10,7 @@ from homeassistant.helpers import issue_registry as ir
 
 from .config_flow import Location, selected_options
 from .const import (
+    CONF_NETWORK,
     CONF_SCAN_INTERVAL,
     CONF_TEMPERATURE_SENSORS,
     CONF_WIND_SENSOR,
@@ -77,7 +78,7 @@ class StationRepairFlow(RepairsFlow):
         self._entry = self.hass.config_entries.async_get_entry(self._entry_id)
         if self._entry is None:
             return self.async_abort(reason="entry_not_found")
-        hub = await async_get_hub(self.hass)
+        hub = await async_get_hub(self.hass, self._entry.data[CONF_NETWORK])
         try:
             stations = await hub.async_get_stations()
         except StationListUnavailableError:

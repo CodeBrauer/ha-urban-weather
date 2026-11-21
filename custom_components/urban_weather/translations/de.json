@@ -11,9 +11,16 @@
           "location": "Vorbelegt mit deinem Zuhause."
         }
       },
+      "network": {
+        "title": "Messnetz",
+        "description": "Für diesen Ort sind Stationen mehrerer Klimamessnetze in Reichweite. Das nächstgelegene Messnetz ist vorausgewählt; die Entfernung bezieht sich auf seine nächste Station.",
+        "data": {
+          "network": "Messnetz"
+        }
+      },
       "reconfigure": {
         "title": "Standort verschieben",
-        "description": "Wähle den neuen Ort. Danach bestätigst du Umgebung und Stationen erneut.",
+        "description": "Wähle den neuen Ort innerhalb des Messnetzes {network}. Danach bestätigst du Umgebung und Stationen erneut.",
         "data": {
           "location": "Standort"
         }
@@ -53,6 +60,7 @@
     },
     "error": {
       "outside_coverage": "Im Umkreis von 10 km gibt es keine Station.",
+      "outside_network": "Im Umkreis von 10 km gibt es keine Station von {network}. Für ein anderes Messnetz füge den Ort als neuen Standort hinzu.",
       "no_station_selected": "Wähle mindestens eine Station.",
       "too_many_stations": "Wähle höchstens 6 Stationen.",
       "over_budget": "Zu viele API-Abfragen pro Stunde. Wähle weniger Stationen oder in den Optionen ein längeres Aktualisierungsintervall.",
@@ -195,6 +203,9 @@
     },
     "no_stations_available": {
       "message": "Keine der gewählten Stationen existiert mehr. Wähle in den Optionen der Integration neue Stationen."
+    },
+    "unknown_network": {
+      "message": "Dieser Standort nutzt das Messnetz „{network}“, das diese Version der Integration nicht kennt. Aktualisiere die Integration oder füge den Standort neu hinzu."
     }
   },
   "issues": {

@@ -21,6 +21,7 @@ from pytest_homeassistant.common import MockConfigEntry
 from custom_components.urban_weather.const import (
     CONF_DEW_POINT_OFFSET,
     CONF_ENVIRONMENT,
+    CONF_NETWORK,
     CONF_SCAN_INTERVAL,
     CONF_TEMPERATURE_SENSORS,
     CONF_WIND_SENSOR,
@@ -54,7 +55,9 @@ HOME_DATA = {
     CONF_LONGITUDE: HOME[1],
     CONF_RADIUS: 3000,
     CONF_ENVIRONMENT: Environment.OPEN_BUILT,
+    CONF_NETWORK: MANNHEIM.id,
 }
+MANNHEIM_STORAGE_KEY = STORAGE_KEY.format(network=MANNHEIM.id)
 METRES_PER_DEGREE_LATITUDE = 111_320
 LCZ_OPEN_BUILT = 6
 
@@ -105,10 +108,10 @@ def store_sensor_list(
         data["first_seen"] = {
             sensor["id"]: None for sensor in payload["sensors"] if sensor["id"] != new
         }
-    hass_storage[STORAGE_KEY] = {
+    hass_storage[MANNHEIM_STORAGE_KEY] = {
         "version": STORAGE_VERSION,
         "minor_version": 1,
-        "key": STORAGE_KEY,
+        "key": MANNHEIM_STORAGE_KEY,
         "data": data,
     }
 
@@ -174,10 +177,12 @@ def add_location(
     interval: int,
     *,
     disabled_by: ConfigEntryDisabler | None = None,
+    network: str = MANNHEIM.id,
 ) -> MockConfigEntry:
     """Add another configured location using stations + 1 wind sensor."""
     entry = MockConfigEntry(
         domain=DOMAIN,
+        data={CONF_NETWORK: network},
         options={
             CONF_TEMPERATURE_SENSORS: [f"other{i}-t" for i in range(stations)],
             CONF_WIND_SENSOR: "other-w",
@@ -189,13 +194,15 @@ def add_location(
     return entry
 
 
-def add_home_entry(hass: HomeAssistant, **options: Any) -> MockConfigEntry:
+def add_home_entry(
+    hass: HomeAssistant, *, network: str = MANNHEIM.id, **options: Any
+) -> MockConfigEntry:
     """Add a location at HOME (catalogue station, 30 min, offset -1.3 K by default)."""
     entry = MockConfigEntry(
         domain=DOMAIN,
         title="Seckenheim",
         unique_id=HOME_UNIQUE_ID,
-        data=HOME_DATA,
+        data={**HOME_DATA, CONF_NETWORK: network},
         options={
             CONF_TEMPERATURE_SENSORS: [CATALOG_SENSOR],
             CONF_WIND_SENSOR: None,
