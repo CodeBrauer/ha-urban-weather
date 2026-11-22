@@ -1,0 +1,101 @@
+---
+name: "Network proposal"
+description: "Propose a city climate network the integration should support"
+title: "Network: "
+labels:
+  - "network: research-needed"
+body:
+- type: markdown
+  attributes:
+    value: |
+      Replace the title suffix with the city and country, e.g. `Network: Dortmund (DE)`. Search the [existing network issues](https://github.com/CodeBrauer/ha-urban-weather/issues?q=is%3Aissue%20%22Network%3A%22%20in%3Atitle) first.
+
+      A network can be supported when it has live values (updated at least hourly), a licence that allows reuse, stations across the city, and access without a login. Fill in what you know; the rest is researched later.
+- type: input
+  id: city
+  attributes:
+    label: "City / region"
+    placeholder: "Dortmund, Germany"
+  validations:
+    required: true
+- type: input
+  id: network
+  attributes:
+    label: "Network, operator"
+    placeholder: "Klimamessnetz Dortmund, Data2Resilience (Ruhr University Bochum)"
+  validations:
+    required: true
+- type: input
+  id: stations
+  attributes:
+    label: "Stations"
+    placeholder: "107 sensors at 76 locations"
+- type: input
+  id: measurements
+  attributes:
+    label: "Measurements"
+    placeholder: "temperature, humidity; some stations also wind, pressure, precipitation"
+- type: dropdown
+  id: access
+  attributes:
+    label: "Access"
+    options:
+      - "official API"
+      - "open data export"
+      - "undocumented API"
+      - "scraping"
+      - "no public access"
+- type: dropdown
+  id: platform
+  attributes:
+    label: "Platform"
+    options:
+      - "Opendatasoft"
+      - "WFS"
+      - "SensorThings"
+      - "ArcGIS"
+      - "FIWARE"
+      - "CKAN"
+      - "own"
+- type: textarea
+  id: endpoints
+  attributes:
+    label: "Endpoints, docs"
+    description: "URLs of the API, the dataset or the documentation."
+- type: input
+  id: freshness
+  attributes:
+    label: "Freshness"
+    description: "How often new values arrive, and whether all stations come in one request."
+    placeholder: "5 minutes; all stations in one request"
+- type: input
+  id: auth
+  attributes:
+    label: "Auth, limits"
+    placeholder: "none; limits unknown"
+- type: dropdown
+  id: licence
+  attributes:
+    label: "Licence"
+    options:
+      - "dl-zero"
+      - "dl-by"
+      - "CC0"
+      - "CC BY"
+      - "CC BY-SA"
+      - "CC BY-NC"
+      - "not stated"
+- type: input
+  id: integrations
+  attributes:
+    label: "Home Assistant integrations"
+    description: "Existing integrations that already use this network."
+- type: textarea
+  id: quirks
+  attributes:
+    label: "Quirks"
+    description: "Anything unusual: units, stale records, sensor types, gaps."
+- type: input
+  id: contact
+  attributes:
+    label: "Operator contact"
