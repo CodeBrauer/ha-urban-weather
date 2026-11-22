@@ -1,4 +1,4 @@
-<!-- source: dcc8fe3cc3f6747e8dc287efe84504f97820a231 -->
+<!-- source: 08858825368a1de79ea47c8d0d022359da25b820 -->
 # Datenquellen und Lizenzen
 
 | Daten | Quelle | Lizenz |
@@ -10,6 +10,8 @@
 | Stadtteilnamen | © OpenStreetMap-Mitwirkende über Nominatim | ODbL 1.0 |
 | Kartenkacheln der Stationskarte | [basemap.de](https://basemap.de/) / BKG | CC BY 4.0 |
 | Kartenbibliothek (mitgeliefert) | [Leaflet 1.9.4](https://leafletjs.com/) | BSD-2-Clause |
+
+Details je Messnetz: [Unterstützte Messnetze](networks/index.md).
 
 Die Entitäten tragen die Quellenangabe ihres Messnetzes: *Smart City Mannheim GmbH,
 dl-de/by-2-0* oder *Stadt Dortmund, dl-de/zero-2-0*.

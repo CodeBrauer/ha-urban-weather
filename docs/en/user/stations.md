@@ -1,6 +1,6 @@
 # Station recommendation
 
-Dense networks like Mannheim's, with more than 400 stations, have many of them in street
+Dense networks like [Mannheim's](../networks/mannheim.md), with more than 400 stations, have many of them in street
 canyons, on roofs or in parks only a few hundred metres apart. Their values differ, so the closest station is not always
 the best one for your place.
 
@@ -44,15 +44,13 @@ flowchart TD
 
 ## Networks without siting data
 
-The Dortmund network publishes no surroundings or mounting data. Its sensors are grouped by
-the station id of the dataset, and the code of a station is that id (e.g. `DOBHAP`).
+Some networks, such as [Dortmund](../networks/dortmund.md), publish no surroundings or
+mounting data.
 
 - The nearest station within 1 km is used on its own; otherwise up to 4 stations within the
   search radius are combined.
 - The surroundings you confirm during setup are kept with the location but do not change the
   recommendation.
-- Black globe sensors are left out: they measure a radiant temperature, which reads several
-  kelvin above the air temperature in sunshine.
 
 ## Choosing yourself
 

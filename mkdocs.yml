@@ -17,6 +17,10 @@ nav:
       - user/stations.md
       - user/api-limits.md
       - user/troubleshooting.md
+  - Networks:
+      - networks/index.md
+      - networks/mannheim.md
+      - networks/dortmund.md
   - Developer guide:
       - developer/architecture.md
       - developer/data-flow.md
