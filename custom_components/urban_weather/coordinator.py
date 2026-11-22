@@ -13,7 +13,6 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from homeassistant.util import dt as dt_util
 
 from .aggregation import Estimate, StationReading, estimate, latest_valid
-from .api import ApiError, SensorNotFoundError
 from .config_flow import Location
 from .const import (
     CATCH_UP_MARGIN_S,
@@ -34,6 +33,7 @@ from .const import (
     Field,
 )
 from .hub import RequestDeferredError, StationListUnavailableError
+from .provider import ApiError, SensorNotFoundError
 from .selection import StationSelection
 
 if TYPE_CHECKING:
@@ -41,8 +41,8 @@ if TYPE_CHECKING:
 
     from homeassistant.core import CALLBACK_TYPE, HomeAssistant
 
-    from .api import ApiSensor, Measurement
     from .hub import ClimateHub
+    from .provider import ApiSensor, Measurement
     from .stations import Station
 
 type MannheimClimateConfigEntry = ConfigEntry[ClimateCoordinator]

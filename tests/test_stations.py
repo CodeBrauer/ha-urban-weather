@@ -4,15 +4,22 @@ from __future__ import annotations
 
 import pytest
 
-from custom_components.mannheim_climate.api import ApiSensor, parse_sensors
-from custom_components.mannheim_climate.const import Environment, Field, MountZone
-from custom_components.mannheim_climate.reference import load_reference_data
-from custom_components.mannheim_climate.stations import (
+from custom_components.urban_weather.const import Environment, Field, MountZone
+from custom_components.urban_weather.provider import ApiSensor
+from custom_components.urban_weather.providers.mannheim import MANNHEIM
+from custom_components.urban_weather.providers.mannheim.api import parse_sensors
+from custom_components.urban_weather.providers.mannheim.reference import (
+    load_reference_data,
+)
+from custom_components.urban_weather.providers.mannheim.stations import (
+    build_stations,
+)
+from custom_components.urban_weather.stations import (
     LczSource,
     Recommendation,
     RecommendationReason,
     Station,
-    build_stations,
+    networks_in_range,
     recommend,
 )
 
@@ -113,6 +120,24 @@ def test_nearest_station_without_lcz_is_not_used_alone() -> None:
     assert result.reason is RecommendationReason.NEAREST_OTHER_ENVIRONMENT
 
 
+def test_network_without_surroundings_recommends_by_distance() -> None:
+    """Without LCZ for any station, the nearest within 1 km is used alone."""
+    near = make_station("near", 600, lcz=None)
+    result = recommend_for([make_station("far", 800, lcz=None), near])
+    assert result is not None
+    assert result.stations == [near]
+    assert result.reason is RecommendationReason.NEAREST_CLOSE
+
+
+def test_network_without_surroundings_combines_beyond_one_km() -> None:
+    """Beyond 1 km the nearest stations are combined, as with surroundings."""
+    stations = [make_station(f"s{i}", 1200 + i * 300, lcz=None) for i in range(6)]
+    result = recommend_for(stations)
+    assert result is not None
+    assert codes(result.stations) == ["s0", "s1", "s2", "s3"]
+    assert result.reason is RecommendationReason.NEAREST_TOO_FAR
+
+
 def test_nearest_stations_used_when_none_within_radius() -> None:
     """Outside the network a recommendation still uses the 4 nearest stations."""
     stations = [make_station(f"s{i}", 4000 + i * 1000) for i in range(6)]
@@ -166,7 +191,9 @@ def test_no_wind_station_without_wind_sensors() -> None:
 @pytest.fixture(scope="module")
 def stations() -> dict[str, Station]:
     """Stations around HOME by the name of their temperature (else wind) sensor."""
-    built = build_stations(parse_sensors(sensors_payload()), load_reference_data())
+    built = build_stations(
+        parse_sensors(sensors_payload(), MANNHEIM.fields), load_reference_data()
+    )
     return {
         (station.temperature_sensor or station.wind_sensor).name: station
         for station in built
@@ -218,3 +245,19 @@ def test_sensors_without_temperature_or_wind_are_ignored() -> None:
     """Sensors measuring neither temperature nor wind do not form a station."""
     pressure = ApiSensor("p1", "p1", *HOME, frozenset({Field.PRESSURE}))
     assert build_stations([pressure], load_reference_data()) == []
+
+
+def test_networks_in_range_nearest_first() -> None:
+    """Networks with a temperature station within 10 km, by their nearest station."""
+    stations_by_network = {
+        "far": [make_station("f1", 2500), make_station("f2", 12_000)],
+        "near": [make_station("n1", 3000), make_station("n2", 800)],
+        "wind_only": [make_station("w1", 100, temperature=False, wind=True)],
+        "out_of_range": [make_station("o1", 10_500)],
+        "empty": [],
+    }
+    in_range = networks_in_range(stations_by_network, *HOME)
+    assert [network for network, _ in in_range] == ["near", "far"]
+    assert [distance for _, distance in in_range] == pytest.approx(
+        [800, 2500], rel=0.01
+    )

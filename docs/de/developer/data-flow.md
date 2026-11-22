@@ -1,8 +1,9 @@
-<!-- source: 4010184b037e8117806da2962c48dba0753fd7b1 -->
+<!-- source: 901eda8c855d64af453296ab48f0429abcbcf43c -->
 # Abfragen und API-Zugriff
 
-Jeder API-Zugriff läuft über `ClimateHub` (`hub.py`). Die Limits in `const.py` bilden die
-Limits der API pro IP nach; [API-Limits](../user/api-limits.md) erklärt sie für Nutzer.
+Jeder API-Zugriff läuft über den `ClimateHub` des Messnetzes (`hub.py`). Die Limits des Messnetzes
+(`RequestLimits`, für Mannheim in `providers/mannheim/`) bilden die Limits der API pro IP
+nach; [API-Limits](../user/api-limits.md) erklärt sie für Nutzer.
 
 ## Aktualisierungszyklus
 
@@ -46,12 +47,17 @@ sequenceDiagram
   immer nur ein Nachholen gleichzeitig geplant.
 - Ein Lock pro Sensor verhindert, dass zwei Standorte denselben Sensor gleichzeitig
   abfragen; der zweite bekommt das Ergebnis aus dem Cache.
+- Bei einem `BulkProvider` gilt ein Lock für das ganze Messnetz: Fehlt ein Wert im Cache,
+  holt eine Abfrage die Sensoren aller aktivierten Standorte und cacht jeden einzeln, so
+  teilen sich die Standorte eine Abfrage pro Aktualisierung. Ein Sensor, der in der Antwort
+  fehlt, wird ohne Messwerte gecacht; entfernte Sensoren zeigt die Stationsliste statt
+  eines `404`.
 
 ## Rate-Limiter
 
 `RateLimiter` merkt sich die Zeitpunkte der letzten Abfragen und prüft gleitende Fenster:
 
-| Limiter | Fenster (`const.py`) |
+| Limiter | Fenster (Mannheim) |
 |---|---|
 | Messwerte | 4 pro 120 s, 30 pro 3600 s (`MEASUREMENT_LIMITS`) |
 | Stationsliste | 2 pro 900 s, 4 pro 3600 s (`SENSOR_LIST_LIMITS`) |
@@ -63,7 +69,9 @@ die folgenden auf Debug-Level.
 
 Der Limiter setzt nur die harten Limits durch. Im normalen Betrieb darunter zu bleiben, ist
 Aufgabe des geplanten Budgets (`PLANNED_BUDGET_PER_HOUR`), das `StationSelection` bei der
-Stationswahl prüft.
+Stationswahl prüft. Jeder Standort kostet pro Aktualisierung `requests_per_refresh()` des
+Providers: eine Abfrage pro Sensor, oder eine bei einem Bulk-Provider, wo nur
+`MAX_SELECTED_STATIONS` die Zahl der Stationen begrenzt.
 
 ## Stationsliste
 
@@ -83,7 +91,7 @@ flowchart TD
     Build[build_stations] --> Return
 ```
 
-Die gespeicherte Kopie (`.storage/mannheim_climate.sensors`) enthält den rohen Payload, den
+Die gespeicherte Kopie (`.storage/urban_weather.sensors`) enthält den rohen Payload, den
 Abrufzeitpunkt und für jeden Sensor, wann er zum ersten Mal auftauchte. Beim ersten Abruf
 ohne Historie gelten alle Sensoren als bekannt, neu sind also nur später hinzugekommene. Ein
 Sensor gilt `NEW_STATION_PERIOD` lang als neu.

@@ -1,4 +1,4 @@
-<!-- source: 554995436d3e4c7330ef503f308147863b4d8f17 -->
+<!-- source: 0cc1a9cf3e8687eaad78543f959fcd2d6b64e430 -->
 # Stationsempfehlung
 
 Das Netz hat über 400 Stationen, viele davon in Straßenschluchten, auf Dächern oder in Parks,
@@ -38,9 +38,24 @@ flowchart TD
 - Die Windstation ist die nächste Station mit Windsensor, egal wo sie montiert ist.
 - Die Begründung steht bei der Empfehlung: Die nächste Station passt, ist zu weit weg oder
   hat eine andere Umgebung.
+- In einem [Messnetz ohne Standortdaten](#messnetze-ohne-standortdaten) entscheidet allein
+  die Entfernung.
 - *Empfehlung übernehmen* fehlt, wenn die Empfehlung nicht ins [API-Budget](api-limits.md)
   passt, zum Beispiel weil andere Standorte schon den Großteil davon nutzen. Wähle dann auf
   der Karte oder in der Liste weniger Stationen.
+
+## Messnetze ohne Standortdaten
+
+Das Dortmunder Messnetz veröffentlicht keine Daten zu Umgebung oder Montage. Seine Sensoren
+werden nach der Stations-ID des Datensatzes gruppiert; der Code einer Station ist diese ID
+(z. B. `DOBHAP`).
+
+- Die nächste Station im Umkreis von 1 km wird allein verwendet; sonst werden bis zu
+  4 Stationen im Suchradius kombiniert.
+- Die Umgebung, die du bei der Einrichtung bestätigst, wird beim Standort gespeichert, ändert
+  die Empfehlung aber nicht.
+- Black-Globe-Sensoren bleiben außen vor: Sie messen eine Strahlungstemperatur, die bei
+  Sonne mehrere Kelvin über der Lufttemperatur liegt.
 
 ## Selbst wählen
 

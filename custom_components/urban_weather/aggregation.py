@@ -16,7 +16,7 @@ from .const import (
 if TYPE_CHECKING:
     from datetime import datetime, timedelta
 
-    from .api import Measurement
+    from .provider import Measurement
 
 # Magnus formula coefficients over water (Sonntag 1990), as in the original gist.
 MAGNUS_A = 17.62

@@ -1,4 +1,4 @@
-<!-- source: 39960c9bee4558f2895b86f5a6b9f6fd38e7447f -->
+<!-- source: 843c694810b1af5807f579fceeadd19c36219c18 -->
 # Reparaturen und Fehlersuche
 
 ## Reparaturhinweise
@@ -88,7 +88,9 @@ actions:
 
 | Meldung | Bedeutung |
 |---|---|
-| Im Umkreis von 10 km gibt es keine Station. | Wähle einen Ort in oder bei Mannheim. |
+| Im Umkreis von 10 km gibt es keine Station. | Wähle einen Ort in oder bei einem [unterstützten Messnetz](../index.md#unterstutzte-messnetze). |
+| Im Umkreis von 10 km gibt es keine Station von … | Ein verschobener Standort bleibt in seinem Messnetz. Für ein anderes Messnetz füge den Ort als neuen Standort hinzu. |
+| Dieser Standort nutzt das Messnetz …, das diese Version der Integration nicht kennt. | Der Standort wurde mit einer neueren Version eingerichtet. Aktualisiere die Integration oder füge den Standort neu hinzu. |
 | Die Stationsliste konnte nicht von api.smartmannheim.de geladen werden. | Die API ist nicht erreichbar und es gibt noch keine gespeicherte Stationsliste. Beim Hinzufügen eines Standorts versuch es später erneut; beim Start wiederholt Home Assistant es von selbst. |
 | Zu viele API-Abfragen pro Stunde. | Die Auswahl passt nicht ins Budget. Wähle weniger Stationen, keine Windstation oder ein längeres Intervall. |
 | Keine der gewählten Stationen existiert mehr. | Alle Stationen des Standorts sind weg. Wähle unter *Konfigurieren* neue. |
@@ -106,7 +108,7 @@ actions:
 ```yaml
 logger:
   logs:
-    custom_components.mannheim_climate: debug
+    custom_components.urban_weather: debug
 ```
 
 Wenn du [ein Problem meldest](https://github.com/CodeBrauer/ha-urban-weather/issues),

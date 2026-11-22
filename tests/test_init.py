@@ -9,8 +9,7 @@ from homeassistant.config_entries import ConfigEntryState
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers import issue_registry as ir
 
-from custom_components.mannheim_climate.api import ApiConnectionError
-from custom_components.mannheim_climate.const import (
+from custom_components.urban_weather.const import (
     CONF_TEMPERATURE_SENSORS,
     CONF_WIND_SENSOR,
     DOMAIN,
@@ -18,7 +17,8 @@ from custom_components.mannheim_climate.const import (
     ISSUE_SENSOR_ID,
     Field,
 )
-from custom_components.mannheim_climate.coordinator import issue_id
+from custom_components.urban_weather.coordinator import issue_id
+from custom_components.urban_weather.provider import ApiConnectionError
 
 from .common import (
     NEAREST_SENSOR,
@@ -32,7 +32,7 @@ if TYPE_CHECKING:
     from unittest.mock import MagicMock
 
     from homeassistant.core import HomeAssistant
-    from pytest_homeassistant_custom_component.common import MockConfigEntry
+    from pytest_homeassistant.common import MockConfigEntry
 
 pytestmark = pytest.mark.usefixtures("enable_custom_integrations")
 

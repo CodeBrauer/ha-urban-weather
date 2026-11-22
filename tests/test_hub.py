@@ -11,17 +11,8 @@ from unittest.mock import MagicMock
 import pytest
 from homeassistant.util import dt as dt_util
 
-from custom_components.mannheim_climate.api import (
-    ApiConnectionError,
-    ApiRateLimitError,
-    Measurement,
-)
-from custom_components.mannheim_climate.const import (
-    MEASUREMENT_LIMITS,
-    NEW_STATION_PERIOD,
-    STORAGE_KEY,
-)
-from custom_components.mannheim_climate.hub import (
+from custom_components.urban_weather.const import NEW_STATION_PERIOD
+from custom_components.urban_weather.hub import (
     ClimateHub,
     RateLimiter,
     RequestDeferredError,
@@ -29,12 +20,23 @@ from custom_components.mannheim_climate.hub import (
     async_get_hub,
     track_first_seen,
 )
+from custom_components.urban_weather.provider import (
+    ApiConnectionError,
+    ApiRateLimitError,
+    Measurement,
+)
+from custom_components.urban_weather.providers.mannheim import (
+    MANNHEIM,
+    MEASUREMENT_LIMITS,
+)
 
 from .common import (
+    MANNHEIM_STORAGE_KEY,
     MEASURED_AT,
     MEASUREMENTS,
     NEAREST_SENSOR,
     NEAREST_WIND_SENSOR,
+    mannheim_provider,
     sensors_payload,
     store_sensor_list,
 )
@@ -98,9 +100,9 @@ def test_rate_limiter_blocks_after_rate_limit(freezer: FrozenDateTimeFactory) ->
 
 
 @pytest.fixture
-async def hub(hass: HomeAssistant, api: MagicMock) -> ClimateHub:  # noqa: ARG001
+async def hub(api: MagicMock) -> ClimateHub:  # noqa: ARG001
     """Return a hub using the mocked API (reference data and store are unused)."""
-    return ClimateHub(hass, MagicMock(), MagicMock())
+    return ClimateHub(MagicMock(), mannheim_provider(), MagicMock())
 
 
 async def test_measurements_are_cached_for_nine_minutes(
@@ -209,11 +211,11 @@ async def test_station_list_fetched_once_a_day(
     freezer: FrozenDateTimeFactory,
 ) -> None:
     """The list is fetched, stored and kept for 24 hours."""
-    hub = await async_get_hub(hass)
+    hub = await async_get_hub(hass, MANNHEIM.id)
     stations = await hub.async_get_stations()
     assert len(stations) == STATIONS_IN_FIXTURE
     assert hub.station_for_sensor(NEAREST_WIND_SENSOR).code == "2507LH096"
-    assert hass_storage[STORAGE_KEY]["data"]["payload"] == sensors_payload()
+    assert hass_storage[MANNHEIM_STORAGE_KEY]["data"]["payload"] == sensors_payload()
 
     freezer.tick(timedelta(hours=23, minutes=59))
     assert await hub.async_get_stations() is stations
@@ -228,7 +230,7 @@ async def test_fresh_stored_station_list_used_without_request(
 ) -> None:
     """After a restart, a list stored less than a day ago is used as is."""
     store_sensor_list(hass_storage, timedelta(hours=23))
-    hub = await async_get_hub(hass)
+    hub = await async_get_hub(hass, MANNHEIM.id)
     assert len(await hub.async_get_stations()) == STATIONS_IN_FIXTURE
     api.async_get_sensors_payload.assert_not_awaited()
 
@@ -242,7 +244,7 @@ async def test_old_stored_station_list_used_when_api_fails(
     """An outdated stored list is better than none."""
     store_sensor_list(hass_storage, timedelta(days=3))
     api.async_get_sensors_payload.side_effect = ApiConnectionError("timeout")
-    hub = await async_get_hub(hass)
+    hub = await async_get_hub(hass, MANNHEIM.id)
     assert len(await hub.async_get_stations()) == STATIONS_IN_FIXTURE
     assert "Could not refresh the station list" in caplog.text
 
@@ -252,7 +254,7 @@ async def test_station_list_unavailable_without_api_and_store(
 ) -> None:
     """Without a stored copy an API failure makes the list unavailable."""
     api.async_get_sensors_payload.side_effect = ApiConnectionError("timeout")
-    hub = await async_get_hub(hass)
+    hub = await async_get_hub(hass, MANNHEIM.id)
     with pytest.raises(StationListUnavailableError):
         await hub.async_get_stations()
 
@@ -266,7 +268,7 @@ async def test_station_list_rate_limit_blocks_further_requests(
     """After a 429 the stored copy is used until Retry-After has passed."""
     store_sensor_list(hass_storage, timedelta(days=3))
     api.async_get_sensors_payload.side_effect = ApiRateLimitError(900)
-    hub = await async_get_hub(hass)
+    hub = await async_get_hub(hass, MANNHEIM.id)
     await hub.async_get_stations()
     freezer.tick(timedelta(minutes=14))
     await hub.async_get_stations()
@@ -276,7 +278,7 @@ async def test_station_list_rate_limit_blocks_further_requests(
     freezer.tick(timedelta(minutes=1))
     await hub.async_get_stations()
     assert api.async_get_sensors_payload.await_count == 2
-    assert hass_storage[STORAGE_KEY]["data"]["fetched_at"] == (
+    assert hass_storage[MANNHEIM_STORAGE_KEY]["data"]["fetched_at"] == (
         dt_util.utcnow().isoformat()
     )
 
@@ -310,11 +312,11 @@ async def test_added_sensor_is_new_for_thirty_days(
 ) -> None:
     """A sensor missing from the stored history is new from the next refresh on."""
     store_sensor_list(hass_storage, timedelta(days=3), new=NEAREST_WIND_SENSOR)
-    hub = await async_get_hub(hass)
+    hub = await async_get_hub(hass, MANNHEIM.id)
     await hub.async_get_stations()
     assert hub.is_new(NEAREST_WIND_SENSOR)
     assert not hub.is_new(NEAREST_SENSOR)
-    first_seen = hass_storage[STORAGE_KEY]["data"]["first_seen"]
+    first_seen = hass_storage[MANNHEIM_STORAGE_KEY]["data"]["first_seen"]
     assert first_seen[NEAREST_WIND_SENSOR] == dt_util.utcnow().isoformat()
 
     freezer.tick(NEW_STATION_PERIOD - timedelta(seconds=1))
@@ -330,7 +332,9 @@ async def test_first_refresh_after_update_knows_all_sensors(
 ) -> None:
     """A stored list without history must not make every sensor new."""
     store_sensor_list(hass_storage, timedelta(days=3))
-    hub = await async_get_hub(hass)
+    hub = await async_get_hub(hass, MANNHEIM.id)
     await hub.async_get_stations()
     assert not hub.is_new(NEAREST_WIND_SENSOR)
-    assert set(hass_storage[STORAGE_KEY]["data"]["first_seen"].values()) == {None}
+    assert set(hass_storage[MANNHEIM_STORAGE_KEY]["data"]["first_seen"].values()) == {
+        None
+    }

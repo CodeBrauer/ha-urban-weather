@@ -1,7 +1,8 @@
 # Polling and API access
 
-All API access goes through `ClimateHub` (`hub.py`). The limits in `const.py` mirror the
-API's per-IP limits; [API limits](../user/api-limits.md) explains them for users.
+All API access goes through the `ClimateHub` of the network (`hub.py`). The limits of the network
+(`RequestLimits`, for Mannheim in `providers/mannheim/`) mirror the API's per-IP limits;
+[API limits](../user/api-limits.md) explains them for users.
 
 ## Update cycle
 
@@ -45,12 +46,16 @@ sequenceDiagram
   pending at a time.
 - A lock per sensor prevents two locations from fetching the same sensor at once; the
   second one gets the cached result.
+- With a `BulkProvider` one lock covers the network: a cache miss fetches the sensors of all
+  enabled locations with one request and caches each of them, so the locations share one
+  request per refresh. A sensor missing from the response is cached without measurements;
+  removed sensors show up through the station list instead of a `404`.
 
 ## Rate limiter
 
 `RateLimiter` keeps the timestamps of recent requests and checks sliding windows:
 
-| Limiter | Windows (`const.py`) |
+| Limiter | Windows (Mannheim) |
 |---|---|
 | Measurements | 4 per 120 s, 30 per 3600 s (`MEASUREMENT_LIMITS`) |
 | Station list | 2 per 900 s, 4 per 3600 s (`SENSOR_LIST_LIMITS`) |
@@ -62,7 +67,9 @@ level.
 
 The limiter only enforces the hard limits. Staying below them in normal operation is the job
 of the planned budget (`PLANNED_BUDGET_PER_HOUR`), which `StationSelection` checks when
-stations are chosen.
+stations are chosen. Each location costs `requests_per_refresh()` of the provider per
+refresh: one request per sensor, or one for a bulk provider, where only
+`MAX_SELECTED_STATIONS` limits the number of stations.
 
 ## Station list
 
@@ -82,7 +89,7 @@ flowchart TD
     Build[build_stations] --> Return
 ```
 
-The stored copy (`.storage/mannheim_climate.sensors`) holds the raw payload, the fetch time
+The stored copy (`.storage/urban_weather.sensors`) holds the raw payload, the fetch time
 and the time each sensor first appeared. On the first fetch without history all sensors
 count as known, so only sensors added later are new. A sensor is new for
 `NEW_STATION_PERIOD`.

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import asdict
 from typing import TYPE_CHECKING, Any
 
 import probatio
@@ -22,42 +23,46 @@ from .const import (
     DOMAIN,
     MAP_CANDIDATE_STATIONS,
     MAX_SELECTED_STATIONS,
-    MEASUREMENT_BUDGET_PER_HOUR,
     NO_WIND_SENSOR,
-    PLANNED_BUDGET_PER_HOUR,
     SCAN_INTERVAL_CHOICES_MIN,
-    TILE_ATTRIBUTION,
-    TILE_URL,
     WIND_CANDIDATE_STATIONS,
     Environment,
 )
 from .geo import bearing_deg, direction_arrow
-from .hub import requests_per_hour
+from .hub import network_entries, requests_per_hour, selected_sensor_ids
 from .stations import Recommendation, Station, nearest, recommend
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
 
     from .hub import ClimateHub
+    from .provider import Provider
 
 METRES_PER_KM = 1000
 
 
 def planned_requests_of_others(
-    hass: HomeAssistant, exclude_entry_id: str | None
+    hass: HomeAssistant, provider: Provider, exclude_entry_id: str | None
 ) -> int:
-    """Return planned requests per hour of all other enabled config entries."""
+    """Return planned requests per hour of the other enabled entries of the network."""
     total = 0
-    for entry in hass.config_entries.async_entries(DOMAIN):
-        if entry.entry_id == exclude_entry_id or entry.disabled_by:
+    for entry in network_entries(hass, provider.network.id):
+        if entry.entry_id == exclude_entry_id:
             continue
-        sensors = len(entry.options.get(CONF_TEMPERATURE_SENSORS, []))
-        if entry.options.get(CONF_WIND_SENSOR):
-            sensors += 1
+        sensors = len(selected_sensor_ids(entry.options))
         total += requests_per_hour(
-            sensors, entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL_MIN)
+            provider.requests_per_refresh(sensors),
+            entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL_MIN),
         )
     return total
+
+
+def format_distance(distance: float, language: str) -> str:
+    """Return e.g. '444 m' or '1,2 km' (decimal comma in German)."""
+    if distance < METRES_PER_KM:
+        return f"{distance:.0f} m"
+    text = f"{distance / METRES_PER_KM:.1f} km"
+    return text.replace(".", ",") if language.startswith("de") else text
 
 
 class StationSelection:
@@ -75,10 +80,11 @@ class StationSelection:
         """Compute the recommendation and the budget used by other entries once."""
         self._hass = hass
         self._hub = hub
+        self._budget = hub.provider.network.limits.planned_per_hour
         self._stations = stations
         self.latitude, self.longitude, self.radius, environment = location
         self.min_interval = min_interval
-        self.others = planned_requests_of_others(hass, entry_id)
+        self.others = planned_requests_of_others(hass, hub.provider, entry_id)
         self.recommendation: Recommendation | None = recommend(
             stations, self.latitude, self.longitude, environment, self.radius
         )
@@ -89,14 +95,15 @@ class StationSelection:
     def planned_requests(self, count: int, wind: str, interval: int) -> int:
         """Return planned requests per hour of all entries with this selection."""
         sensors = count + (wind != NO_WIND_SENSOR)
-        return requests_per_hour(sensors, interval) + self.others
+        requests = self._hub.provider.requests_per_refresh(sensors)
+        return requests_per_hour(requests, interval) + self.others
 
     def fitting_interval(self, count: int, wind: str) -> int | None:
         """Return the shortest allowed interval that keeps all entries in budget."""
         for interval in SCAN_INTERVAL_CHOICES_MIN:
             if interval < self.min_interval:
                 continue
-            if self.planned_requests(count, wind, interval) <= PLANNED_BUDGET_PER_HOUR:
+            if self.planned_requests(count, wind, interval) <= self._budget:
                 return interval
         return None
 
@@ -107,8 +114,7 @@ class StationSelection:
             fits = (
                 self.fitting_interval(count, wind) is not None
                 if interval is None
-                else self.planned_requests(count, wind, interval)
-                <= PLANNED_BUDGET_PER_HOUR
+                else self.planned_requests(count, wind, interval) <= self._budget
             )
             if fits:
                 best = count
@@ -131,8 +137,7 @@ class StationSelection:
         fits = (
             self.fitting_interval(len(selected), wind) is not None
             if interval is None
-            else self.planned_requests(len(selected), wind, interval)
-            <= PLANNED_BUDGET_PER_HOUR
+            else self.planned_requests(len(selected), wind, interval) <= self._budget
         )
         return {} if fits else {"base": "over_budget"}
 
@@ -178,13 +183,7 @@ class StationSelection:
                 self.latitude, self.longitude, station.latitude, station.longitude
             )
         )
-        if distance < METRES_PER_KM:
-            text = f"{distance:.0f} m"
-        else:
-            text = f"{distance / METRES_PER_KM:.1f} km"
-            if self._hass.config.language.startswith("de"):
-                text = text.replace(".", ",")
-        return f"{text} {arrow}"
+        return f"{format_distance(distance, self._hass.config.language)} {arrow}"
 
     def station_label(self, station: Station, *, recommended: bool) -> str:
         """Return e.g. '444 m ↙ · Seckenheim (2507LH096) · open built-up'."""
@@ -310,8 +309,8 @@ class StationSelection:
             "max_stations": str(self.max_stations(wind, interval)),
             "interval": str(shown_interval),
             "planned": str(self.planned_requests(len(selected), wind, shown_interval)),
-            "budget": str(PLANNED_BUDGET_PER_HOUR),
-            "api_limit": str(MEASUREMENT_BUDGET_PER_HOUR),
+            "budget": str(self._budget),
+            "api_limit": str(self._hub.provider.network.limits.per_hour),
         }
 
     async def async_map_payload(self, selected: list[str], wind: str) -> dict[str, Any]:
@@ -345,14 +344,19 @@ class StationSelection:
             "wind": wind,
             "wind_options": self.wind_options(wind),
             "budget": {
-                "per_hour": PLANNED_BUDGET_PER_HOUR,
+                "per_hour": self._budget,
                 "others": self.others,
                 "intervals": list(SCAN_INTERVAL_CHOICES_MIN),
                 "min_interval": self.min_interval,
                 "max_stations": MAX_SELECTED_STATIONS,
+                # Requests per refresh by number of sensors (stations + wind).
+                "requests": [
+                    self._hub.provider.requests_per_refresh(sensors)
+                    for sensors in range(MAX_SELECTED_STATIONS + 2)
+                ],
                 "no_wind": NO_WIND_SENSOR,
             },
-            "tiles": {"url": TILE_URL, "attribution": TILE_ATTRIBUTION},
+            "tiles": asdict(self._hub.provider.network.tiles),
             "recommendation": self.recommendation_text().replace("**", ""),
             "text": {
                 key.removeprefix(prefix): value

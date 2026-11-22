@@ -8,15 +8,15 @@ from unittest.mock import MagicMock
 import pytest
 from homeassistant.config_entries import ConfigEntryDisabler
 
-from custom_components.mannheim_climate.const import (
+from custom_components.urban_weather.const import (
     CONF_TEMPERATURE_SENSORS,
     NO_WIND_SENSOR,
     Environment,
 )
-from custom_components.mannheim_climate.hub import requests_per_hour
-from custom_components.mannheim_climate.selection import StationSelection
+from custom_components.urban_weather.hub import requests_per_hour
+from custom_components.urban_weather.selection import StationSelection
 
-from .common import HOME, add_location, make_station
+from .common import HOME, add_location, make_station, mannheim_provider
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -40,7 +40,7 @@ def make_selection(
     """Return the selection for HOME (the hub is only needed for wind options)."""
     return StationSelection(
         hass,
-        MagicMock(),
+        MagicMock(provider=mannheim_provider()),
         STATIONS if stations is None else stations,
         (*HOME, 3000.0, Environment.OPEN_BUILT),
         entry_id=entry_id,
@@ -118,6 +118,12 @@ async def test_max_stations(
 ) -> None:
     """Stations that fit with wind: any interval (capped at 6) or a fixed one."""
     assert make_selection(hass).max_stations(WIND, interval) == expected
+
+
+async def test_map_counts_one_request_per_sensor(hass: HomeAssistant) -> None:
+    """The map page gets the cost per refresh of up to 6 stations and wind."""
+    payload = await make_selection(hass).async_map_payload(sensor_ids(1), WIND)
+    assert payload["budget"]["requests"] == list(range(8))
 
 
 @pytest.mark.parametrize(

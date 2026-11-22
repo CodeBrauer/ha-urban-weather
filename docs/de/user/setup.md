@@ -1,20 +1,22 @@
-<!-- source: 737abcb824056b007dd3bedae7d153292322c222 -->
+<!-- source: 6e202b989d3c0dc79c7c32be638d6b2a353bc961 -->
 # Einrichtung
 
-*Einstellungen → Geräte & Dienste → Integration hinzufügen → Klimamessnetz Mannheim*
+*Einstellungen → Geräte & Dienste → Integration hinzufügen → Urban Weather (Stadtklima)*
 
 Jeder Standort, den du hinzufügst, wird ein eigenes Gerät mit eigenen Entitäten.
 
 ```mermaid
 flowchart TD
-    Start([Integration hinzufügen]) --> List{Stationsliste<br>verfügbar?}
+    Start([Integration hinzufügen]) --> List{Stationsliste eines<br>Messnetzes verfügbar?}
     List -- nein --> Abort1([Abbruch: später erneut versuchen])
     List -- ja --> Location[Standort<br>Pin und Suchradius]
     Location --> Covered{Station im Umkreis<br>von 10 km?}
     Covered -- nein --> Location
     Covered -- ja --> Known{Standort schon<br>eingerichtet?}
     Known -- ja --> Abort2([Abbruch: bereits eingerichtet])
-    Known -- nein --> Env[Umgebung<br>vorausgewählt aus der LCZ-Karte]
+    Known -- nein --> Several{Mehrere Messnetze<br>in Reichweite?}
+    Several -- ja --> Network[Messnetz<br>nächstes vorausgewählt] --> Env
+    Several -- nein --> Env[Umgebung<br>vorausgewählt aus der LCZ-Karte]
     Env --> Menu[Stationen<br>Empfehlung mit Begründung]
     Menu -->|Empfehlung übernehmen| Done([Gerät mit Entitäten])
     Menu -->|Auf der interaktiven Karte auswählen| Map[Karte in neuem Fenster] -->|Speichern| Done
@@ -43,6 +45,10 @@ höchstens 10 km.
   Fehler.
 - Zwei Standorte, die weniger als etwa 100 m auseinander liegen, gelten als derselbe und
   lassen sich nicht doppelt anlegen.
+- Liegen Stationen mehrerer Messnetze im Umkreis von 10 km, fragt der nächste Schritt, welches
+  Messnetz der Standort nutzt. Jedes Messnetz steht mit der Entfernung zu seiner nächsten
+  Station in der Liste; das nächstgelegene ist vorausgewählt. Ist nur ein Messnetz in
+  Reichweite, entfällt dieser Schritt.
 
 ## 2. Umgebung
 
@@ -109,7 +115,7 @@ Minuten Verzögerung.
 | Stationen für Temperatur und Luftfeuchte | Bis zu 6 Stationen; das angezeigte Maximum ergibt sich aus dem API-Budget beim gewählten Intervall. |
 | Station für Wind | Eine Station oder keine. Wind wird nicht gemittelt. |
 | Aktualisierungsintervall | 10, 15, 20 oder 30 Minuten, soweit das API-Budget es zulässt. |
-| Taupunkt-Korrektur | −3,0 bis +3,0 K, wird vor der Berechnung der Luftfeuchte auf den Taupunkt addiert. Das Netz misst eher zu feucht; im 31-Tage-Vergleich mit der DWD-Station Mannheim passten −1,3 K. |
+| Taupunkt-Korrektur | −3,0 bis +3,0 K, wird vor der Berechnung der Luftfeuchte auf den Taupunkt addiert, für Stationen, die zu feucht oder zu trocken messen. Mannheim: Das Netz misst eher zu feucht; im 31-Tage-Vergleich mit der DWD-Station Mannheim passten −1,3 K. |
 
 Speichern lädt den Standort neu. Misst die neue Auswahl weniger Werte, werden Entitäten, die
 nicht mehr bereitgestellt werden, nicht verfügbar und lassen sich löschen.
@@ -127,8 +133,12 @@ nach Umgebung und Stationen. Das ist auch der Weg zur interaktiven Karte für ei
 bestehenden Standort, weil Home Assistant externe Fenster in Options-Dialogen nicht
 zuverlässig anzeigt. Deine übrigen Optionen, etwa die Taupunkt-Korrektur, bleiben erhalten.
 
+Ein Standort bleibt in seinem Messnetz: Am neuen Ort muss eine Station dieses Messnetzes im
+Umkreis von 10 km liegen. Für ein anderes Messnetz füge den Ort als neuen Standort hinzu.
+
 ## Mehrere Standorte
 
 Füge die Integration für jeden Ort erneut hinzu (Zuhause, Arbeit, Garten, …). Alle Standorte
-teilen sich das API-Budget, jeder weitere Standort lässt den anderen also weniger Stationen
-oder ein längeres Intervall.
+eines Messnetzes teilen sich sein API-Budget, jeder weitere Standort lässt den anderen also
+weniger Stationen oder ein längeres Intervall. Standorte in verschiedenen Messnetzen
+beeinflussen sich nicht.

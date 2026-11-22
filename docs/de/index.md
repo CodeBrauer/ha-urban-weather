@@ -1,10 +1,10 @@
-<!-- source: 79a92e4bb5eb6f2b53c6f3194ca0701b382c71cd -->
-# Klimamessnetz Mannheim
+<!-- source: 674e0b620fcff54cefce253da8bf10e58964a433 -->
+# Urban Weather (Stadtklima)
 
-Home-Assistant-Integration für das dichte Stadtklima-Messnetz von
-[Smart City Mannheim](https://smartmannheim.de/) (über 400 Stationen). Sie liefert Klimawerte
-für einen Ort deiner Wahl: Temperatur, Luftfeuchte, Taupunkt, absolute Feuchte, gefühlte
-Temperatur, Luftdruck, Globalstrahlung und Wind.
+Home-Assistant-Integration für dichte Stadtklima-Messnetze, zunächst
+[Mannheim und Dortmund](#unterstutzte-messnetze). Sie liefert Klimawerte für einen Ort deiner
+Wahl: Temperatur, Luftfeuchte, Taupunkt, absolute Feuchte, gefühlte Temperatur, Luftdruck,
+Globalstrahlung und Wind.
 
 Die Integration wählt die Station, die deinen Ort am besten abbildet. Passt die nächste
 nicht (zu weit weg, andere Umgebung, auf einem Dach montiert), kombiniert sie stattdessen
@@ -13,7 +13,7 @@ mehrere Stationen um dich herum.
 ![Interaktive Stationskarte](screenshots/04-map.jpg)
 
 !!! note "Inoffizielles Projekt"
-    Nicht verbunden mit der Smart City Mannheim GmbH oder der Stadt Mannheim.
+    Nicht verbunden mit den Betreibern der Messnetze oder den Städten.
 
 ## Warum diese Integration
 
@@ -27,8 +27,18 @@ Wettermodellen geschätzt wird. Die üblichen Alternativen überzeugen dafür ka
 - **Eine eigene Wetterstation** ist vergleichsweise teuer und muss zusätzlich
   Smart-Home-fähig sein.
 
-Immer mehr Städte betreiben eigene Stadtklima-Messnetze. Diese Integration macht das Netz
-von Smart City Mannheim in Home Assistant nutzbar.
+Immer mehr Städte betreiben eigene Stadtklima-Messnetze. Diese Integration macht sie in
+Home Assistant nutzbar.
+
+## Unterstützte Messnetze
+
+| Messnetz | Stationen | Werte | Standortdaten |
+|---|---|---|---|
+| [Smart City Mannheim](https://smartmannheim.de/) | über 400 | Alle Werte; Wind an einigen Masten | Umgebung, Dach und Hochpunkt |
+| [Klimamessnetz Dortmund](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/) | 76 | Temperatur und Luftfeuchte; etwa ein Drittel auch Luftdruck, Globalstrahlung und Wind | Keine: [Empfehlung nach Entfernung](user/stations.md#messnetze-ohne-standortdaten) |
+
+Beim Hinzufügen eines Standorts nutzt die Integration das Messnetz mit einer Station in der
+Nähe. Datenquellen und Lizenzen: [Datenquellen](data-sources.md).
 
 ## Funktionen
 
@@ -61,7 +71,7 @@ flowchart LR
     Hub --> C2 --> E2
 ```
 
-Alle Standorte teilen sich einen Hub, der mit der API spricht. Eine Station, die zwei
+Alle Standorte eines Messnetzes teilen sich einen Hub, der mit dessen API spricht. Eine Station, die zwei
 Standorte nutzen, wird deshalb nur einmal abgefragt, und die Abfragen aller Standorte
 zusammen bleiben im API-Limit. Jeder Standort fragt seine Stationen ab und kombiniert ihre
 letzten Werte zu einem Satz Entitäten.

@@ -1,19 +1,21 @@
 # Setup
 
-*Settings → Devices & services → Add integration → Klimamessnetz Mannheim*
+*Settings → Devices & services → Add integration → Urban Weather (Stadtklima)*
 
 Each location you add becomes its own device with its own entities.
 
 ```mermaid
 flowchart TD
-    Start([Add integration]) --> List{Station list<br>available?}
+    Start([Add integration]) --> List{Station list of<br>a network available?}
     List -- no --> Abort1([Abort: try again later])
     List -- yes --> Location[Location<br>pin and search radius]
     Location --> Covered{Station within<br>10 km?}
     Covered -- no --> Location
     Covered -- yes --> Known{Location already<br>configured?}
     Known -- yes --> Abort2([Abort: already configured])
-    Known -- no --> Env[Surroundings<br>pre-selected from the LCZ map]
+    Known -- no --> Several{Several networks<br>in range?}
+    Several -- yes --> Network[Network<br>nearest pre-selected] --> Env
+    Several -- no --> Env[Surroundings<br>pre-selected from the LCZ map]
     Env --> Menu[Stations<br>recommendation with reason]
     Menu -->|Use the recommendation| Done([Device with entities])
     Menu -->|Choose on the interactive map| Map[Map in a new window] -->|Save| Done
@@ -40,6 +42,9 @@ location. The circle is the search radius for the recommendation: 3 km by defaul
 
 - There must be a temperature station within 10 km, otherwise the step shows an error.
 - Two locations closer than about 100 m count as the same and cannot be added twice.
+- If stations of several networks are within 10 km, the next step asks which network the
+  location uses. Each network is listed with the distance to its nearest station; the
+  nearest is pre-selected. With only one network in range, this step is skipped.
 
 ## 2. Surroundings
 
@@ -103,7 +108,7 @@ the API budget. New values arrive every 10 minutes with 10–20 minutes delay an
 | Stations for temperature and humidity | Up to 6 stations; the maximum shown follows from the API budget at the chosen interval. |
 | Station for wind | One station or none. Wind is not averaged. |
 | Update interval | 10, 15, 20 or 30 minutes, as long as the API budget allows it. |
-| Dew point correction | −3.0 to +3.0 K, added to the dew point before humidity is calculated. The network tends to read too humid; −1.3 K matched the DWD station Mannheim in a 31-day comparison. |
+| Dew point correction | −3.0 to +3.0 K, added to the dew point before humidity is calculated, for stations that read too humid or too dry. Mannheim: the network tends to read too humid; −1.3 K matched the DWD station Mannheim in a 31-day comparison. |
 
 Saving reloads the location. If the new selection measures fewer values, entities that are
 no longer provided become unavailable and can be deleted.
@@ -121,8 +126,11 @@ surroundings and stations again. This is also the way to the interactive map for
 location, because Home Assistant does not reliably show external windows in options
 dialogs. Your other options, such as the dew point correction, stay.
 
+A location stays in its network: the new place needs a station of that network within
+10 km. For another network, add the place as a new location.
+
 ## Several locations
 
-Add the integration again for each place (home, work, garden, ...). All locations share the
-API budget, so every additional location leaves fewer stations or a longer interval for the
-others.
+Add the integration again for each place (home, work, garden, ...). All locations of a
+network share its API budget, so every additional location leaves fewer stations or a longer
+interval for the others. Locations in different networks do not affect each other.

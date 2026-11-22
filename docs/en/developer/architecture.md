@@ -1,6 +1,6 @@
 # Architecture
 
-The integration lives in `custom_components/mannheim_climate/`. Conventions for working on
+The integration lives in `custom_components/urban_weather/`. Conventions for working on
 it (commands, tests, commits, versioning) are in
 [`AGENTS.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/AGENTS.md).
 
@@ -13,13 +13,16 @@ flowchart TB
         Tiles[(basemap.de tiles)]
     end
     subgraph HA[Home Assistant]
-        subgraph HubBox[ClimateHub, one per Home Assistant]
+        subgraph HubBox[ClimateHub, one per network]
             Limiter[RateLimiter<br>measurements + station list]
             Cache[Measurement cache]
             List[Station list<br>Store + first seen]
+        end
+        subgraph ProviderBox[MannheimProvider]
+            Client[MannheimClimateApi]
             Ref[ReferenceData<br>catalogue, LCZ, districts]
         end
-        Store[(.storage/<br>mannheim_climate.sensors)]
+        Store[(.storage/<br>urban_weather.network.stations)]
         subgraph Entry[Per config entry]
             Coord[ClimateCoordinator]
             Sensors[Sensor entities]
@@ -30,7 +33,8 @@ flowchart TB
         MapView[MapView<br>HTTP page, no login]
     end
     Browser[Browser]
-    API <--> Limiter
+    Limiter --> ProviderBox
+    Client <--> API
     List <--> Store
     Coord --> HubBox
     Coord --> Sensors
@@ -43,12 +47,13 @@ flowchart TB
 
 | Module | Responsibility |
 |---|---|
-| `api.py` | HTTP client for `/sensors` and `/measurements/{id}`, response parsing, error types (`ApiRateLimitError`, `SensorNotFoundError`, ...) |
-| `hub.py` | `ClimateHub` singleton: rate limiters, measurement cache, station list with stored copy and first-seen times |
-| `stations.py` | Grouping sensors into `Station`s, `recommend()` |
-| `reference.py`, `data/` | Bundled metadata catalogue, LCZ grid and district names |
+| `provider.py` | `Provider` interface, `Network` configuration, shared types (`ApiSensor`, `Measurement`) and error types (`ApiRateLimitError`, `SensorNotFoundError`, ...) |
+| `providers/` | `PROVIDERS` (network id → provider factory), `async_create_provider()`, one package per network |
+| `providers/mannheim/` | `MANNHEIM` network and `MannheimProvider`: HTTP client for `/sensors` and `/measurements/{id}` (`api.py`), grouping sensors into stations (`stations.py`), bundled metadata catalogue, LCZ grid and district names (`reference.py`, `data/`) |
+| `hub.py` | `ClimateHub`, one per network (`async_get_hub()`): rate limiters, measurement cache, station list with stored copy and first-seen times |
+| `stations.py` | `Station`, `recommend()`, `networks_in_range()` |
 | `selection.py` | `StationSelection`: recommendation, request budget and labels, shared by all flows and the map |
-| `config_flow.py` | Config flow (location, surroundings, stations), reconfigure, options flow |
+| `config_flow.py` | Config flow (location, network, surroundings, stations), reconfigure, options flow |
 | `map_view.py`, `www/` | Map page served as external step of the config flow |
 | `coordinator.py` | `ClimateCoordinator`: polling, catch-up, kept values, repair issues |
 | `aggregation.py` | Plausibility, outliers, medians and derived values |
@@ -56,7 +61,32 @@ flowchart TB
 | `repairs.py` | Fix flows for the repair issues |
 | `diagnostics.py` | Diagnostics with redacted coordinates |
 | `geo.py` | Distance, bearing and clustering without Home Assistant imports (also used by the build script) |
-| `const.py` | All limits, intervals and thresholds named in this documentation |
+| `const.py` | Intervals and thresholds shared by all networks; the limits of a network are in its provider |
+
+## Providers
+
+Hub, station selection, flows and entities only use the `Provider` interface. A provider
+class implements one type of API; a network on that API is configuration (`Network`):
+
+| `Network` | Used for |
+|---|---|
+| `endpoint`, `fields` | Base URL and field mapping: field names of the network to `Field` |
+| `limits` | `RequestLimits`: rate limiter windows, documented and planned requests per hour |
+| `attribution`, `name`, `operator` | Attribution and device info of the entities |
+| `area` | Title of a location without a known district |
+| `tiles` | Background map of the station map page: `BASEMAP_DE` (Germany), `OSM_CH` (Switzerland) or `OPENSTREETMAP` as fallback, from `providers/common.py` |
+
+The provider returns the raw station list (the hub stores it as is) and builds the stations
+from it. Its base class declares the request model for measurements:
+
+| Base class | Measurements | Requests per refresh |
+|---|---|---|
+| `SensorProvider` | `async_get_measurements(sensor_id)`: one sensor per request (Mannheim) | One per sensor |
+| `BulkProvider` | `async_get_all_measurements(sensors)`: all sensors in one request; the provider may filter it to the given sensors, e.g. by area | One, whatever the number of stations |
+
+Station selection and map page plan with `requests_per_refresh()`, the hub fetches by the
+base class ([Polling and API access](data-flow.md)). Reference data is optional: without it, `lcz()` and `district()` return `None` and the flow falls back to
+`DEFAULT_ENVIRONMENT` and the network's `area`.
 
 ## Setting up a location
 
@@ -67,7 +97,10 @@ sequenceDiagram
     participant Hub as ClimateHub
     participant Coord as ClimateCoordinator
     HA->>Init: config entry
-    Init->>Hub: async_get_hub (created on first use)
+    Init->>Hub: async_get_hub(network) (created on first use)
+    alt unknown network
+        Init-->>HA: ConfigEntryError
+    end
     Init->>Hub: async_get_stations()
     alt no list from API and none stored
         Hub-->>Init: StationListUnavailableError
@@ -96,7 +129,7 @@ sequenceDiagram
     participant Map as MapView
     participant Browser
     Flow->>Map: MapSessions.create(flow, selection, payload)
-    Flow-->>Browser: external step with /api/mannheim_climate/map/{token}
+    Flow-->>Browser: external step with /api/urban_weather/map/{token}
     Browser->>Map: GET page (payload embedded)
     Browser->>Browser: Leaflet map, tiles from basemap.de
     Browser->>Map: POST stations and wind station
@@ -109,7 +142,8 @@ sequenceDiagram
   to the flow and expires after `MAP_SESSION_TTL`. Responses are not cached.
 - The server validates the selection again; the page only helps to stay within the budget.
 - `www/map.js` repeats the budget rules of `StationSelection` to show the interval live.
-  Change both together.
+  The cost per refresh comes with the payload (`budget.requests`), so the page follows the
+  request model of the provider. Change both together.
 - Texts come from the `map_page` selector in `strings.json`, in the system language.
 - Leaflet is vendored in `www/leaflet/`; static files are served under `STATIC_URL` with a
   content hash as cache buster.
@@ -125,6 +159,7 @@ sequenceDiagram
 | `data` | `latitude`, `longitude` | Location |
 | | `radius` | Search radius in metres (`DEFAULT_SEARCH_RADIUS_M`, at most `MAX_SEARCH_RADIUS_M`) |
 | | `environment` | `dense`, `open_built`, `industrial` or `green` (`Environment`) |
+| | `network` | Network id (`Network.id`, key of `PROVIDERS`), fixed for the life of the entry |
 | `options` | `temperature_sensors` | API sensor ids of the temperature stations |
 | | `wind_sensor` | API sensor id of the wind station or `null` |
 | | `scan_interval` | Update interval in minutes (`SCAN_INTERVAL_CHOICES_MIN`) |

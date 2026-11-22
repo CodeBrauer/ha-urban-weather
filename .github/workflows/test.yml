@@ -33,4 +33,4 @@ jobs:
         run: python3 -m pip install -r requirements_dev.txt
 
       - name: Run tests
-        run: python3 -m pytest --cov=custom_components.mannheim_climate --cov-report=term-missing
+        run: python3 -m pytest --cov=custom_components.urban_weather --cov-report=term-missing

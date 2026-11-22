@@ -86,7 +86,9 @@ actions:
 
 | Message | Meaning |
 |---|---|
-| There is no station within 10 km of this place. | Pick a place in or near Mannheim. |
+| There is no station within 10 km of this place. | Pick a place in or near a [supported network](../index.md#supported-networks). |
+| There is no station of … within 10 km of this place. | A moved location stays in its network. For another network, add the place as a new location. |
+| This location uses the network …, which this version of the integration does not know. | The location was set up with a newer version. Update the integration or add the location again. |
 | The station list could not be loaded from api.smartmannheim.de. | The API is unreachable and there is no stored station list yet. When adding a location, try again later; at startup Home Assistant retries by itself. |
 | Too many API requests per hour. | The selection does not fit the budget. Select fewer stations, no wind station or a longer interval. |
 | None of the selected stations exists any more. | All stations of the location are gone. Choose new ones under *Configure*. |
@@ -104,7 +106,7 @@ actions:
 ```yaml
 logger:
   logs:
-    custom_components.mannheim_climate: debug
+    custom_components.urban_weather: debug
 ```
 
 When you [report a problem](https://github.com/CodeBrauer/ha-urban-weather/issues),

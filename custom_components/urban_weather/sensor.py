@@ -158,7 +158,10 @@ SENSORS: tuple[ClimateSensorDescription, ...] = (
         suggested_unit_of_measurement=UnitOfSpeed.KILOMETERS_PER_HOUR,
         suggested_display_precision=1,
         value_fn=lambda e: e.wind_gust,
-        available_fn=_provides(Field.WIND_SPEED),
+        available_fn=lambda coordinator: (
+            coordinator.provides(Field.WIND_GUST)
+            or coordinator.provides(Field.WIND_GUST_1S)
+        ),
     ),
     ClimateSensorDescription(
         key="wind_direction",
@@ -244,16 +247,21 @@ class ClimateSensor(MannheimClimateEntity, SensorEntity):
         if self.entity_description.key != "temperature":
             return None
         data = self.coordinator.data
-        return {
-            "stations": {
-                reading.code: {
-                    "temperature": reading.get(Field.TEMPERATURE),
-                    "humidity": reading.get(Field.HUMIDITY),
-                    "distance_km": round(reading.distance_m / 1000, 2),
-                    "timestamp": reading.measurement.timestamp.isoformat(),
-                }
-                for reading in data.used
-            },
+        humidity = self.coordinator.provides(Field.HUMIDITY)
+        stations = {}
+        for reading in data.used:
+            values: dict[str, Any] = {"temperature": reading.get(Field.TEMPERATURE)}
+            if humidity:
+                values["humidity"] = reading.get(Field.HUMIDITY)
+            stations[reading.code] = {
+                **values,
+                "distance_km": round(reading.distance_m / 1000, 2),
+                "timestamp": reading.measurement.timestamp.isoformat(),
+            }
+        attributes: dict[str, Any] = {
+            "stations": stations,
             "dropped_outliers": [reading.code for reading in data.dropped],
-            "humidity_uncorrected": data.humidity_uncorrected,
         }
+        if humidity:
+            attributes["humidity_uncorrected"] = data.humidity_uncorrected
+        return attributes

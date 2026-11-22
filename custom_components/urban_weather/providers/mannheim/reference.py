@@ -9,15 +9,18 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from .const import (
-    CATALOG_MATCH_RADIUS_M,
-    CATALOG_ZONES,
-    DISTRICT_MATCH_RADIUS_M,
-    MountZone,
-)
-from .geo import distance_m
+from custom_components.urban_weather.const import MountZone
+from custom_components.urban_weather.geo import distance_m
 
 DATA_DIR = Path(__file__).parent / "data"
+CATALOG_MATCH_RADIUS_M = 30
+DISTRICT_MATCH_RADIUS_M = 750
+# Vertical zone codes of the metadata catalogue (Tab. 43).
+CATALOG_ZONES: dict[int, MountZone] = {
+    1: MountZone.STREET,
+    2: MountZone.ROOF,
+    3: MountZone.HIGH_POINT,
+}
 
 
 @dataclass(frozen=True, slots=True)

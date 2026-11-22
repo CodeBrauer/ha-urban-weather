@@ -1,4 +1,4 @@
-"""The Klimamessnetz Mannheim integration."""
+"""The Urban Weather integration."""
 
 from __future__ import annotations
 
@@ -8,9 +8,9 @@ from homeassistant.const import Platform
 from homeassistant.exceptions import ConfigEntryError, ConfigEntryNotReady
 from homeassistant.helpers import issue_registry as ir
 
-from .const import CONF_TEMPERATURE_SENSORS, CONF_WIND_SENSOR, DOMAIN
+from .const import CONF_NETWORK, CONF_TEMPERATURE_SENSORS, CONF_WIND_SENSOR, DOMAIN
 from .coordinator import ClimateCoordinator, MannheimClimateConfigEntry
-from .hub import StationListUnavailableError, async_get_hub
+from .hub import StationListUnavailableError, UnknownNetworkError, async_get_hub
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -22,12 +22,22 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: MannheimClimateConfigEntry
 ) -> bool:
     """Set up a location from a config entry."""
-    hub = await async_get_hub(hass)
+    network_id = entry.data.get(CONF_NETWORK)
+    try:
+        hub = await async_get_hub(hass, network_id)
+    except UnknownNetworkError as err:
+        raise ConfigEntryError(
+            translation_domain=DOMAIN,
+            translation_key="unknown_network",
+            translation_placeholders={"network": str(network_id)},
+        ) from err
     try:
         await hub.async_get_stations()
     except StationListUnavailableError as err:
         raise ConfigEntryNotReady(
-            translation_domain=DOMAIN, translation_key="station_list_unavailable"
+            translation_domain=DOMAIN,
+            translation_key="station_list_unavailable",
+            translation_placeholders={"host": hub.provider.network.host},
         ) from err
 
     stations = [

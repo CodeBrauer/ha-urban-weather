@@ -13,14 +13,12 @@ from homeassistant.config_entries import SOURCE_USER
 from homeassistant.const import (
     CONF_LATITUDE,
     CONF_LOCATION,
-    CONF_LONGITUDE,
     CONF_RADIUS,
 )
 from homeassistant.data_entry_flow import FlowResultType
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from pytest_homeassistant.common import MockConfigEntry
 
-from custom_components.mannheim_climate.api import ApiConnectionError
-from custom_components.mannheim_climate.const import (
+from custom_components.urban_weather.const import (
     CONF_DEW_POINT_OFFSET,
     CONF_ENVIRONMENT,
     CONF_SCAN_INTERVAL,
@@ -30,6 +28,8 @@ from custom_components.mannheim_climate.const import (
     NO_WIND_SENSOR,
     Environment,
 )
+from custom_components.urban_weather.provider import ApiConnectionError
+from custom_components.urban_weather.providers.mannheim import MANNHEIM
 
 from .common import (
     CATALOG_SENSOR,
@@ -41,6 +41,8 @@ from .common import (
     SECOND_SENSOR,
     add_home_entry,
     add_location,
+    configure,
+    location,
 )
 
 if TYPE_CHECKING:
@@ -50,7 +52,7 @@ if TYPE_CHECKING:
     from freezegun.api import FrozenDateTimeFactory
     from homeassistant.config_entries import ConfigFlowResult
     from homeassistant.core import HomeAssistant
-    from pytest_homeassistant_custom_component.typing import ClientSessionGenerator
+    from pytest_homeassistant.typing import ClientSessionGenerator
 
 pytestmark = pytest.mark.usefixtures("enable_custom_integrations", "api")
 
@@ -63,27 +65,9 @@ DENSE_SENSOR = "846c0b2b-4a6f-48ed-9383-d975cae2823f"  # 2306LH126
 def setup_entry() -> Generator[AsyncMock]:
     """Do not set up created or reloaded entries (see test_init)."""
     with patch(
-        "custom_components.mannheim_climate.async_setup_entry", return_value=True
+        "custom_components.urban_weather.async_setup_entry", return_value=True
     ) as setup:
         yield setup
-
-
-def location(latitude: float, longitude: float, radius: float = 3000) -> dict:
-    """Return the input of the location step."""
-    return {
-        CONF_LOCATION: {
-            CONF_LATITUDE: latitude,
-            CONF_LONGITUDE: longitude,
-            CONF_RADIUS: radius,
-        }
-    }
-
-
-async def configure(
-    hass: HomeAssistant, result: ConfigFlowResult, user_input: dict | None = None
-) -> ConfigFlowResult:
-    """Submit a step of a running config flow."""
-    return await hass.config_entries.flow.async_configure(result["flow_id"], user_input)
 
 
 async def start_at_stations_menu(
@@ -197,6 +181,7 @@ async def test_cannot_connect(hass: HomeAssistant, api: MagicMock) -> None:
     )
     assert result["type"] is FlowResultType.ABORT
     assert result["reason"] == "cannot_connect"
+    assert result["description_placeholders"] == {"host": "api.smartmannheim.de"}
 
 
 async def test_menu_without_accept_when_recommendation_does_not_fit(
@@ -381,6 +366,16 @@ async def test_reconfigure_moves_location(hass: HomeAssistant) -> None:
     assert entry.options[CONF_TEMPERATURE_SENSORS] == [DENSE_SENSOR]
     assert entry.options[CONF_SCAN_INTERVAL] == 30
     assert entry.options[CONF_DEW_POINT_OFFSET] == -1.3
+
+
+async def test_reconfigure_stays_in_the_network(hass: HomeAssistant) -> None:
+    """A location moves only within its network; the error names the network."""
+    entry = add_home_entry(hass)
+    result = await entry.start_reconfigure_flow(hass)
+    assert result["description_placeholders"] == {"network": MANNHEIM.name}
+    result = await configure(hass, result, location(*MUNICH))
+    assert result["type"] is FlowResultType.FORM
+    assert result["errors"] == {"base": "outside_network"}
 
 
 async def test_reconfigure_to_other_location_aborts(hass: HomeAssistant) -> None:

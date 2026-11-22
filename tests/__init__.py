@@ -1,1 +1,1 @@
-"""Tests for the Klimamessnetz Mannheim integration."""
+"""Tests for the Urban Weather integration."""

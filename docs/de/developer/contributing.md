@@ -1,4 +1,4 @@
-<!-- source: 36ade8f8d98af4da1036870c6ce161cbe41288b8 -->
+<!-- source: 3b89318783a74632feee04e877e8de7b943eea27 -->
 # Mitarbeit
 
 Die Regeln für Code, Tests, Commits, Pull Requests und Versionierung stehen in
@@ -35,7 +35,7 @@ SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/
 |---|---|
 | Neuer Sensor | `SENSORS` in `sensor.py`; sein Name in `strings.json` und `translations/`, wenn er einen `translation_key` hat; [Entitäten](../user/entities.md) und die READMEs |
 | Neue Option oder neues Feld im Config Entry | `config_flow.py` mit Migration (`VERSION`/`MINOR_VERSION`); `strings.json` und `translations/`; [Einrichtung](../user/setup.md) und [Config Entry](architecture.md#config-entry) |
-| Budget, Limits oder Intervalle | `const.py` (vorher in einem Issue besprechen); `selection.py` und `www/map.js` teilen sich die Budget-Regeln; [API-Limits](../user/api-limits.md) |
+| Budget, Limits oder Intervalle | `RequestLimits` des Messnetzes in `providers/`, Intervalle in `const.py` (vorher in einem Issue besprechen); `selection.py` und `www/map.js` teilen sich die Budget-Regeln; [API-Limits](../user/api-limits.md) |
 | Texte der Kartenseite | Der Selector `map_page` in `strings.json` und `translations/` |
 
 ## Continuous Integration
@@ -46,7 +46,7 @@ SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/
 | Test | Push, Pull Request | pytest mit Coverage |
 | Validate | Push, Pull Request, täglich | hassfest, HACS-Validierung |
 | Docs | Änderungen an der Doku | Übersetzungs-Check, strikter Build beider Sprachen; Deploy auf GitHub Pages von `main` |
-| Release | veröffentlichtes Release | Hängt `mannheim_climate.zip` an, das HACS installiert |
+| Release | veröffentlichtes Release | Hängt `urban_weather.zip` an, das HACS installiert |
 
 Releases folgen dem Runbook in
 [`.claude/skills/release/SKILL.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/.claude/skills/release/SKILL.md).

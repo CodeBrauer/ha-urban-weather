@@ -11,9 +11,16 @@
           "location": "Vorbelegt mit deinem Zuhause."
         }
       },
+      "network": {
+        "title": "Messnetz",
+        "description": "Für diesen Ort sind Stationen mehrerer Klimamessnetze in Reichweite. Das nächstgelegene Messnetz ist vorausgewählt; die Entfernung bezieht sich auf seine nächste Station.",
+        "data": {
+          "network": "Messnetz"
+        }
+      },
       "reconfigure": {
         "title": "Standort verschieben",
-        "description": "Wähle den neuen Ort. Danach bestätigst du Umgebung und Stationen erneut.",
+        "description": "Wähle den neuen Ort innerhalb des Messnetzes {network}. Danach bestätigst du Umgebung und Stationen erneut.",
         "data": {
           "location": "Standort"
         }
@@ -53,6 +60,7 @@
     },
     "error": {
       "outside_coverage": "Im Umkreis von 10 km gibt es keine Station.",
+      "outside_network": "Im Umkreis von 10 km gibt es keine Station von {network}. Für ein anderes Messnetz füge den Ort als neuen Standort hinzu.",
       "no_station_selected": "Wähle mindestens eine Station.",
       "too_many_stations": "Wähle höchstens 6 Stationen.",
       "over_budget": "Zu viele API-Abfragen pro Stunde. Wähle weniger Stationen oder in den Optionen ein längeres Aktualisierungsintervall.",
@@ -60,7 +68,7 @@
     },
     "abort": {
       "already_configured": "Dieser Standort ist bereits eingerichtet.",
-      "cannot_connect": "Die Stationsliste konnte nicht von api.smartmannheim.de geladen werden. Versuche es später erneut.",
+      "cannot_connect": "Die Stationsliste konnte nicht von {host} geladen werden. Versuche es später erneut.",
       "reconfigure_successful": "Der Standort wurde aktualisiert."
     }
   },
@@ -79,7 +87,7 @@
           "temperature_sensors": "Eine Station wird direkt verwendet, mehrere werden kombiniert (Median, Ausreißer werden verworfen). Das Maximum ergibt sich aus dem API-Budget.",
           "wind_sensor": "Wind wird nicht gemittelt, wähle eine Station.",
           "scan_interval": "Neue Werte kommen alle 10 Minuten, mit 10–20 Minuten Verzögerung.",
-          "dew_point_offset": "Wird vor der Berechnung der Luftfeuchte auf den Taupunkt addiert. Das Netz misst eher zu feucht; im 31-Tage-Vergleich mit der DWD-Station Mannheim passten −1,3 K."
+          "dew_point_offset": "Wird vor der Berechnung der Luftfeuchte auf den Taupunkt addiert. Nutze sie, wenn die Stationen im Vergleich mit einer Referenzstation, etwa des DWD, zu feucht oder zu trocken messen."
         }
       }
     },
@@ -90,7 +98,7 @@
       "unknown_station": "Eine der gewählten Stationen ist unbekannt. Lade die Seite neu und versuche es erneut."
     },
     "abort": {
-      "cannot_connect": "Die Stationsliste konnte nicht von api.smartmannheim.de geladen werden. Versuche es später erneut."
+      "cannot_connect": "Die Stationsliste konnte nicht von {host} geladen werden. Versuche es später erneut."
     }
   },
   "selector": {
@@ -121,6 +129,7 @@
     "recommendation": {
       "options": {
         "nearest_fits": "Die nächste Station **{station}** ({distance}) hat die gleiche Umgebung und wird allein verwendet.",
+        "nearest_close": "Die nächste Station **{station}** ({distance}) ist nah genug und wird allein verwendet.",
         "nearest_too_far": "Die nächste Station **{station}** ist {distance} entfernt. Empfohlen: die Kombination aus {count} Stationen um dich herum.",
         "nearest_other_environment": "Die nächste Station **{station}** ({distance}) hat eine andere Umgebung ({environment}). Empfohlen: die Kombination aus {count} Stationen, gleiche Umgebung zuerst."
       }
@@ -191,10 +200,13 @@
       "message": "Das Abfrage-Budget der API ist gerade aufgebraucht. Neuer Versuch in {seconds} Sekunden."
     },
     "station_list_unavailable": {
-      "message": "Die Stationsliste konnte nicht von api.smartmannheim.de geladen werden."
+      "message": "Die Stationsliste konnte nicht von {host} geladen werden."
     },
     "no_stations_available": {
       "message": "Keine der gewählten Stationen existiert mehr. Wähle in den Optionen der Integration neue Stationen."
+    },
+    "unknown_network": {
+      "message": "Dieser Standort nutzt das Messnetz „{network}“, das diese Version der Integration nicht kennt. Aktualisiere die Integration oder füge den Standort neu hinzu."
     }
   },
   "issues": {
@@ -230,7 +242,7 @@
           "unknown_station": "Eine der gewählten Stationen ist unbekannt. Lade die Seite neu und versuche es erneut."
         },
         "abort": {
-          "cannot_connect": "Die Stationsliste konnte nicht von api.smartmannheim.de geladen werden. Versuche es später erneut.",
+          "cannot_connect": "Die Stationsliste konnte nicht von {host} geladen werden. Versuche es später erneut.",
           "entry_not_found": "Den Standort gibt es nicht mehr."
         }
       }
@@ -267,7 +279,7 @@
           "unknown_station": "Eine der gewählten Stationen ist unbekannt. Lade die Seite neu und versuche es erneut."
         },
         "abort": {
-          "cannot_connect": "Die Stationsliste konnte nicht von api.smartmannheim.de geladen werden. Versuche es später erneut.",
+          "cannot_connect": "Die Stationsliste konnte nicht von {host} geladen werden. Versuche es später erneut.",
           "entry_not_found": "Den Standort gibt es nicht mehr."
         }
       }
@@ -286,7 +298,7 @@
           }
         },
         "abort": {
-          "cannot_connect": "Die Stationsliste konnte nicht von api.smartmannheim.de geladen werden. Versuche es später erneut.",
+          "cannot_connect": "Die Stationsliste konnte nicht von {host} geladen werden. Versuche es später erneut.",
           "entry_not_found": "Den Standort gibt es nicht mehr.",
           "kept": "Deine Stationen bleiben, wie sie sind. Dieser Vorschlag wird nicht mehr angezeigt, du findest ihn unter den ignorierten Reparaturen."
         }

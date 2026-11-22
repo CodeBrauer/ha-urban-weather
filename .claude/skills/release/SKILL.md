@@ -1,7 +1,7 @@
 ---
 name: release
 description: >-
-  Publish a new version of the mannheim_climate integration: pick the SemVer bump
+  Publish a new version of the urban_weather integration: pick the SemVer bump
   from the changes since the last release, bump manifest.json, then tag and create
   the GitHub release (which HACS installs) with user-facing release notes. Use when
   asked to release, publish or tag a version, to draft release notes, or to check
@@ -37,7 +37,7 @@ If there are only `test`, `ci`, `docs`, `chore` or `refactor` changes without vi
 Commit types are a hint, not the decision. Also read the diff of everything users depend on:
 
 ```bash
-git diff "$LAST"..main -- hacs.json custom_components/mannheim_climate/{__init__,const,config_flow,entity,sensor,weather}.py
+git diff "$LAST"..main -- hacs.json custom_components/urban_weather/{__init__,const,config_flow,entity,sensor,weather}.py
 ```
 
 | Look for | Bump |
@@ -74,7 +74,7 @@ Show the version, the change that decides the bump, and the notes. Wait for an e
 
 ```bash
 git switch -c chore/release-vX.Y.Z
-# set "version": "X.Y.Z" in custom_components/mannheim_climate/manifest.json, nothing else
+# set "version": "X.Y.Z" in custom_components/urban_weather/manifest.json, nothing else
 scripts/lint && scripts/test
 git commit -am "chore(release): vX.Y.Z"
 git push -u origin chore/release-vX.Y.Z
@@ -87,24 +87,45 @@ Continue once the PR is merged and CI on `main` is green.
 
 ```bash
 git switch main && git pull --ff-only
-jq -r .version custom_components/mannheim_climate/manifest.json   # must print X.Y.Z
+jq -r .version custom_components/urban_weather/manifest.json   # must print X.Y.Z
 gh release create vX.Y.Z --target "$(git rev-parse HEAD)" --title vX.Y.Z --notes-file <notes>
 git fetch --tags
 ```
 
 - `gh release create` creates the tag on GitHub, like v0.1.0.
 - No `--prerelease`: HACS hides prereleases unless users enable beta versions.
-- Publishing starts `.github/workflows/release.yml`, which attaches `mannheim_climate.zip`. HACS installs that asset (`zip_release` in `hacs.json`), so the release cannot be installed until the workflow has succeeded.
+- Publishing starts `.github/workflows/release.yml`, which attaches `urban_weather.zip`. HACS installs that asset (`zip_release` in `hacs.json`), so the release cannot be installed until the workflow has succeeded.
 
 ## 7. Verify and follow up
 
 ```bash
 gh run watch "$(gh run list --workflow release.yml --limit 1 --json databaseId --jq '.[0].databaseId')" --exit-status
-gh release view vX.Y.Z --json assets --jq '.assets[].name'   # must list mannheim_climate.zip
-git show vX.Y.Z:custom_components/mannheim_climate/manifest.json | jq -r .version
+gh release view vX.Y.Z --json assets --jq '.assets[].name'   # must list urban_weather.zip
+git show vX.Y.Z:custom_components/urban_weather/manifest.json | jq -r .version
 gh api 'repos/{owner}/{repo}/milestones' --jq '.[] | "\(.number) \(.title) open=\(.open_issues)"'
 ```
 
 - If the workflow failed, re-run it (`gh run rerun <id>`); it replaces an existing asset. A re-run uses the workflow file of the tag, so a broken workflow needs a fix on `main` and a new PATCH release.
 - If a milestone with this version exists and has no open issues left, close it with `gh api -X PATCH 'repos/{owner}/{repo}/milestones/<number>' -f state=closed`. This is covered by the approval in step 4.
 - Never delete, move or re-tag a published version; HACS installations may already use it. Fix mistakes with a new PATCH release.
+
+## Pre-releases from `next`
+
+A pre-release lets real installations test the work on `next` before the release: HACS lists it only for users who enable "Show beta versions" for this repository. Use it while the release work is on `next` instead of `main`. The steps above apply, with these differences:
+
+- **Version:** `X.Y.Z-beta.N` in `manifest.json`, tag `vX.Y.Z-beta.N`. `X.Y.Z` is the version the release will get; `N` counts from 1 and increases with each pre-release of that version.
+- **Preconditions (step 1):** `next` instead of `main`, and `gh run list --branch next`. `gh release view` without a tag ignores pre-releases, so `LAST` stays the last release.
+- **Changes (step 2):** `"$LAST"..next`, PRs with `--base next`.
+- **Notes (step 4):** short. The breaking changes in full, then one line per feature, and a last line asking testers to report problems in an issue. Leave out the fixes of earlier pre-releases of the same version.
+- **Bump (step 5):** branch `chore/release-vX.Y.Z-beta.N` from `next`, PR into `next`.
+- **Publish (step 6):**
+
+  ```bash
+  git switch next && git pull --ff-only
+  jq -r .version custom_components/urban_weather/manifest.json   # must print X.Y.Z-beta.N
+  gh release create vX.Y.Z-beta.N --target "$(git rev-parse HEAD)" --title vX.Y.Z-beta.N \
+    --notes-file <notes> --prerelease
+  ```
+
+  `--prerelease` keeps the pre-release from becoming the latest release; `release.yml` attaches `urban_weather.zip` to it as well.
+- **Follow-up (step 7):** verify the asset as above. Do not close the milestone. The release of `X.Y.Z` later sets the version to `X.Y.Z` and collects the notes from the last release, not from the pre-release.
