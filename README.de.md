@@ -6,17 +6,18 @@
 
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz)
 
-Klimawerte für deinen Standort aus dem dichten Stadtklima-Messnetz von
-[Smart City Mannheim](https://smartmannheim.de/) (über 400 Stationen): Temperatur,
-Luftfeuchte, Taupunkt, absolute Feuchte, gefühlte Temperatur, Luftdruck, Globalstrahlung
-und Wind.
+Klimawerte für deinen Standort aus dichten Stadtklima-Messnetzen: Temperatur, Luftfeuchte,
+Taupunkt, absolute Feuchte, gefühlte Temperatur, Luftdruck, Globalstrahlung und Wind.
+Unterstützte Messnetze:
+
+- [Smart City Mannheim](https://smartmannheim.de/) (über 400 Stationen)
+- [Klimamessnetz Dortmund](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/) (76 Stationen)
 
 Die Integration wählt die Station, die deinen Ort am besten abbildet. Passt die nächste
 nicht (zu weit weg, andere Umgebung, auf einem Dach montiert), kombiniert sie stattdessen
 mehrere Stationen um dich herum.
 
-> Inoffizielles Projekt, nicht verbunden mit der Smart City Mannheim GmbH oder der Stadt
-> Mannheim.
+> Inoffizielles Projekt, nicht verbunden mit den Betreibern der Messnetze oder den Städten.
 
 <p align="center"><img src="docs/screenshots/de/04-map.jpg" alt="Interaktive Stationskarte" width="800"></p>
 
@@ -32,8 +33,8 @@ Wettermodellen geschätzt wird. Die üblichen Alternativen überzeugen dafür ka
 - **Eine eigene Wetterstation** ist vergleichsweise teuer und muss zusätzlich
   Smart-Home-fähig sein.
 
-Immer mehr Städte betreiben eigene Stadtklima-Messnetze. Diese Integration macht das Netz
-von Smart City Mannheim in Home Assistant nutzbar.
+Immer mehr Städte betreiben eigene Stadtklima-Messnetze. Diese Integration macht sie in
+Home Assistant nutzbar.
 
 ## Funktionen
 
@@ -160,6 +161,11 @@ Die Integration
 Andere Skripte oder Geräte, die die API über denselben Internetanschluss nutzen, teilen
 sich das Limit.
 
+Dortmund hat ein eigenes Budget: Eine Abfrage liefert alle Stationen, die die Dortmunder
+Standorte nutzen, höchstens 60 pro Stunde (der Datensatz nennt ein Kontingent von 50.000
+Abfragen pro Tag). Details:
+[API-Limits](https://codebrauer.github.io/ha-urban-weather/de/user/api-limits/#dortmund).
+
 ## Wenn keine Daten mehr kommen
 
 - Liefert eine gewählte Station 24 Stunden lang keine Daten oder kennt die API sie nicht
@@ -191,8 +197,9 @@ actions:
 
 | Daten | Quelle | Lizenz |
 |---|---|---|
-| Messwerte, Stationsliste | [Klima-API Smart City Mannheim](https://opendata.smartmannheim.de/dataset/klimadaten-echtzeit-api) | dl-de/by-2-0 |
-| Standort-Metadaten der Stationen | [Metadatenkatalog Stadtklimamessnetze Mannheim](https://opendata.smartmannheim.de/dataset/metadaten-stadtklimamessnetze-mannheim) | dl-de/by-2-0 |
+| Messwerte, Stationsliste (Mannheim) | [Klima-API Smart City Mannheim](https://opendata.smartmannheim.de/dataset/klimadaten-echtzeit-api) | dl-de/by-2-0 |
+| Messwerte, Stationsliste (Dortmund) | [Stadt Dortmund, Klimasensoren - Aktuelle Messung](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/), Messnetz des Projekts Data2Resilience | dl-de/zero-2-0 |
+| Standort-Metadaten der Stationen (Mannheim) | [Metadatenkatalog Stadtklimamessnetze Mannheim](https://opendata.smartmannheim.de/dataset/metadaten-stadtklimamessnetze-mannheim) | dl-de/by-2-0 |
 | Lokale Klimazonen | Demuzere et al. (2022), [Global map of LCZ](https://doi.org/10.5281/zenodo.6364594) | CC BY 4.0 |
 | Stadtteilnamen | © OpenStreetMap-Mitwirkende über Nominatim | ODbL 1.0 |
 | Kartenkacheln der Stationskarte | [basemap.de](https://basemap.de/) / BKG | CC BY 4.0 |

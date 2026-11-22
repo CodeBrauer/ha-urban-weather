@@ -120,6 +120,24 @@ def test_nearest_station_without_lcz_is_not_used_alone() -> None:
     assert result.reason is RecommendationReason.NEAREST_OTHER_ENVIRONMENT
 
 
+def test_network_without_surroundings_recommends_by_distance() -> None:
+    """Without LCZ for any station, the nearest within 1 km is used alone."""
+    near = make_station("near", 600, lcz=None)
+    result = recommend_for([make_station("far", 800, lcz=None), near])
+    assert result is not None
+    assert result.stations == [near]
+    assert result.reason is RecommendationReason.NEAREST_CLOSE
+
+
+def test_network_without_surroundings_combines_beyond_one_km() -> None:
+    """Beyond 1 km the nearest stations are combined, as with surroundings."""
+    stations = [make_station(f"s{i}", 1200 + i * 300, lcz=None) for i in range(6)]
+    result = recommend_for(stations)
+    assert result is not None
+    assert codes(result.stations) == ["s0", "s1", "s2", "s3"]
+    assert result.reason is RecommendationReason.NEAREST_TOO_FAR
+
+
 def test_nearest_stations_used_when_none_within_radius() -> None:
     """Outside the network a recommendation still uses the 4 nearest stations."""
     stations = [make_station(f"s{i}", 4000 + i * 1000) for i in range(6)]

@@ -2,44 +2,27 @@
 
 from __future__ import annotations
 
-import math
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
-import aiohttp
-
-from custom_components.urban_weather.const import (
-    DEFAULT_RETRY_AFTER_S,
-    LOGGER,
-    REQUEST_TIMEOUT_S,
-)
+from custom_components.urban_weather.const import LOGGER
 from custom_components.urban_weather.provider import (
-    ApiConnectionError,
     ApiError,
-    ApiRateLimitError,
     ApiSensor,
     Measurement,
     SensorNotFoundError,
 )
+from custom_components.urban_weather.providers.common import async_get_json, is_number
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
+    import aiohttp
+
     from custom_components.urban_weather.const import Field
     from custom_components.urban_weather.provider import Network
 
-HTTP_BAD_REQUEST = 400
-HTTP_NOT_FOUND = 404
-HTTP_TOO_MANY_REQUESTS = 429
 POSITION_LENGTH = 2
-
-
-def _is_number(value: Any) -> bool:
-    return (
-        isinstance(value, int | float)
-        and not isinstance(value, bool)
-        and math.isfinite(value)
-    )
 
 
 def parse_sensors(payload: Any, fields: Mapping[str, Field]) -> list[ApiSensor]:
@@ -61,7 +44,7 @@ def parse_sensors(payload: Any, fields: Mapping[str, Field]) -> list[ApiSensor]:
             not sensor_id
             or not isinstance(position, list)
             or len(position) != POSITION_LENGTH
-            or not all(_is_number(value) for value in position)
+            or not all(is_number(value) for value in position)
         ):
             LOGGER.debug("Skipping sensor without usable position: %s", raw)
             continue
@@ -101,7 +84,7 @@ def parse_measurements(payload: Any, fields: Mapping[str, Field]) -> list[Measur
         values = {
             fields.get(key, key): float(value)
             for key, value in raw.items()
-            if key != "timestamp" and _is_number(value)
+            if key != "timestamp" and is_number(value)
         }
         measurements.append(Measurement(timestamp=timestamp, values=values))
     measurements.sort(key=lambda measurement: measurement.timestamp, reverse=True)
@@ -133,29 +116,9 @@ class MannheimClimateApi:
         )
 
     async def _get(self, path: str) -> Any:
-        url = f"{self._network.endpoint}{path}"
-        try:
-            async with self._session.get(
-                url, timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT_S)
-            ) as response:
-                if response.status == HTTP_TOO_MANY_REQUESTS:
-                    raise ApiRateLimitError(_retry_after(response.headers))
-                if response.status == HTTP_NOT_FOUND:
-                    raise SensorNotFoundError(path)
-                if response.status >= HTTP_BAD_REQUEST:
-                    msg = f"HTTP {response.status} for {path}"
-                    raise ApiError(msg)
-                return await response.json(content_type=None)
-        except (aiohttp.ClientError, TimeoutError) as err:
-            msg = f"Error fetching {path}: {err}"
-            raise ApiConnectionError(msg) from err
-        except ValueError as err:
-            msg = f"Invalid JSON for {path}"
-            raise ApiError(msg) from err
-
-
-def _retry_after(headers: Mapping[str, str]) -> float:
-    try:
-        return max(float(headers.get("Retry-After", "")), 1.0)
-    except ValueError:
-        return DEFAULT_RETRY_AFTER_S
+        return await async_get_json(
+            self._session,
+            f"{self._network.endpoint}{path}",
+            path,
+            not_found=SensorNotFoundError,
+        )

@@ -1,0 +1,138 @@
+[
+  {
+    "device_id": "7141a18e-2a80-4831-bf56-b89338fb2eb6",
+    "data_station_id": "DODFRP",
+    "sensormodell": "ATM41",
+    "standort": {
+      "lon": 7.46607,
+      "lat": 51.51116
+    },
+    "measured_at": "2026-11-21T11:12:20+00:00",
+    "air_temperature": 6.4,
+    "data_relative_humidity": 92.4,
+    "data_atmospheric_pressure": 100.77,
+    "data_solar_radiation": 137,
+    "data_wind_speed": 2.96,
+    "data_maximum_wind_speed": 4.3,
+    "data_wind_direction": 241.6
+  },
+  {
+    "device_id": "6da26775-2b8e-4396-ade6-282e659fdfcb",
+    "data_station_id": "DOBHAP",
+    "sensormodell": "ATM41",
+    "standort": {
+      "lon": 7.463944015394063,
+      "lat": 51.51321814079135
+    },
+    "measured_at": "2026-11-21T11:07:33+00:00",
+    "air_temperature": 6.7,
+    "data_relative_humidity": 87.6,
+    "data_atmospheric_pressure": 100.84,
+    "data_solar_radiation": 133,
+    "data_wind_speed": 1.05,
+    "data_maximum_wind_speed": 3.34,
+    "data_wind_direction": 136.8
+  },
+  {
+    "device_id": "fc70122c-3c93-478a-96a6-9fdff796d16f",
+    "data_station_id": "DOBDKP",
+    "sensormodell": "ATM41",
+    "standort": {
+      "lon": 7.4592,
+      "lat": 51.52267
+    },
+    "measured_at": "2026-05-29T17:38:44+00:00",
+    "air_temperature": 22.2,
+    "data_relative_humidity": 71.8,
+    "data_atmospheric_pressure": 101.35,
+    "data_solar_radiation": 2,
+    "data_wind_speed": 1.26,
+    "data_maximum_wind_speed": 4.78,
+    "data_wind_direction": 28.9
+  },
+  {
+    "device_id": "3f7964d9-a03c-4756-942a-a65093951555",
+    "data_station_id": "DOTKLS",
+    "sensormodell": "SHT35",
+    "standort": {
+      "lon": 7.4681351373852864,
+      "lat": 51.511644342163805
+    },
+    "measured_at": "2026-11-21T11:11:22+00:00",
+    "air_temperature": 7.186236362249183,
+    "data_relative_humidity": 83.14946211947814,
+    "data_atmospheric_pressure": null,
+    "data_solar_radiation": null,
+    "data_wind_speed": null,
+    "data_maximum_wind_speed": null,
+    "data_wind_direction": null
+  },
+  {
+    "device_id": "0126d246-05e1-43c7-a0df-3765cf982022",
+    "data_station_id": "DODFRP",
+    "sensormodell": "SHT35",
+    "standort": {
+      "lon": 7.46607,
+      "lat": 51.51116
+    },
+    "measured_at": "2026-11-21T11:10:24+00:00",
+    "air_temperature": 6.710917830167084,
+    "data_relative_humidity": 82.63675898374915,
+    "data_atmospheric_pressure": null,
+    "data_solar_radiation": null,
+    "data_wind_speed": null,
+    "data_maximum_wind_speed": null,
+    "data_wind_direction": null
+  },
+  {
+    "device_id": "f11f62d0-4909-4e45-be5d-41be660f11b7",
+    "data_station_id": "DOBHBF",
+    "sensormodell": "ATM41",
+    "standort": {
+      "lon": 7.459445718650828,
+      "lat": 51.516898431325856
+    },
+    "measured_at": "2026-11-21T11:15:31+00:00",
+    "air_temperature": 6.6,
+    "data_relative_humidity": 92.9,
+    "data_atmospheric_pressure": 100.99,
+    "data_solar_radiation": 302,
+    "data_wind_speed": 2.49,
+    "data_maximum_wind_speed": 4.61,
+    "data_wind_direction": 225.7
+  },
+  {
+    "device_id": "e72cb7ea-f187-4f77-a2bd-43917ca50d92",
+    "data_station_id": "DOBBRS",
+    "sensormodell": "ATM41",
+    "standort": {
+      "lon": 7.46639,
+      "lat": 51.51583
+    },
+    "measured_at": "2026-11-21T11:13:20+00:00",
+    "air_temperature": 7.1,
+    "data_relative_humidity": 82.5,
+    "data_atmospheric_pressure": 100.73,
+    "data_solar_radiation": 55,
+    "data_wind_speed": 0.85,
+    "data_maximum_wind_speed": 2.47,
+    "data_wind_direction": 164.4
+  },
+  {
+    "device_id": "cbdfeec3-ca72-4141-ac07-7f0ec93edc84",
+    "data_station_id": "DOBDKP",
+    "sensormodell": "ATM41",
+    "standort": {
+      "lon": 7.4592,
+      "lat": 51.52267
+    },
+    "measured_at": "2026-11-21T09:09:27+00:00",
+    "air_temperature": 3.9,
+    "data_relative_humidity": 93.0,
+    "data_atmospheric_pressure": 100.9,
+    "data_solar_radiation": 62,
+    "data_wind_speed": 0.88,
+    "data_maximum_wind_speed": 3.14,
+    "data_wind_direction": 210.1
+  }
+]

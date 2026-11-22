@@ -1,5 +1,9 @@
-<!-- source: 87c4520d586c7cfdf21232c7596c9fce9fcccff0 -->
+<!-- source: 62a922a706d48a15966836f4042240f5e78d6183 -->
 # API-Limits
+
+Jedes Messnetz hat eigene Limits und ein eigenes Abfrage-Budget; Standorte in einem Messnetz
+nehmen Standorten in einem anderen keine Stationen weg. Diese Seite beschreibt zuerst
+Mannheim, dann [Dortmund](#dortmund).
 
 Die [Klima-API](https://api.smartmannheim.de/doc) ist öffentlich und braucht keinen
 Schlüssel. Dokumentiert sind **30 Messwert-Abfragen pro Stunde und Internetanschluss**
@@ -47,6 +51,27 @@ das Budget es zulässt.
 - Deaktivierte Standorte zählen nicht.
 - Bei mehreren Standorten lässt jeder den anderen weniger Stationen oder ein längeres
   Intervall.
+
+## Dortmund
+
+Der [Dortmunder Datensatz](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/)
+ist öffentlich und braucht keinen Schlüssel. Jede Antwort nennt ein Kontingent von 50.000
+Abfragen pro Tag (etwa 2.083 pro Stunde); weitere Limits sind nicht dokumentiert. Neue Werte
+kommen alle 5 Minuten.
+
+Eine Abfrage liefert die Werte aller Stationen, die die Dortmunder Standorte nutzen. Die
+Anzahl der Stationen kostet also keine Abfragen:
+
+```text
+Abfragen pro Stunde = 60 / Aktualisierungsintervall in Minuten   (pro Standort)
+```
+
+| Maßnahme | Wert |
+|---|---|
+| Stationsliste | Höchstens einmal am Tag aktualisiert und lokal gespeichert |
+| Messwert-Cache | 9 Minuten, geteilt zwischen allen Standorten |
+| Gesendete Abfragen | Höchstens 2 pro Minute und 60 pro Stunde |
+| Geplante Abfragen | Höchstens 60 pro Stunde für alle Standorte zusammen |
 
 ## Verwandte Integration
 

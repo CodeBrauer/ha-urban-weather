@@ -87,7 +87,7 @@
           "temperature_sensors": "Eine Station wird direkt verwendet, mehrere werden kombiniert (Median, Ausreißer werden verworfen). Das Maximum ergibt sich aus dem API-Budget.",
           "wind_sensor": "Wind wird nicht gemittelt, wähle eine Station.",
           "scan_interval": "Neue Werte kommen alle 10 Minuten, mit 10–20 Minuten Verzögerung.",
-          "dew_point_offset": "Wird vor der Berechnung der Luftfeuchte auf den Taupunkt addiert. Das Netz misst eher zu feucht; im 31-Tage-Vergleich mit der DWD-Station Mannheim passten −1,3 K."
+          "dew_point_offset": "Wird vor der Berechnung der Luftfeuchte auf den Taupunkt addiert. Nutze sie, wenn die Stationen im Vergleich mit einer Referenzstation, etwa des DWD, zu feucht oder zu trocken messen."
         }
       }
     },
@@ -129,6 +129,7 @@
     "recommendation": {
       "options": {
         "nearest_fits": "Die nächste Station **{station}** ({distance}) hat die gleiche Umgebung und wird allein verwendet.",
+        "nearest_close": "Die nächste Station **{station}** ({distance}) ist nah genug und wird allein verwendet.",
         "nearest_too_far": "Die nächste Station **{station}** ist {distance} entfernt. Empfohlen: die Kombination aus {count} Stationen um dich herum.",
         "nearest_other_environment": "Die nächste Station **{station}** ({distance}) hat eine andere Umgebung ({environment}). Empfohlen: die Kombination aus {count} Stationen, gleiche Umgebung zuerst."
       }

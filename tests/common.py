@@ -74,6 +74,11 @@ SECOND_SENSOR = "1ec2c428-9677-425b-85bb-46fb6391aac7"  # 2507LH051, 575 m
 CATALOG_SENSOR = "0004A30B01082C6E"  # 0101-046-21, 958 m
 MEASUREMENT_AGE = timedelta(minutes=10)
 
+# Dortmund city centre; dortmund.json was exported at DORTMUND_NOW.
+DORTMUND_HOME = (51.5136, 7.4653)
+DORTMUND_NOW = datetime(2026, 11, 21, 11, 20, tzinfo=UTC)
+DORTMUND_NEAREST = "6da26775-2b8e-4396-ade6-282e659fdfcb"  # DOBHAP ATM41, 103 m
+
 
 def sensors_payload() -> dict[str, Any]:
     """
@@ -83,6 +88,16 @@ def sensors_payload() -> dict[str, Any]:
     2306LH126 (swapped coordinates).
     """
     return json.loads((FIXTURES / "sensors.json").read_text("utf-8"))
+
+
+def dortmund_records() -> list[dict[str, Any]]:
+    """
+    Return a real export of the Dortmund dataset of 2026-11-21 (station list query).
+
+    Trimmed to the 8 sensors of the 6 stations within 1.1 km of DORTMUND_HOME; DOBDKP
+    has a sensor that stopped in May next to its successor.
+    """
+    return json.loads((FIXTURES / "dortmund.json").read_text("utf-8"))
 
 
 def mannheim_provider(network: Network = MANNHEIM) -> MannheimProvider:

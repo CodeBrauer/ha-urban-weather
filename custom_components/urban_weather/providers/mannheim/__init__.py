@@ -9,8 +9,8 @@ from custom_components.urban_weather.provider import (
     Network,
     RequestLimits,
     SensorProvider,
-    TileLayer,
 )
+from custom_components.urban_weather.providers.common import BASEMAP_DE
 
 from . import stations
 from .api import MannheimClimateApi, parse_sensors
@@ -62,14 +62,7 @@ MANNHEIM = Network(
         per_hour=MEASUREMENT_BUDGET_PER_HOUR,
         planned_per_hour=PLANNED_BUDGET_PER_HOUR,
     ),
-    # Official German basemap (BKG), open data under CC BY 4.0, no API key needed.
-    tiles=TileLayer(
-        url=(
-            "https://sgx.geodatenzentrum.de/wmts_basemapde/tile/1.0.0/"
-            "de_basemapde_web_raster_farbe/default/GLOBAL_WEBMERCATOR/{z}/{y}/{x}.png"
-        ),
-        attribution="© basemap.de / BKG (CC BY 4.0)",
-    ),
+    tiles=BASEMAP_DE,
 )
 
 

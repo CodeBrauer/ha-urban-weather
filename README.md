@@ -6,15 +6,18 @@
 
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz)
 
-Climate values for your location from the dense urban climate network of
-[Smart City Mannheim](https://smartmannheim.de/) (400+ stations): temperature, humidity,
+Climate values for your location from dense urban climate networks: temperature, humidity,
 dew point, absolute humidity, apparent temperature, air pressure, global irradiance and wind.
+Supported networks:
+
+- [Smart City Mannheim](https://smartmannheim.de/) (400+ stations)
+- [Klimamessnetz Dortmund](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/) (76 stations)
 
 The integration picks the station that represents your place best. If the nearest one does
 not fit (too far away, different surroundings, mounted on a roof), it combines several
 stations around you instead.
 
-> Unofficial project. Not affiliated with Smart City Mannheim GmbH or the city of Mannheim.
+> Unofficial project. Not affiliated with the operators of the networks or the cities.
 
 <p align="center"><img src="docs/screenshots/en/04-map.jpg" alt="Interactive station map" width="800"></p>
 
@@ -30,8 +33,8 @@ alternatives fall short:
 - **A weather station of your own** is comparatively expensive and also has to work with
   your smart home.
 
-More and more cities run their own urban climate networks. This integration makes the
-network of Smart City Mannheim usable in Home Assistant.
+More and more cities run their own urban climate networks. This integration makes them
+usable in Home Assistant.
 
 ## Features
 
@@ -152,6 +155,10 @@ The integration therefore:
 
 Other scripts or devices that use the API from the same internet connection share the limit.
 
+Dortmund has its own budget: one request returns all stations the Dortmund locations use,
+at most 60 per hour (the dataset reports a quota of 50,000 requests per day). Details:
+[API limits](https://codebrauer.github.io/ha-urban-weather/user/api-limits/#dortmund).
+
 ## When data stops
 
 - If a selected station delivers no data for 24 hours or the API no longer knows it, a
@@ -182,8 +189,9 @@ actions:
 
 | Data | Source | Licence |
 |---|---|---|
-| Measurements, station list | [Smart City Mannheim Klima API](https://opendata.smartmannheim.de/dataset/klimadaten-echtzeit-api) | dl-de/by-2-0 |
-| Station siting metadata | [Metadatenkatalog Stadtklimamessnetze Mannheim](https://opendata.smartmannheim.de/dataset/metadaten-stadtklimamessnetze-mannheim) | dl-de/by-2-0 |
+| Measurements, station list (Mannheim) | [Smart City Mannheim Klima API](https://opendata.smartmannheim.de/dataset/klimadaten-echtzeit-api) | dl-de/by-2-0 |
+| Measurements, station list (Dortmund) | [Stadt Dortmund, Klimasensoren - Aktuelle Messung](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/), network of the project Data2Resilience | dl-de/zero-2-0 |
+| Station siting metadata (Mannheim) | [Metadatenkatalog Stadtklimamessnetze Mannheim](https://opendata.smartmannheim.de/dataset/metadaten-stadtklimamessnetze-mannheim) | dl-de/by-2-0 |
 | Local Climate Zones | Demuzere et al. (2022), [Global map of LCZ](https://doi.org/10.5281/zenodo.6364594) | CC BY 4.0 |
 | District names | © OpenStreetMap contributors via Nominatim | ODbL 1.0 |
 | Map tiles of the station map | [basemap.de](https://basemap.de/) / BKG | CC BY 4.0 |
