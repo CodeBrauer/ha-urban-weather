@@ -74,7 +74,7 @@ class implements one type of API; a network on that API is configuration (`Netwo
 | `limits` | `RequestLimits`: rate limiter windows, documented and planned requests per hour |
 | `attribution`, `name`, `operator` | Attribution and device info of the entities |
 | `area` | Title of a location without a known district |
-| `tiles` | Background map of the station map page |
+| `tiles` | Background map of the station map page: `BASEMAP_DE` (Germany), `OSM_CH` (Switzerland) or `OPENSTREETMAP` as fallback, from `providers/common.py` |
 
 The provider returns the raw station list (the hub stores it as is) and builds the stations
 from it. Its base class declares the request model for measurements:

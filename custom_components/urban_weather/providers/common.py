@@ -34,6 +34,20 @@ BASEMAP_DE = TileLayer(
     attribution="© basemap.de / BKG (CC BY 4.0)",
 )
 
+# OpenStreetMap in Swiss style, run by the Swiss OSM Association. Covers
+# Switzerland only, no API key needed.
+OSM_CH = TileLayer(
+    url="https://tile.osm.ch/osm-swiss-style/{z}/{x}/{y}.png",
+    attribution="© OpenStreetMap contributors (ODbL), tiles: osm.ch",
+)
+
+# Fallback for networks without an official basemap. Light use only, within the
+# tile usage policy: https://operations.osmfoundation.org/policies/tiles/
+OPENSTREETMAP = TileLayer(
+    url="https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    attribution="© OpenStreetMap contributors (ODbL)",
+)
+
 
 def is_number(value: Any) -> bool:
     """Return True for a finite int or float (not a bool)."""
