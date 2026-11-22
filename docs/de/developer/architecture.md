@@ -1,4 +1,4 @@
-<!-- source: 196ed7dd44d761c32b9ff3b2928d8bd901205db5 -->
+<!-- source: 6f6041ac3ca32f1d2304e7e46122d0ae526d79fd -->
 # Architektur
 
 Die Integration liegt in `custom_components/urban_weather/`. Die Konventionen für die
@@ -76,7 +76,7 @@ Provider-Klasse setzt eine Art von API um; ein Messnetz auf dieser API ist Konfi
 | `limits` | `RequestLimits`: Fenster der Rate-Limiter, dokumentierte und geplante Abfragen pro Stunde |
 | `attribution`, `name`, `operator` | Quellenangabe und Geräteinfo der Entitäten |
 | `area` | Titel eines Standorts ohne bekannten Stadtteil |
-| `tiles` | Hintergrundkarte der Stationskarte |
+| `tiles` | Hintergrundkarte der Stationskarte: `BASEMAP_DE` (Deutschland), `SWISSTOPO` (Schweiz) oder `OPENSTREETMAP` als Fallback, aus `providers/common.py` |
 
 Der Provider liefert die rohe Stationsliste (der Hub speichert sie unverändert) und baut
 daraus die Stationen. Seine Basisklasse legt das Abfragemodell für Messwerte fest:
