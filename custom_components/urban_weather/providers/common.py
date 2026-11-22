@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
 import aiohttp
@@ -20,6 +21,9 @@ from custom_components.urban_weather.provider import (
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
+
+# Sorts records without a time last.
+OLDEST = datetime.min.replace(tzinfo=UTC)
 
 HTTP_BAD_REQUEST = 400
 HTTP_NOT_FOUND = 404
@@ -56,6 +60,15 @@ def is_number(value: Any) -> bool:
         and not isinstance(value, bool)
         and math.isfinite(value)
     )
+
+
+def parse_timestamp(value: Any) -> datetime | None:
+    """Return an ISO 8601 time as aware datetime (naive times are UTC), else None."""
+    try:
+        timestamp = datetime.fromisoformat(str(value))
+    except ValueError:
+        return None
+    return timestamp if timestamp.tzinfo else timestamp.replace(tzinfo=UTC)
 
 
 async def async_get_json(
