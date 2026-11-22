@@ -36,8 +36,8 @@ INTEGRATION_PAGE = "ha-config-integration-page"
 FLOW_DIALOG = "dialog-data-entry-flow"
 CONFIGURE = "ui.panel.config.integrations.config_entry.configure"
 LANGUAGES = ("de", "en")
-# Wasserturm Mannheim: a public place, so no home location shows up in the images.
-LOCATION = {"latitude": 49.48396, "longitude": 8.47585, "radius": 3000}
+# Rathaus Dortmund: a public place, so no home location shows up in the images.
+LOCATION = {"latitude": 51.51375, "longitude": 7.4655, "radius": 3000}
 # The temporary location is the park around it: a combination of stations shows more
 # of the integration (spread, outliers, weather condition) than the single station
 # recommended for the dense surroundings in the setup images.
