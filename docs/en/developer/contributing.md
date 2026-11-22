@@ -35,6 +35,7 @@ SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/
 | New option or config entry field | `config_flow.py` with a migration (`VERSION`/`MINOR_VERSION`); `strings.json` and `translations/`; [Setup](../user/setup.md) and [Config entry](architecture.md#config-entry) |
 | Budget, limits or intervals | `RequestLimits` of the network in `providers/`, intervals in `const.py` (discuss in an issue first); `selection.py` and `www/map.js` share the budget rules; [API limits](../user/api-limits.md) |
 | Text of the map page | The `map_page` selector in `strings.json` and `translations/` |
+| New network | Checklist in [`.claude/skills/new-network/SKILL.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/.claude/skills/new-network/SKILL.md) |
 
 ## Continuous integration
 

@@ -80,6 +80,10 @@ Release steps: [`.claude/skills/release/SKILL.md`](.claude/skills/release/SKILL.
 - Tests never call a live API (`pytest-socket` blocks it). Use the trimmed real responses in `tests/fixtures/` (`sensors.json` for Mannheim, `dortmund.json` for Dortmund).
 - The client-side limits and the planned budget are the `RequestLimits` of each network (`MANNHEIM` in `providers/mannheim/`, `DORTMUND` in `providers/dortmund.py`). Features that add requests must fit the planned budget, which `StationSelection` enforces. Discuss changes to the limits in an issue first.
 
+## Adding a network
+
+A new network touches code, tests, both docs languages, the READMEs and the repository's metadata. Follow the checklist in [`.claude/skills/new-network/SKILL.md`](.claude/skills/new-network/SKILL.md) (a Claude Code skill, readable as a checklist by any agent).
+
 ## Home Assistant specifics
 
 - Minimum Home Assistant version: `hacs.json`. Dev and test version: `requirements_dev.txt`, pinned exactly together with `pytest-homeassistant`; bump both together.
