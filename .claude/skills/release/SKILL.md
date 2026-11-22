@@ -108,3 +108,24 @@ gh api 'repos/{owner}/{repo}/milestones' --jq '.[] | "\(.number) \(.title) open=
 - If the workflow failed, re-run it (`gh run rerun <id>`); it replaces an existing asset. A re-run uses the workflow file of the tag, so a broken workflow needs a fix on `main` and a new PATCH release.
 - If a milestone with this version exists and has no open issues left, close it with `gh api -X PATCH 'repos/{owner}/{repo}/milestones/<number>' -f state=closed`. This is covered by the approval in step 4.
 - Never delete, move or re-tag a published version; HACS installations may already use it. Fix mistakes with a new PATCH release.
+
+## Pre-releases from `next`
+
+A pre-release lets real installations test the work on `next` before the release: HACS lists it only for users who enable "Show beta versions" for this repository. Use it while the release work is on `next` instead of `main`. The steps above apply, with these differences:
+
+- **Version:** `X.Y.Z-beta.N` in `manifest.json`, tag `vX.Y.Z-beta.N`. `X.Y.Z` is the version the release will get; `N` counts from 1 and increases with each pre-release of that version.
+- **Preconditions (step 1):** `next` instead of `main`, and `gh run list --branch next`. `gh release view` without a tag ignores pre-releases, so `LAST` stays the last release.
+- **Changes (step 2):** `"$LAST"..next`, PRs with `--base next`.
+- **Notes (step 4):** short. The breaking changes in full, then one line per feature, and a last line asking testers to report problems in an issue. Leave out the fixes of earlier pre-releases of the same version.
+- **Bump (step 5):** branch `chore/release-vX.Y.Z-beta.N` from `next`, PR into `next`.
+- **Publish (step 6):**
+
+  ```bash
+  git switch next && git pull --ff-only
+  jq -r .version custom_components/urban_weather/manifest.json   # must print X.Y.Z-beta.N
+  gh release create vX.Y.Z-beta.N --target "$(git rev-parse HEAD)" --title vX.Y.Z-beta.N \
+    --notes-file <notes> --prerelease
+  ```
+
+  `--prerelease` keeps the pre-release from becoming the latest release; `release.yml` attaches `urban_weather.zip` to it as well.
+- **Follow-up (step 7):** verify the asset as above. Do not close the milestone. The release of `X.Y.Z` later sets the version to `X.Y.Z` and collects the notes from the last release, not from the pre-release.
