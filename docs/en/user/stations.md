@@ -37,9 +37,22 @@ flowchart TD
 - The wind station is the nearest station with a wind sensor, wherever it is mounted.
 - The reason is shown with the recommendation: the nearest station fits, is too far away
   or has other surroundings.
+- In a [network without siting data](#networks-without-siting-data) distance alone decides.
 - *Use the recommendation* is not offered if it does not fit the [API budget](api-limits.md),
   for example because other locations already use most of it. Choose fewer stations from the
   map or the list then.
+
+## Networks without siting data
+
+The Dortmund network publishes no surroundings or mounting data. Its sensors are grouped by
+the station id of the dataset, and the code of a station is that id (e.g. `DOBHAP`).
+
+- The nearest station within 1 km is used on its own; otherwise up to 4 stations within the
+  search radius are combined.
+- The surroundings you confirm during setup are kept with the location but do not change the
+  recommendation.
+- Black globe sensors are left out: they measure a radiant temperature, which reads several
+  kelvin above the air temperature in sunshine.
 
 ## Choosing yourself
 

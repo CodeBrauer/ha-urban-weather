@@ -1,9 +1,9 @@
 # Urban Weather (Stadtklima)
 
-Home Assistant integration for the dense urban climate network of
-[Smart City Mannheim](https://smartmannheim.de/) (400+ stations). It provides climate values
-for a location of your choice: temperature, humidity, dew point, absolute humidity, apparent
-temperature, air pressure, global irradiance and wind.
+Home Assistant integration for dense urban climate networks, starting with
+[Mannheim and Dortmund](#supported-networks). It provides climate values for a location of
+your choice: temperature, humidity, dew point, absolute humidity, apparent temperature, air
+pressure, global irradiance and wind.
 
 The integration picks the station that represents your place best. If the nearest one does
 not fit (too far away, different surroundings, mounted on a roof), it combines several
@@ -12,7 +12,7 @@ stations around you instead.
 ![Interactive station map](screenshots/04-map.jpg)
 
 !!! note "Unofficial project"
-    Not affiliated with Smart City Mannheim GmbH or the city of Mannheim.
+    Not affiliated with the operators of the networks or the cities.
 
 ## Why this integration
 
@@ -26,8 +26,18 @@ alternatives fall short:
 - **A weather station of your own** is comparatively expensive and also has to work with
   your smart home.
 
-More and more cities run their own urban climate networks. This integration makes the
-network of Smart City Mannheim usable in Home Assistant.
+More and more cities run their own urban climate networks. This integration makes them
+usable in Home Assistant.
+
+## Supported networks
+
+| Network | Stations | Values | Siting data |
+|---|---|---|---|
+| [Smart City Mannheim](https://smartmannheim.de/) | 400+ | All values; wind on some masts | Surroundings, roof and high point |
+| [Klimamessnetz Dortmund](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/) | 76 | Temperature and humidity; about a third also air pressure, global irradiance and wind | None: [recommendation by distance](user/stations.md#networks-without-siting-data) |
+
+When you add a location, the integration uses the network with a station nearby. Data
+sources and licences: [Data sources](data-sources.md).
 
 ## Features
 

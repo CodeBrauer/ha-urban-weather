@@ -1,5 +1,9 @@
 # API limits
 
+Each network has its own limits and its own request budget; locations in one network do not
+take stations from locations in another. This page describes Mannheim first, then
+[Dortmund](#dortmund).
+
 The [Klima API](https://api.smartmannheim.de/doc) is public and needs no key. Its
 documented limit is **30 measurement requests per hour per internet connection** (public IP
 address), plus a few requests of the station list. In practice the API also limits short
@@ -44,6 +48,26 @@ Bold: the interval chosen automatically for a single location (the shortest of 1
 - Disabled locations do not count.
 - With several locations, each one leaves fewer stations or a longer interval for the
   others.
+
+## Dortmund
+
+The [Dortmund dataset](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/)
+is public and needs no key. Every response reports a quota of 50,000 requests per day (about
+2,083 per hour); no other limits are documented. New values arrive every 5 minutes.
+
+One request returns the values of all stations the Dortmund locations use, so the number of
+stations costs no requests:
+
+```text
+requests per hour = 60 / update interval in minutes   (per location)
+```
+
+| Measure | Value |
+|---|---|
+| Station list | Refreshed at most once a day and stored locally |
+| Measurement cache | 9 minutes, shared between all locations |
+| Requests sent | At most 2 per minute and 60 per hour |
+| Requests planned | At most 60 per hour for all locations together |
 
 ## Related integration
 
