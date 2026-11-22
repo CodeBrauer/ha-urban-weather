@@ -13,7 +13,7 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
-from custom_components.urban_weather.const import LOGGER, Field
+from custom_components.urban_weather.const import LOGGER, STATION_OFFLINE_AFTER, Field
 from custom_components.urban_weather.provider import (
     ApiError,
     ApiSensor,
@@ -88,37 +88,36 @@ def build_stations(
     Group the sensor records of the station list by their station id.
 
     A sensor provides the mapped fields that have a value. Within a station the
-    sensor with the most fields is used; on a tie the most recent one, so a sensor
-    that stopped sending does not shadow its replacement.
+    sensor with the most fields is used, on a tie the most recent one. Sensors
+    silent for STATION_OFFLINE_AFTER are left out if their station has a current
+    one, so a sensor that stopped sending does not shadow its replacement.
     """
-    by_station: dict[str, list[ApiSensor]] = {}
-    newest_first = sorted(
-        records,
-        key=lambda record: _timestamp(record, dataset.timestamp) or OLDEST,
-        reverse=True,
-    )
-    for record in newest_first:
+    by_station: dict[str, list[tuple[ApiSensor, datetime]]] = {}
+    dated = [
+        (_timestamp(record, dataset.timestamp) or OLDEST, record) for record in records
+    ]
+    # The newest measurement stands for the time of the list (fresh or stored).
+    listed_at = max((timestamp for timestamp, _ in dated), default=OLDEST)
+    for timestamp, record in sorted(dated, key=lambda item: item[0], reverse=True):
         sensor_id = str(record.get(dataset.sensor_id) or "").strip()
         station_id = str(record.get(dataset.station_id) or "").strip()
         position = _position(record, dataset.position)
         if not sensor_id or not station_id or position is None:
             LOGGER.debug("Skipping record without id or position: %s", record)
             continue
-        by_station.setdefault(station_id, []).append(
-            ApiSensor(
-                id=sensor_id,
-                name=str(record.get(dataset.sensor_name) or sensor_id).strip(),
-                latitude=position[0],
-                longitude=position[1],
-                parameters=frozenset(
-                    mapped
-                    for name, mapped in fields.items()
-                    if is_number(record.get(name))
-                ),
-            )
+        sensor = ApiSensor(
+            id=sensor_id,
+            name=str(record.get(dataset.sensor_name) or sensor_id).strip(),
+            latitude=position[0],
+            longitude=position[1],
+            parameters=frozenset(
+                mapped for name, mapped in fields.items() if is_number(record.get(name))
+            ),
         )
+        by_station.setdefault(station_id, []).append((sensor, timestamp))
     stations = []
-    for code, sensors in by_station.items():
+    for code, members in by_station.items():
+        sensors = _current(members, listed_at)
         temperature = pick_sensor(sensors, Field.TEMPERATURE)
         wind = pick_sensor(sensors, Field.WIND_SPEED)
         anchor = temperature or wind
@@ -140,6 +139,17 @@ def build_stations(
             )
         )
     return stations
+
+
+def _current(
+    members: list[tuple[ApiSensor, datetime]], listed_at: datetime
+) -> list[ApiSensor]:
+    current = [
+        sensor
+        for sensor, timestamp in members
+        if listed_at - timestamp < STATION_OFFLINE_AFTER
+    ]
+    return current or [sensor for sensor, _ in members]
 
 
 def _convert(value: float, factor: float | None) -> float:

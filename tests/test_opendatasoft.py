@@ -207,6 +207,27 @@ def test_stations_are_grouped_by_station_id() -> None:
     ), "no siting data"
 
 
+@pytest.mark.parametrize("missing", ["data_maximum_wind_speed", "air_temperature"])
+def test_silent_sensor_does_not_win_with_more_fields(missing: str) -> None:
+    """A sensor silent for a day is left out if its station has a current one."""
+    records = [
+        {**record, missing: None} if record["device_id"] == CURRENT_SENSOR else record
+        for record in dortmund_records()
+    ]
+    stations = {s.code: s for s in build_stations(records, DATASET, FIELDS)}
+    station = stations["DOBDKP"]
+    assert station.wind_sensor.id == CURRENT_SENSOR, "not the sensor silent since May"
+    expected = None if missing == "air_temperature" else CURRENT_SENSOR
+    assert getattr(station.temperature_sensor, "id", None) == expected
+
+
+def test_station_with_only_silent_sensors_stays() -> None:
+    """Without a current sensor the station stays; the offline repair handles it."""
+    stale = next(r for r in dortmund_records() if r["device_id"] == STALE_SENSOR)
+    [station] = build_stations([stale], DATASET, FIELDS)
+    assert station.temperature_sensor.id == STALE_SENSOR
+
+
 @pytest.mark.parametrize(
     "change",
     [
