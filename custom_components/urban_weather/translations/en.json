@@ -129,6 +129,7 @@
     "recommendation": {
       "options": {
         "nearest_fits": "The nearest station **{station}** ({distance}) has the same surroundings and is used on its own.",
+        "nearest_close": "The nearest station **{station}** ({distance}) is close enough to be used on its own.",
         "nearest_too_far": "The nearest station **{station}** is {distance} away. Recommended: the combination of {count} stations around you.",
         "nearest_other_environment": "The nearest station **{station}** ({distance}) has other surroundings ({environment}). Recommended: the combination of {count} stations, same surroundings first."
       }

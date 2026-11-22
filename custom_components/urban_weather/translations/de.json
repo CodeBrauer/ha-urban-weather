@@ -129,6 +129,7 @@
     "recommendation": {
       "options": {
         "nearest_fits": "Die nächste Station **{station}** ({distance}) hat die gleiche Umgebung und wird allein verwendet.",
+        "nearest_close": "Die nächste Station **{station}** ({distance}) ist nah genug und wird allein verwendet.",
         "nearest_too_far": "Die nächste Station **{station}** ist {distance} entfernt. Empfohlen: die Kombination aus {count} Stationen um dich herum.",
         "nearest_other_environment": "Die nächste Station **{station}** ({distance}) hat eine andere Umgebung ({environment}). Empfohlen: die Kombination aus {count} Stationen, gleiche Umgebung zuerst."
       }

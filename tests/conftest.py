@@ -7,10 +7,20 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from custom_components.urban_weather.providers import PROVIDERS
+from custom_components.urban_weather.providers.mannheim import MANNHEIM
+
 from .common import MEASUREMENTS, sensors_payload
 
 if TYPE_CHECKING:
     from collections.abc import Generator
+
+
+@pytest.fixture(autouse=True)
+def only_mannheim() -> Generator[None]:
+    """Offer only the Mannheim network; tests of other networks add theirs."""
+    with patch.dict(PROVIDERS, {MANNHEIM.id: PROVIDERS[MANNHEIM.id]}, clear=True):
+        yield
 
 
 @pytest.fixture

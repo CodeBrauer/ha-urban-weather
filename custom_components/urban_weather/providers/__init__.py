@@ -6,8 +6,11 @@ from typing import TYPE_CHECKING
 
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
+from .dortmund import DATASET as DORTMUND_DATASET
+from .dortmund import DORTMUND
 from .mannheim import MANNHEIM, MannheimProvider
 from .mannheim.reference import load_reference_data
+from .opendatasoft import OpendatasoftProvider
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
@@ -22,9 +25,16 @@ async def _async_create_mannheim(hass: HomeAssistant) -> Provider:
     return MannheimProvider(MANNHEIM, async_get_clientsession(hass), reference)
 
 
+async def _async_create_dortmund(hass: HomeAssistant) -> Provider:
+    return OpendatasoftProvider(
+        DORTMUND, DORTMUND_DATASET, async_get_clientsession(hass)
+    )
+
+
 # Network id -> provider factory.
 PROVIDERS: dict[str, Callable[[HomeAssistant], Awaitable[Provider]]] = {
     MANNHEIM.id: _async_create_mannheim,
+    DORTMUND.id: _async_create_dortmund,
 }
 
 

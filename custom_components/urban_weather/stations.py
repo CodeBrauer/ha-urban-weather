@@ -34,6 +34,7 @@ class RecommendationReason(StrEnum):
     """Why a set of stations was recommended."""
 
     NEAREST_FITS = "nearest_fits"
+    NEAREST_CLOSE = "nearest_close"
     NEAREST_TOO_FAR = "nearest_too_far"
     NEAREST_OTHER_ENVIRONMENT = "nearest_other_environment"
 
@@ -156,12 +157,16 @@ def recommend(
     wind_station = next((s for s in by_distance if s.wind_sensor), None)
     closest = candidates[0]
     closest_distance = closest.distance_to(latitude, longitude)
-    if closest.environment == environment and (
-        closest_distance <= SINGLE_STATION_MAX_DISTANCE_M
-    ):
-        return Recommendation(
-            [closest], wind_station, RecommendationReason.NEAREST_FITS, closest
-        )
+    if closest_distance <= SINGLE_STATION_MAX_DISTANCE_M:
+        if closest.environment == environment:
+            return Recommendation(
+                [closest], wind_station, RecommendationReason.NEAREST_FITS, closest
+            )
+        # Without surroundings for any station of the network, distance decides.
+        if not any(station.environment for station in candidates):
+            return Recommendation(
+                [closest], wind_station, RecommendationReason.NEAREST_CLOSE, closest
+            )
 
     within = [
         station
