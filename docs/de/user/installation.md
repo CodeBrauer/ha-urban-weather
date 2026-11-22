@@ -1,4 +1,4 @@
-<!-- source: a8636263ef4a777591d1e973349ded663d7def74 -->
+<!-- source: d038fdb03e522da9f3c13e2e336ec101950cb5db -->
 # Installation
 
 ## Voraussetzungen
@@ -7,10 +7,10 @@
 |---|---|
 | Home Assistant | 2026.9 oder neuer |
 | HACS | 2.0.5 oder neuer (nur für die Installation über HACS) |
-| Internet | Zugriff auf `api.smartmannheim.de` aus Home Assistant |
+| Internet | Zugriff auf die API deines Messnetzes aus Home Assistant: `api.smartmannheim.de` (Mannheim) oder `open-data.dortmund.de` (Dortmund) |
 | Browser | Zugriff auf `sgx.geodatenzentrum.de` für die Kartenkacheln (basemap.de) der Stationskarte |
 
-Die API ist öffentlich und braucht weder Konto noch Schlüssel.
+Die APIs sind öffentlich und brauchen weder Konto noch Schlüssel.
 
 ## HACS (benutzerdefiniertes Repository)
 

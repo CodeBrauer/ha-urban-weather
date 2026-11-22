@@ -1,4 +1,4 @@
-<!-- source: 3b89318783a74632feee04e877e8de7b943eea27 -->
+<!-- source: 01a05ec2ba4f6a7447d04a085faa003715fd33d9 -->
 # Mitarbeit
 
 Die Regeln für Code, Tests, Commits, Pull Requests und Versionierung stehen in
@@ -24,10 +24,10 @@ bauen:
 SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/include/c++/v1" uv pip install --python .venv/bin/python pymicro-vad pyspeex-noise
 ```
 
-!!! warning "Die API ist geteilt"
+!!! warning "Die APIs sind geteilt"
     Die API-Limits gelten pro öffentlicher IP, geteilt mit deinem eigenen Home Assistant.
-    Frag die echte API nie in Schleifen oder Skripten ab. Tests rufen sie nie auf; sie nutzen
-    `tests/fixtures/sensors.json`.
+    Frag eine echte API nie in Schleifen oder Skripten ab. Tests rufen keine auf; sie nutzen
+    die gekürzten Antworten in `tests/fixtures/`.
 
 ## Typische Änderungen
 
@@ -37,6 +37,7 @@ SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/
 | Neue Option oder neues Feld im Config Entry | `config_flow.py` mit Migration (`VERSION`/`MINOR_VERSION`); `strings.json` und `translations/`; [Einrichtung](../user/setup.md) und [Config Entry](architecture.md#config-entry) |
 | Budget, Limits oder Intervalle | `RequestLimits` des Messnetzes in `providers/`, Intervalle in `const.py` (vorher in einem Issue besprechen); `selection.py` und `www/map.js` teilen sich die Budget-Regeln; [API-Limits](../user/api-limits.md) |
 | Texte der Kartenseite | Der Selector `map_page` in `strings.json` und `translations/` |
+| Neues Messnetz | Checkliste in [`.claude/skills/new-network/SKILL.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/.claude/skills/new-network/SKILL.md) |
 
 ## Continuous Integration
 

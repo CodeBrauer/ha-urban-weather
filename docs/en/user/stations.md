@@ -1,7 +1,7 @@
 # Station recommendation
 
-The network has more than 400 stations, many of them in street canyons, on roofs or in parks
-only a few hundred metres apart. Their values differ, so the closest station is not always
+Dense networks like Mannheim's, with more than 400 stations, have many of them in street
+canyons, on roofs or in parks only a few hundred metres apart. Their values differ, so the closest station is not always
 the best one for your place.
 
 ## Stations

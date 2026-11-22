@@ -1,8 +1,9 @@
-<!-- source: 0cc1a9cf3e8687eaad78543f959fcd2d6b64e430 -->
+<!-- source: 58aa671c1e367667f94b7ca1070334b68ae94fe3 -->
 # Stationsempfehlung
 
-Das Netz hat über 400 Stationen, viele davon in Straßenschluchten, auf Dächern oder in Parks,
-oft nur wenige hundert Meter voneinander entfernt. Ihre Werte unterscheiden sich, deshalb
+Dichte Netze wie das Mannheimer mit über 400 Stationen haben viele davon in
+Straßenschluchten, auf Dächern oder in Parks, oft nur wenige hundert Meter voneinander
+entfernt. Ihre Werte unterscheiden sich, deshalb
 ist die nächste Station nicht immer die beste für deinen Ort.
 
 ## Stationen

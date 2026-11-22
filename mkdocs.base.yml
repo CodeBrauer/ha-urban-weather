@@ -4,7 +4,7 @@
 # appends lists instead of replacing them, so lists that differ per language (nav,
 # palette) live only in the language files. Build both with `scripts/docs build`.
 site_name: Urban Weather (Stadtklima)
-site_description: Home Assistant integration for the Smart City Mannheim urban climate network
+site_description: Home Assistant integration for urban climate networks (Mannheim, Dortmund)
 repo_url: https://github.com/CodeBrauer/ha-urban-weather
 repo_name: CodeBrauer/ha-urban-weather
 
