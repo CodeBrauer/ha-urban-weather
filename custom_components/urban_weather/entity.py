@@ -9,7 +9,7 @@ from .const import DOMAIN, REPOSITORY_URL
 from .coordinator import ClimateCoordinator
 
 
-class MannheimClimateEntity(CoordinatorEntity[ClimateCoordinator]):
+class UrbanWeatherEntity(CoordinatorEntity[ClimateCoordinator]):
     """One virtual measuring point per config entry."""
 
     _attr_has_entity_name = True

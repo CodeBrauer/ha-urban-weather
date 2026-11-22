@@ -9,7 +9,7 @@ from homeassistant.exceptions import ConfigEntryError, ConfigEntryNotReady
 from homeassistant.helpers import issue_registry as ir
 
 from .const import CONF_NETWORK, CONF_TEMPERATURE_SENSORS, CONF_WIND_SENSOR, DOMAIN
-from .coordinator import ClimateCoordinator, MannheimClimateConfigEntry
+from .coordinator import ClimateCoordinator, UrbanWeatherConfigEntry
 from .hub import StationListUnavailableError, UnknownNetworkError, async_get_hub
 
 if TYPE_CHECKING:
@@ -19,7 +19,7 @@ PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.WEATHER]
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: MannheimClimateConfigEntry
+    hass: HomeAssistant, entry: UrbanWeatherConfigEntry
 ) -> bool:
     """Set up a location from a config entry."""
     network_id = entry.data.get(CONF_NETWORK)
@@ -60,14 +60,14 @@ async def async_setup_entry(
 
 
 async def async_unload_entry(
-    hass: HomeAssistant, entry: MannheimClimateConfigEntry
+    hass: HomeAssistant, entry: UrbanWeatherConfigEntry
 ) -> bool:
     """Unload a config entry."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 
 async def async_remove_entry(
-    hass: HomeAssistant, entry: MannheimClimateConfigEntry
+    hass: HomeAssistant, entry: UrbanWeatherConfigEntry
 ) -> None:
     """Remove the repair issues of a deleted config entry."""
     registry = ir.async_get(hass)
