@@ -12,6 +12,7 @@ from .const import (
     RECOMMENDED_STATIONS,
     SINGLE_STATION_MAX_DISTANCE_M,
     Environment,
+    Field,
     MountZone,
 )
 from .geo import distance_m
@@ -73,6 +74,17 @@ class Station:
     def distance_to(self, latitude: float, longitude: float) -> float:
         """Return the distance to a coordinate in metres."""
         return distance_m(latitude, longitude, self.latitude, self.longitude)
+
+
+def pick_sensor(sensors: Iterable[ApiSensor], field: Field) -> ApiSensor | None:
+    """
+    Return the sensor of a station that provides a field.
+
+    More parameters = newer hardware generation (e.g. with pressure); on a tie the
+    first sensor wins.
+    """
+    candidates = [sensor for sensor in sensors if field in sensor.parameters]
+    return max(candidates, key=lambda s: len(s.parameters), default=None)
 
 
 def nearest(

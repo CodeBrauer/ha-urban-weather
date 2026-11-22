@@ -6,7 +6,11 @@ from typing import TYPE_CHECKING
 
 from custom_components.urban_weather.const import Field
 from custom_components.urban_weather.geo import cluster_points
-from custom_components.urban_weather.stations import LczSource, Station
+from custom_components.urban_weather.stations import (
+    LczSource,
+    Station,
+    pick_sensor,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -28,12 +32,6 @@ def _station_code(sensors: list[ApiSensor]) -> str:
     return (primary or sensors[0]).name
 
 
-def _pick(sensors: list[ApiSensor], field: Field) -> ApiSensor | None:
-    # More parameters = newer hardware generation (e.g. with pressure).
-    candidates = [sensor for sensor in sensors if field in sensor.parameters]
-    return max(candidates, key=lambda s: len(s.parameters), default=None)
-
-
 def build_stations(
     sensors: Iterable[ApiSensor], reference: ReferenceData
 ) -> list[Station]:
@@ -46,8 +44,8 @@ def build_stations(
     stations = []
     for cluster in clusters:
         members = [sensor_list[index] for index in cluster]
-        temperature = _pick(members, Field.TEMPERATURE)
-        wind = _pick(members, Field.WIND_SPEED)
+        temperature = pick_sensor(members, Field.TEMPERATURE)
+        wind = pick_sensor(members, Field.WIND_SPEED)
         if temperature is None and wind is None:
             continue
         anchor = temperature or wind
