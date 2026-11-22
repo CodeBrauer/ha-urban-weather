@@ -34,13 +34,11 @@ BASEMAP_DE = TileLayer(
     attribution="© basemap.de / BKG (CC BY 4.0)",
 )
 
-# Official Swiss national map (swisstopo), free geodata, no API key needed.
-SWISSTOPO = TileLayer(
-    url=(
-        "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/"
-        "default/current/3857/{z}/{x}/{y}.jpeg"
-    ),
-    attribution="© swisstopo",
+# OpenStreetMap in Swiss style, run by the Swiss OSM Association. Covers
+# Switzerland only, no API key needed.
+OSM_CH = TileLayer(
+    url="https://tile.osm.ch/osm-swiss-style/{z}/{x}/{y}.png",
+    attribution="© OpenStreetMap contributors (ODbL), tiles: osm.ch",
 )
 
 # Fallback for networks without an official basemap. Light use only, within the
