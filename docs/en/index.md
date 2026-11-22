@@ -1,7 +1,7 @@
 # Urban Weather (Stadtklima)
 
 Home Assistant integration for dense urban climate networks, starting with
-[Mannheim and Dortmund](#supported-networks). It provides climate values for a location of
+[Mannheim, Dortmund and Zürich](#supported-networks). It provides climate values for a location of
 your choice: temperature, humidity, dew point, absolute humidity, apparent temperature, air
 pressure, global irradiance and wind.
 
@@ -35,6 +35,7 @@ usable in Home Assistant.
 |---|---|---|---|
 | [Smart City Mannheim](networks/mannheim.md) | 400+ | All values; wind on some masts | Surroundings, roof and high point |
 | [Klimamessnetz Dortmund](networks/dortmund.md) | 76 | Temperature and humidity; about a third also air pressure, global irradiance and wind | None: [recommendation by distance](user/stations.md#networks-without-siting-data) |
+| [Stadtklimamessnetz Zürich](networks/zurich.md) | 107 | Temperature and humidity | None: [recommendation by distance](user/stations.md#networks-without-siting-data) |
 
 When you add a location, the integration uses the network with a station nearby. Details per
 network: [Supported networks](networks/index.md). Data sources and licences:

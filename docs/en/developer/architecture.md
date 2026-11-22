@@ -50,6 +50,7 @@ flowchart TB
 | `provider.py` | `Provider` interface, `Network` configuration, shared types (`ApiSensor`, `Measurement`) and error types (`ApiRateLimitError`, `SensorNotFoundError`, ...) |
 | `providers/` | `PROVIDERS` (network id → provider factory), `async_create_provider()`, one package per network |
 | `providers/mannheim/` | `MANNHEIM` network and `MannheimProvider`: HTTP client for `/sensors` and `/measurements/{id}` (`api.py`), grouping sensors into stations (`stations.py`), bundled metadata catalogue, LCZ grid and district names (`reference.py`, `data/`) |
+| `providers/opendatasoft.py`, `providers/geojson.py` | Generic providers for a platform: `OpendatasoftProvider` (Dortmund) and `GeoJsonProvider` (Zürich); a network on it is a dataset or feed configuration with a `Network` in `providers/<city>.py` |
 | `hub.py` | `ClimateHub`, one per network (`async_get_hub()`): rate limiters, measurement cache, station list with stored copy and first-seen times |
 | `stations.py` | `Station`, `recommend()`, `networks_in_range()` |
 | `selection.py` | `StationSelection`: recommendation, request budget and labels, shared by all flows and the map |
@@ -82,7 +83,7 @@ from it. Its base class declares the request model for measurements:
 | Base class | Measurements | Requests per refresh |
 |---|---|---|
 | `SensorProvider` | `async_get_measurements(sensor_id)`: one sensor per request (Mannheim) | One per sensor |
-| `BulkProvider` | `async_get_all_measurements(sensors)`: all sensors in one request; the provider may filter it to the given sensors, e.g. by area | One, whatever the number of stations |
+| `BulkProvider` | `async_get_all_measurements(sensors)`: all sensors in one request; the provider may filter it to the given sensors, e.g. by area (Dortmund, Zürich) | One, whatever the number of stations |
 
 Station selection and map page plan with `requests_per_refresh()`, the hub fetches by the
 base class ([Polling and API access](data-flow.md)). Reference data is optional: without it, `lcz()` and `district()` return `None` and the flow falls back to

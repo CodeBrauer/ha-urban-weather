@@ -3,7 +3,8 @@
 Each network has its own limits and its own request budget; locations in one network do not
 take stations from locations in another. The documented limits and what the integration sends
 are on the page of each network: [Smart City Mannheim](../networks/mannheim.md#limits),
-[Klimamessnetz Dortmund](../networks/dortmund.md#limits). This page explains how the budget
+[Klimamessnetz Dortmund](../networks/dortmund.md#limits) and
+[Stadtklimamessnetz Zürich](../networks/zurich.md#limits). This page explains how the budget
 limits the number of stations.
 
 The limits apply to everything behind your internet connection (public IP address): other
@@ -12,7 +13,7 @@ Home Assistant integrations, scripts or devices that use the same API share them
 ## How many stations fit
 
 The sum of the requests of all enabled locations of a network must stay at or below its
-planned requests per hour (24 in Mannheim, 60 in Dortmund). How many requests a location needs
+planned requests per hour (24 in Mannheim, 60 in Dortmund and Zürich). How many requests a location needs
 depends on how the network delivers its values.
 
 ### One request per station (Mannheim)
@@ -40,7 +41,7 @@ Bold: the interval chosen automatically for a single location (the shortest of 1
 - With several locations, each one leaves fewer stations or a longer interval for the
   others.
 
-### One request for all stations (Dortmund)
+### One request for all stations (Dortmund, Zürich)
 
 One request returns the values of all stations the locations use, so the number of stations
 costs no requests:
