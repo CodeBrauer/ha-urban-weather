@@ -93,6 +93,9 @@ Oder von Hand:
    `https://github.com/CodeBrauer/ha-urban-weather` mit Typ *Integration* hinzufügen.
 2. *Urban Weather (Stadtklima)* installieren und Home Assistant neu starten.
 
+Upgrade von *Klimamessnetz Mannheim* 0.2.x: Das Update in HACS funktioniert nicht, siehe
+[Upgrade von 0.2.x](https://codebrauer.github.io/ha-urban-weather/de/user/upgrade/).
+
 ### Manuell
 
 `custom_components/urban_weather` in deinen Ordner `config/custom_components/`
