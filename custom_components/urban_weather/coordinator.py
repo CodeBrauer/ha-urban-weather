@@ -45,7 +45,7 @@ if TYPE_CHECKING:
     from .provider import ApiSensor, Measurement
     from .stations import Station
 
-type MannheimClimateConfigEntry = ConfigEntry[ClimateCoordinator]
+type UrbanWeatherConfigEntry = ConfigEntry[ClimateCoordinator]
 
 
 def issue_id(entry_id: str, kind: str, sensor_id: str) -> str:
@@ -56,12 +56,12 @@ def issue_id(entry_id: str, kind: str, sensor_id: str) -> str:
 class ClimateCoordinator(DataUpdateCoordinator[Estimate]):
     """Fetch the latest values of all selected stations of one config entry."""
 
-    config_entry: MannheimClimateConfigEntry
+    config_entry: UrbanWeatherConfigEntry
 
     def __init__(
         self,
         hass: HomeAssistant,
-        entry: MannheimClimateConfigEntry,
+        entry: UrbanWeatherConfigEntry,
         hub: ClimateHub,
         stations: list[Station],
         wind_station: Station | None,

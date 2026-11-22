@@ -11,14 +11,14 @@ from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
 
-    from .coordinator import MannheimClimateConfigEntry
+    from .coordinator import UrbanWeatherConfigEntry
 
 TO_REDACT = {CONF_LATITUDE, CONF_LONGITUDE}
 
 
 async def async_get_config_entry_diagnostics(
     hass: HomeAssistant,  # noqa: ARG001
-    entry: MannheimClimateConfigEntry,
+    entry: UrbanWeatherConfigEntry,
 ) -> dict[str, Any]:
     """Return diagnostics without the configured coordinates."""
     coordinator = entry.runtime_data

@@ -22,13 +22,13 @@ from homeassistant.const import (
 )
 from homeassistant.util import dt as dt_util
 
-from .entity import MannheimClimateEntity
+from .entity import UrbanWeatherEntity
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-    from .coordinator import ClimateCoordinator, MannheimClimateConfigEntry
+    from .coordinator import ClimateCoordinator, UrbanWeatherConfigEntry
 
 PARALLEL_UPDATES = 0
 
@@ -80,14 +80,14 @@ def condition_from_irradiance(
 
 async def async_setup_entry(
     hass: HomeAssistant,  # noqa: ARG001
-    entry: MannheimClimateConfigEntry,
+    entry: UrbanWeatherConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Create the weather entity."""
     async_add_entities([ClimateWeather(entry.runtime_data)])
 
 
-class ClimateWeather(MannheimClimateEntity, WeatherEntity):
+class ClimateWeather(UrbanWeatherEntity, WeatherEntity):
     """Current conditions of the configured location."""
 
     _attr_name = None

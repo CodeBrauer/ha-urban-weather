@@ -23,7 +23,7 @@ from homeassistant.const import (
 )
 
 from .const import Field
-from .entity import MannheimClimateEntity
+from .entity import UrbanWeatherEntity
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -33,7 +33,7 @@ if TYPE_CHECKING:
     from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
     from .aggregation import Estimate
-    from .coordinator import ClimateCoordinator, MannheimClimateConfigEntry
+    from .coordinator import ClimateCoordinator, UrbanWeatherConfigEntry
 
 PARALLEL_UPDATES = 0
 UNIT_KELVIN_DIFFERENCE = "K"
@@ -212,7 +212,7 @@ SENSORS: tuple[ClimateSensorDescription, ...] = (
 
 async def async_setup_entry(
     hass: HomeAssistant,  # noqa: ARG001
-    entry: MannheimClimateConfigEntry,
+    entry: UrbanWeatherConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Create the sensors the selected stations can provide."""
@@ -224,7 +224,7 @@ async def async_setup_entry(
     )
 
 
-class ClimateSensor(MannheimClimateEntity, SensorEntity):
+class ClimateSensor(UrbanWeatherEntity, SensorEntity):
     """A combined value of the selected stations."""
 
     entity_description: ClimateSensorDescription

@@ -165,7 +165,7 @@ def selected_options(
     }
 
 
-class MannheimClimateConfigFlow(ConfigFlow, domain=DOMAIN):
+class UrbanWeatherConfigFlow(ConfigFlow, domain=DOMAIN):
     """Set up or move a location."""
 
     VERSION = 1
@@ -185,9 +185,9 @@ class MannheimClimateConfigFlow(ConfigFlow, domain=DOMAIN):
     @callback
     def async_get_options_flow(
         config_entry: ConfigEntry,  # noqa: ARG004
-    ) -> MannheimClimateOptionsFlow:
+    ) -> UrbanWeatherOptionsFlow:
         """Return the options flow."""
-        return MannheimClimateOptionsFlow()
+        return UrbanWeatherOptionsFlow()
 
     @callback
     def async_remove(self) -> None:
@@ -469,7 +469,7 @@ class MannheimClimateConfigFlow(ConfigFlow, domain=DOMAIN):
         return next((s.district for s in closest if s.district), provider.network.area)
 
 
-class MannheimClimateOptionsFlow(OptionsFlowWithReload):
+class UrbanWeatherOptionsFlow(OptionsFlowWithReload):
     """Change stations (list), polling interval and humidity correction."""
 
     def __init__(self) -> None:
