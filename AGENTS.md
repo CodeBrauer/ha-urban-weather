@@ -10,8 +10,10 @@ Home Assistant custom integration `urban_weather` ("Urban Weather (Stadtklima)")
 |---|---|
 | `custom_components/urban_weather/` | The integration |
 | `provider.py` | Provider interface and network configuration (limits, attribution, map tiles, field mapping), shared types and errors |
+| `providers/` | `PROVIDERS` registry; `common.py`: HTTP helpers and map tile layers shared by the providers |
 | `providers/mannheim/` | Mannheim provider: HTTP client and response parsing, sensors grouped into stations, siting metadata (`data/`) |
-| `hub.py` | One per Home Assistant: rate limiter, measurement cache, station list (refreshed daily, stored copy as fallback) |
+| `providers/opendatasoft.py`, `providers/dortmund.py` | Generic Opendatasoft provider (all stations in one request); the Dortmund network as its configuration |
+| `hub.py` | One per network: rate limiter, measurement cache, station list (refreshed daily, stored copy as fallback) |
 | `stations.py` | Stations and station recommendation |
 | `aggregation.py` | Combining readings (median, outliers, dew point, apparent temperature) |
 | `selection.py` | Request budget and station presentation shared by the flows and the map |

@@ -22,9 +22,10 @@ for Python 3.14 and fail to compile. Build them once with the SDK path:
 SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/include/c++/v1" uv pip install --python .venv/bin/python pymicro-vad pyspeex-noise
 ```
 
-!!! warning "The API is shared"
-    The API limits apply per public IP, shared with your own Home Assistant. Never poll the
-    live API in loops or scripts. Tests never call it; they use `tests/fixtures/sensors.json`.
+!!! warning "The APIs are shared"
+    The API limits apply per public IP, shared with your own Home Assistant. Never poll a
+    live API in loops or scripts. Tests never call one; they use the trimmed responses in
+    `tests/fixtures/`.
 
 ## Typical changes
 
