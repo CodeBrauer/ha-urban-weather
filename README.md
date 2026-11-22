@@ -90,6 +90,9 @@ Or manually:
    with type *Integration*.
 2. Install *Urban Weather (Stadtklima)* and restart Home Assistant.
 
+Upgrading from *Klimamessnetz Mannheim* 0.2.x: updating in HACS does not work, see
+[Upgrade from 0.2.x](https://codebrauer.github.io/ha-urban-weather/user/upgrade/).
+
 ### Manual
 
 Copy `custom_components/urban_weather` into your `config/custom_components/` folder and
