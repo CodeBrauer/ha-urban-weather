@@ -108,7 +108,7 @@ the API budget. New values arrive every 10 minutes with 10–20 minutes delay an
 | Stations for temperature and humidity | Up to 6 stations; the maximum shown follows from the API budget at the chosen interval. |
 | Station for wind | One station or none. Wind is not averaged. |
 | Update interval | 10, 15, 20 or 30 minutes, as long as the API budget allows it. |
-| Dew point correction | −3.0 to +3.0 K, added to the dew point before humidity is calculated, for stations that read too humid or too dry. Mannheim: the network tends to read too humid; −1.3 K matched the DWD station Mannheim in a 31-day comparison. |
+| Dew point correction | −3.0 to +3.0 K, added to the dew point before humidity is calculated, for stations that read too humid or too dry. Mannheim: see [its quirks](../networks/mannheim.md#quirks). |
 
 Saving reloads the location. If the new selection measures fewer values, entities that are
 no longer provided become unavailable and can be deleted.

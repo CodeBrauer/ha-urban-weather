@@ -1,4 +1,4 @@
-<!-- source: 6e202b989d3c0dc79c7c32be638d6b2a353bc961 -->
+<!-- source: 09a535786205e1dc7dd01addfdf88a1400a05ba0 -->
 # Einrichtung
 
 *Einstellungen → Geräte & Dienste → Integration hinzufügen → Urban Weather (Stadtklima)*
@@ -115,7 +115,7 @@ Minuten Verzögerung.
 | Stationen für Temperatur und Luftfeuchte | Bis zu 6 Stationen; das angezeigte Maximum ergibt sich aus dem API-Budget beim gewählten Intervall. |
 | Station für Wind | Eine Station oder keine. Wind wird nicht gemittelt. |
 | Aktualisierungsintervall | 10, 15, 20 oder 30 Minuten, soweit das API-Budget es zulässt. |
-| Taupunkt-Korrektur | −3,0 bis +3,0 K, wird vor der Berechnung der Luftfeuchte auf den Taupunkt addiert, für Stationen, die zu feucht oder zu trocken messen. Mannheim: Das Netz misst eher zu feucht; im 31-Tage-Vergleich mit der DWD-Station Mannheim passten −1,3 K. |
+| Taupunkt-Korrektur | −3,0 bis +3,0 K, wird vor der Berechnung der Luftfeuchte auf den Taupunkt addiert, für Stationen, die zu feucht oder zu trocken messen. Mannheim: siehe [Besonderheiten](../networks/mannheim.md#besonderheiten). |
 
 Speichern lädt den Standort neu. Misst die neue Auswahl weniger Werte, werden Entitäten, die
 nicht mehr bereitgestellt werden, nicht verfügbar und lassen sich löschen.

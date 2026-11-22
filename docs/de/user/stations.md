@@ -1,7 +1,7 @@
-<!-- source: 58aa671c1e367667f94b7ca1070334b68ae94fe3 -->
+<!-- source: ecb396c3048457863e62502b722fbdd37d79258d -->
 # Stationsempfehlung
 
-Dichte Netze wie das Mannheimer mit über 400 Stationen haben viele davon in
+Dichte Netze wie [das Mannheimer](../networks/mannheim.md) mit über 400 Stationen haben viele davon in
 Straßenschluchten, auf Dächern oder in Parks, oft nur wenige hundert Meter voneinander
 entfernt. Ihre Werte unterscheiden sich, deshalb
 ist die nächste Station nicht immer die beste für deinen Ort.
@@ -47,16 +47,13 @@ flowchart TD
 
 ## Messnetze ohne Standortdaten
 
-Das Dortmunder Messnetz veröffentlicht keine Daten zu Umgebung oder Montage. Seine Sensoren
-werden nach der Stations-ID des Datensatzes gruppiert; der Code einer Station ist diese ID
-(z. B. `DOBHAP`).
+Manche Messnetze, etwa [Dortmund](../networks/dortmund.md), veröffentlichen keine Daten zu
+Umgebung oder Montage.
 
 - Die nächste Station im Umkreis von 1 km wird allein verwendet; sonst werden bis zu
   4 Stationen im Suchradius kombiniert.
 - Die Umgebung, die du bei der Einrichtung bestätigst, wird beim Standort gespeichert, ändert
   die Empfehlung aber nicht.
-- Black-Globe-Sensoren bleiben außen vor: Sie messen eine Strahlungstemperatur, die bei
-  Sonne mehrere Kelvin über der Lufttemperatur liegt.
 
 ## Selbst wählen
 

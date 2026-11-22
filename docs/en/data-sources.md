@@ -10,6 +10,8 @@
 | Map tiles of the station map | [basemap.de](https://basemap.de/) / BKG | CC BY 4.0 |
 | Map library (bundled) | [Leaflet 1.9.4](https://leafletjs.com/) | BSD-2-Clause |
 
+Details per network: [Supported networks](networks/index.md).
+
 Entities carry the attribution of their network: *Smart City Mannheim GmbH, dl-de/by-2-0* or
 *Stadt Dortmund, dl-de/zero-2-0*.
 

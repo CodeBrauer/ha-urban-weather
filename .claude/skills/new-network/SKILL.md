@@ -46,6 +46,7 @@ A network is visible in many places. Work through every section; a section that 
 | Page | Change |
 |---|---|
 | `index.md` | Intro sentence naming the networks, row in "Supported networks" |
+| `networks/<city>.md` | New page from an existing one (overview table, coverage, data, limits, quirks); add it to `nav` in `mkdocs.yml` and `mkdocs.de.yml` and as a row in `networks/index.md` |
 | `data-sources.md` | Source and licence row, attribution sentence |
 | `user/api-limits.md` | Section for the network: limits, request model, budget |
 | `user/installation.md` | API host in the "Internet" requirement |

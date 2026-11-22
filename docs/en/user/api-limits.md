@@ -1,28 +1,21 @@
 # API limits
 
 Each network has its own limits and its own request budget; locations in one network do not
-take stations from locations in another. This page describes Mannheim first, then
-[Dortmund](#dortmund).
+take stations from locations in another. The documented limits and what the integration sends
+are on the page of each network: [Smart City Mannheim](../networks/mannheim.md#limits),
+[Klimamessnetz Dortmund](../networks/dortmund.md#limits). This page explains how the budget
+limits the number of stations.
 
-The [Klima API](https://api.smartmannheim.de/doc) is public and needs no key. Its
-documented limit is **30 measurement requests per hour per internet connection** (public IP
-address), plus a few requests of the station list. In practice the API also limits short
-bursts (about 5 requests per 2 minutes) and answers `429` with a `Retry-After` header.
-
-The limit applies to everything behind your internet connection: other Home Assistant
-integrations, scripts or devices that use `api.smartmannheim.de` share it.
-
-## What the integration does
-
-| Measure | Value |
-|---|---|
-| Station list | Refreshed at most once a day and stored locally; a stored copy is used if the API is unavailable |
-| Measurement cache | 9 minutes, shared between all locations |
-| Requests sent | At most 4 per 2 minutes and 30 per hour; skipped stations are fetched shortly afterwards |
-| Requests planned | At most 24 per hour for all locations together, so 6 stay free for other clients |
-| After a `429` | No requests until `Retry-After` has passed |
+The limits apply to everything behind your internet connection (public IP address): other
+Home Assistant integrations, scripts or devices that use the same API share them.
 
 ## How many stations fit
+
+The sum of the requests of all enabled locations of a network must stay at or below its
+planned requests per hour (24 in Mannheim, 60 in Dortmund). How many requests a location needs
+depends on how the network delivers its values.
+
+### One request per station (Mannheim)
 
 Each location needs one request per selected station and update, the wind station counts as
 a station:
@@ -30,8 +23,6 @@ a station:
 ```text
 requests per hour = (stations + wind station) × 60 / update interval in minutes
 ```
-
-The sum over all enabled locations must stay at or below 24.
 
 | Stations + wind | 10 min | 15 min | 20 min | 30 min |
 |---|---|---|---|---|
@@ -49,35 +40,11 @@ Bold: the interval chosen automatically for a single location (the shortest of 1
 - With several locations, each one leaves fewer stations or a longer interval for the
   others.
 
-## Dortmund
+### One request for all stations (Dortmund)
 
-The [Dortmund dataset](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/)
-is public and needs no key. Every response reports a quota of 50,000 requests per day (about
-2,083 per hour); no other limits are documented. New values arrive every 5 minutes.
-
-One request returns the values of all stations the Dortmund locations use, so the number of
-stations costs no requests:
+One request returns the values of all stations the locations use, so the number of stations
+costs no requests:
 
 ```text
 requests per hour = 60 / update interval in minutes   (per location)
 ```
-
-| Measure | Value |
-|---|---|
-| Station list | Refreshed at most once a day and stored locally |
-| Measurement cache | 9 minutes, shared between all locations |
-| Requests sent | At most 2 per minute and 60 per hour |
-| Requests planned | At most 60 per hour for all locations together |
-
-## Related integration
-
-[Smart City Mannheim](https://github.com/smartmannheim/smartmannheim) (domain
-`smartmannheim_klima`) uses the same API. Both can be installed side by side but share the
-limit of 30 requests per hour. This integration only plans its own requests, so keep the
-number of stations small in both.
-
-| | Urban Weather (Stadtklima) | Smart City Mannheim |
-|---|---|---|
-| Approach | One location, values that represent it best: a fitting station or a combination | Pick individual sensors, values per station |
-| Choosing stations | Recommendation by distance, surroundings and mounting height; interactive map | Search by sensor code or street, list sorted by distance |
-| Additional values | Absolute humidity, apparent temperature, weather entity | Pollen, air quality, DWD station Mannheim |

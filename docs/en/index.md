@@ -33,11 +33,12 @@ usable in Home Assistant.
 
 | Network | Stations | Values | Siting data |
 |---|---|---|---|
-| [Smart City Mannheim](https://smartmannheim.de/) | 400+ | All values; wind on some masts | Surroundings, roof and high point |
-| [Klimamessnetz Dortmund](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/) | 76 | Temperature and humidity; about a third also air pressure, global irradiance and wind | None: [recommendation by distance](user/stations.md#networks-without-siting-data) |
+| [Smart City Mannheim](networks/mannheim.md) | 400+ | All values; wind on some masts | Surroundings, roof and high point |
+| [Klimamessnetz Dortmund](networks/dortmund.md) | 76 | Temperature and humidity; about a third also air pressure, global irradiance and wind | None: [recommendation by distance](user/stations.md#networks-without-siting-data) |
 
-When you add a location, the integration uses the network with a station nearby. Data
-sources and licences: [Data sources](data-sources.md).
+When you add a location, the integration uses the network with a station nearby. Details per
+network: [Supported networks](networks/index.md). Data sources and licences:
+[Data sources](data-sources.md).
 
 ## Features
 
@@ -83,6 +84,7 @@ location polls its stations and combines their latest values into one set of ent
 | Add a location and choose stations | [Setup](user/setup.md) |
 | Know what each entity means | [Entities](user/entities.md) |
 | Understand which stations are recommended | [Station recommendation](user/stations.md) |
+| Learn about a network, its coverage and quirks | [Supported networks](networks/index.md) |
 | Know how many stations fit and why | [API limits](user/api-limits.md) |
 | Fix missing values or a repair issue | [Repairs and troubleshooting](user/troubleshooting.md) |
 | Work on the code | [Architecture](developer/architecture.md) |

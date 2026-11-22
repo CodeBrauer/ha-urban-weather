@@ -1,4 +1,4 @@
-<!-- source: 05c7579919be32a3ac45d6130a5b0d3487566d91 -->
+<!-- source: 4acc0abf6e07773804a56a4a2e497befc281b40c -->
 # Urban Weather (Stadtklima)
 
 Home-Assistant-Integration für dichte Stadtklima-Messnetze, zunächst
@@ -34,11 +34,12 @@ Home Assistant nutzbar.
 
 | Messnetz | Stationen | Werte | Standortdaten |
 |---|---|---|---|
-| [Smart City Mannheim](https://smartmannheim.de/) | über 400 | Alle Werte; Wind an einigen Masten | Umgebung, Dach und Hochpunkt |
-| [Klimamessnetz Dortmund](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/) | 76 | Temperatur und Luftfeuchte; etwa ein Drittel auch Luftdruck, Globalstrahlung und Wind | Keine: [Empfehlung nach Entfernung](user/stations.md#messnetze-ohne-standortdaten) |
+| [Smart City Mannheim](networks/mannheim.md) | über 400 | Alle Werte; Wind an einigen Masten | Umgebung, Dach und Hochpunkt |
+| [Klimamessnetz Dortmund](networks/dortmund.md) | 76 | Temperatur und Luftfeuchte; etwa ein Drittel auch Luftdruck, Globalstrahlung und Wind | Keine: [Empfehlung nach Entfernung](user/stations.md#messnetze-ohne-standortdaten) |
 
 Beim Hinzufügen eines Standorts nutzt die Integration das Messnetz mit einer Station in der
-Nähe. Datenquellen und Lizenzen: [Datenquellen](data-sources.md).
+Nähe. Details je Messnetz: [Unterstützte Messnetze](networks/index.md). Datenquellen und
+Lizenzen: [Datenquellen](data-sources.md).
 
 ## Funktionen
 
@@ -84,6 +85,7 @@ letzten Werte zu einem Satz Entitäten.
 | Einen Standort hinzufügen und Stationen wählen | [Einrichtung](user/setup.md) |
 | Wissen, was jede Entität bedeutet | [Entitäten](user/entities.md) |
 | Verstehen, welche Stationen empfohlen werden | [Stationsempfehlung](user/stations.md) |
+| Ein Messnetz, seine Abdeckung und Besonderheiten kennenlernen | [Unterstützte Messnetze](networks/index.md) |
 | Wissen, wie viele Stationen passen und warum | [API-Limits](user/api-limits.md) |
 | Fehlende Werte oder einen Reparaturhinweis beheben | [Reparaturen und Fehlersuche](user/troubleshooting.md) |
 | Am Code arbeiten | [Architektur](developer/architecture.md) |

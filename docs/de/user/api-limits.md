@@ -1,30 +1,23 @@
-<!-- source: 62a922a706d48a15966836f4042240f5e78d6183 -->
+<!-- source: 6006d3549a009319c61f69862f6303f8e29666cf -->
 # API-Limits
 
 Jedes Messnetz hat eigene Limits und ein eigenes Abfrage-Budget; Standorte in einem Messnetz
-nehmen Standorten in einem anderen keine Stationen weg. Diese Seite beschreibt zuerst
-Mannheim, dann [Dortmund](#dortmund).
+nehmen Standorten in einem anderen keine Stationen weg. Die dokumentierten Limits und was die
+Integration sendet, stehen auf der Seite des jeweiligen Messnetzes:
+[Smart City Mannheim](../networks/mannheim.md#limits),
+[Klimamessnetz Dortmund](../networks/dortmund.md#limits). Diese Seite erklärt, wie das
+Budget die Zahl der Stationen begrenzt.
 
-Die [Klima-API](https://api.smartmannheim.de/doc) ist öffentlich und braucht keinen
-Schlüssel. Dokumentiert sind **30 Messwert-Abfragen pro Stunde und Internetanschluss**
-(öffentliche IP-Adresse), dazu wenige Abfragen der Stationsliste. In der Praxis begrenzt die
-API zusätzlich kurze Bursts (etwa 5 Abfragen pro 2 Minuten) und antwortet mit `429` und
-einem `Retry-After`-Header.
-
-Das Limit gilt für alles hinter deinem Internetanschluss: Andere Integrationen in Home
-Assistant, Skripte oder Geräte, die `api.smartmannheim.de` nutzen, teilen es sich.
-
-## Was die Integration tut
-
-| Maßnahme | Wert |
-|---|---|
-| Stationsliste | Höchstens einmal am Tag geladen und lokal gespeichert; ist die API nicht erreichbar, wird die gespeicherte Kopie verwendet |
-| Messwert-Cache | 9 Minuten, geteilt zwischen allen Standorten |
-| Gesendete Abfragen | Höchstens 4 pro 2 Minuten und 30 pro Stunde; übersprungene Stationen werden kurz danach nachgeholt |
-| Geplante Abfragen | Höchstens 24 pro Stunde für alle Standorte zusammen, 6 bleiben also für andere Clients frei |
-| Nach einer `429` | Keine Abfragen, bis `Retry-After` abgelaufen ist |
+Die Limits gelten für alles hinter deinem Internetanschluss (öffentliche IP-Adresse): Andere
+Integrationen in Home Assistant, Skripte oder Geräte, die dieselbe API nutzen, teilen sie sich.
 
 ## Wie viele Stationen passen
+
+Die Summe der Abfragen aller aktivierten Standorte eines Messnetzes darf höchstens die
+geplanten Abfragen pro Stunde betragen (24 in Mannheim, 60 in Dortmund). Wie viele Abfragen
+ein Standort braucht, hängt davon ab, wie das Messnetz seine Werte liefert.
+
+### Eine Abfrage pro Station (Mannheim)
 
 Jeder Standort braucht pro gewählter Station und Aktualisierung eine Abfrage, die
 Windstation zählt als Station:
@@ -32,8 +25,6 @@ Windstation zählt als Station:
 ```text
 Abfragen pro Stunde = (Stationen + Windstation) × 60 / Aktualisierungsintervall in Minuten
 ```
-
-Die Summe über alle aktivierten Standorte darf höchstens 24 betragen.
 
 | Stationen + Wind | 10 min | 15 min | 20 min | 30 min |
 |---|---|---|---|---|
@@ -52,36 +43,11 @@ das Budget es zulässt.
 - Bei mehreren Standorten lässt jeder den anderen weniger Stationen oder ein längeres
   Intervall.
 
-## Dortmund
+### Eine Abfrage für alle Stationen (Dortmund)
 
-Der [Dortmunder Datensatz](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/)
-ist öffentlich und braucht keinen Schlüssel. Jede Antwort nennt ein Kontingent von 50.000
-Abfragen pro Tag (etwa 2.083 pro Stunde); weitere Limits sind nicht dokumentiert. Neue Werte
-kommen alle 5 Minuten.
-
-Eine Abfrage liefert die Werte aller Stationen, die die Dortmunder Standorte nutzen. Die
-Anzahl der Stationen kostet also keine Abfragen:
+Eine Abfrage liefert die Werte aller Stationen, die die Standorte nutzen. Die Anzahl der
+Stationen kostet also keine Abfragen:
 
 ```text
 Abfragen pro Stunde = 60 / Aktualisierungsintervall in Minuten   (pro Standort)
 ```
-
-| Maßnahme | Wert |
-|---|---|
-| Stationsliste | Höchstens einmal am Tag aktualisiert und lokal gespeichert |
-| Messwert-Cache | 9 Minuten, geteilt zwischen allen Standorten |
-| Gesendete Abfragen | Höchstens 2 pro Minute und 60 pro Stunde |
-| Geplante Abfragen | Höchstens 60 pro Stunde für alle Standorte zusammen |
-
-## Verwandte Integration
-
-[Smart City Mannheim](https://github.com/smartmannheim/smartmannheim) (Domain
-`smartmannheim_klima`) nutzt dieselbe API. Beide lassen sich parallel installieren, teilen
-sich aber das Limit von 30 Abfragen pro Stunde. Diese Integration plant nur ihre eigenen
-Abfragen, halte die Zahl der Stationen deshalb in beiden klein.
-
-| | Urban Weather (Stadtklima) | Smart City Mannheim |
-|---|---|---|
-| Ansatz | Ein Standort, Werte, die ihn am besten abbilden: passende Station oder Kombination mehrerer | Einzelne Sensoren wählen, Werte pro Station |
-| Stationswahl | Empfehlung nach Entfernung, Umgebung und Montagehöhe; interaktive Karte | Suche nach Sensorcode oder Straße, Liste nach Entfernung |
-| Zusätzliche Werte | Absolute Feuchte, gefühlte Temperatur, Wetter-Entität | Pollenflug, Luftqualität, DWD-Station Mannheim |
