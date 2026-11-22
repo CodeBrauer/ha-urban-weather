@@ -58,7 +58,7 @@ sources and licences: [Data sources](data-sources.md).
 
 ```mermaid
 flowchart LR
-    API[(Klima API<br>api.smartmannheim.de)]
+    API[(API of the network)]
     Hub[Hub<br>request budget, cache,<br>station list]
     C1[Location 1<br>stations + combination]
     C2[Location 2<br>stations + combination]

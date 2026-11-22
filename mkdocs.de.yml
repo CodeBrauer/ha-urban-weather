@@ -2,7 +2,7 @@
 INHERIT: mkdocs.base.yml
 site_url: https://codebrauer.github.io/ha-urban-weather/de/
 edit_uri: edit/main/docs/de/
-copyright: Inoffizielles Projekt, nicht verbunden mit der Smart City Mannheim GmbH oder der Stadt Mannheim.
+copyright: Inoffizielles Projekt, nicht verbunden mit den Betreibern der Messnetze oder den Städten.
 
 docs_dir: docs/de
 site_dir: site/de

@@ -1,4 +1,4 @@
-<!-- source: 843c694810b1af5807f579fceeadd19c36219c18 -->
+<!-- source: c299c2fbbca73e6006301ff103bfd34917d6146c -->
 # Reparaturen und Fehlersuche
 
 ## Reparaturhinweise
@@ -91,7 +91,7 @@ actions:
 | Im Umkreis von 10 km gibt es keine Station. | Wähle einen Ort in oder bei einem [unterstützten Messnetz](../index.md#unterstutzte-messnetze). |
 | Im Umkreis von 10 km gibt es keine Station von … | Ein verschobener Standort bleibt in seinem Messnetz. Für ein anderes Messnetz füge den Ort als neuen Standort hinzu. |
 | Dieser Standort nutzt das Messnetz …, das diese Version der Integration nicht kennt. | Der Standort wurde mit einer neueren Version eingerichtet. Aktualisiere die Integration oder füge den Standort neu hinzu. |
-| Die Stationsliste konnte nicht von api.smartmannheim.de geladen werden. | Die API ist nicht erreichbar und es gibt noch keine gespeicherte Stationsliste. Beim Hinzufügen eines Standorts versuch es später erneut; beim Start wiederholt Home Assistant es von selbst. |
+| Die Stationsliste konnte nicht von … geladen werden. | Die API ist nicht erreichbar und es gibt noch keine gespeicherte Stationsliste. Beim Hinzufügen eines Standorts versuch es später erneut; beim Start wiederholt Home Assistant es von selbst. |
 | Zu viele API-Abfragen pro Stunde. | Die Auswahl passt nicht ins Budget. Wähle weniger Stationen, keine Windstation oder ein längeres Intervall. |
 | Keine der gewählten Stationen existiert mehr. | Alle Stationen des Standorts sind weg. Wähle unter *Konfigurieren* neue. |
 | Das Abfrage-Budget der API ist gerade aufgebraucht. | Der Standort versucht es nach der angegebenen Zeit von selbst erneut. |

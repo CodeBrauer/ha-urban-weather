@@ -6,10 +6,10 @@
 |---|---|
 | Home Assistant | 2026.9 or newer |
 | HACS | 2.0.5 or newer (only for installation via HACS) |
-| Internet | Access to `api.smartmannheim.de` from Home Assistant |
+| Internet | Access to the API of your network from Home Assistant: `api.smartmannheim.de` (Mannheim) or `open-data.dortmund.de` (Dortmund) |
 | Browser | Access to `sgx.geodatenzentrum.de` for the map tiles (basemap.de) of the station map |
 
-The API is public and needs no account or key.
+The APIs are public and need no account or key.
 
 ## HACS (custom repository)
 

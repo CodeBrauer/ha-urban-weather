@@ -1,4 +1,4 @@
-<!-- source: 674e0b620fcff54cefce253da8bf10e58964a433 -->
+<!-- source: 05c7579919be32a3ac45d6130a5b0d3487566d91 -->
 # Urban Weather (Stadtklima)
 
 Home-Assistant-Integration für dichte Stadtklima-Messnetze, zunächst
@@ -59,7 +59,7 @@ Nähe. Datenquellen und Lizenzen: [Datenquellen](data-sources.md).
 
 ```mermaid
 flowchart LR
-    API[(Klima-API<br>api.smartmannheim.de)]
+    API[(API des Messnetzes)]
     Hub[Hub<br>Abfrage-Budget, Cache,<br>Stationsliste]
     C1[Standort 1<br>Stationen + Kombination]
     C2[Standort 2<br>Stationen + Kombination]
