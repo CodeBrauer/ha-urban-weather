@@ -6,14 +6,16 @@ hold the station's id and name, the time of its latest measurement and the value
 Both the station list and the measurements come from this one file, so a station is
 its own sensor.
 
+The request can carry query parameters (an ArcGIS FeatureServer `query` or a WFS
+GetFeature URL), and a feed with times that are not ISO 8601 brings its own parser.
+
 Not covered yet, to be added with the network that needs it:
 
 - Dropping outdated stations: the station list keeps every station with a value, also
   one silent for longer than STATION_OFFLINE_AFTER. A feed that keeps stations that
   stopped sending, or flags them with a property, needs a filter.
-- Query parameters for the request (a WFS GetFeature URL), values sent as strings
-  (a value parser instead of `is_number`) and times without a UTC offset in local
-  time (a time zone for `parse_timestamp`).
+- Values sent as strings (a value parser instead of `is_number`) and times without a
+  UTC offset in local time (a time zone for `parse_timestamp`).
 """
 
 from __future__ import annotations
@@ -33,7 +35,8 @@ from custom_components.urban_weather.stations import Station, pick_sensor
 from .common import OLDEST, async_get_json, is_number, parse_timestamp
 
 if TYPE_CHECKING:
-    from collections.abc import Collection, Mapping
+    from collections.abc import Callable, Collection, Mapping
+    from datetime import datetime
 
     import aiohttp
 
@@ -45,11 +48,15 @@ POSITION_LENGTH = 2
 
 @dataclass(frozen=True, slots=True)
 class GeoJsonFeed:
-    """The names of the feature properties that identify a station and its time."""
+    """How to read a feed: its request, and the properties of a station and its time."""
 
     station_id: str
     station_name: str
     timestamp: str
+    # Query parameters of the request.
+    params: Mapping[str, str] | None = None
+    # Turns the value of the timestamp property into an aware datetime, else None.
+    parse_time: Callable[[Any], datetime | None] = parse_timestamp
 
 
 def _features(features: Any) -> list[dict[str, Any]]:
@@ -105,7 +112,7 @@ def build_stations(
     for feature in sorted(
         features,
         key=lambda item: (
-            parse_timestamp(_properties(item).get(feed.timestamp)) or OLDEST
+            feed.parse_time(_properties(item).get(feed.timestamp)) or OLDEST
         ),
         reverse=True,
     ):
@@ -162,7 +169,7 @@ def parse_measurements(
     for feature in features:
         properties = _properties(feature)
         station_id = _station_id(properties, feed)
-        timestamp = parse_timestamp(properties.get(feed.timestamp))
+        timestamp = feed.parse_time(properties.get(feed.timestamp))
         if not station_id or timestamp is None:
             continue
         if (
@@ -220,4 +227,6 @@ class GeoJsonProvider(BulkProvider):
 
     async def _async_features(self) -> list[dict[str, Any]]:
         url = self.network.endpoint
-        return _collection_features(await async_get_json(self._session, url, url))
+        return _collection_features(
+            await async_get_json(self._session, url, url, params=self.feed.params)
+        )

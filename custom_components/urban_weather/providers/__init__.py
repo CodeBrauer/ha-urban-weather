@@ -9,6 +9,8 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .dortmund import DATASET as DORTMUND_DATASET
 from .dortmund import DORTMUND
 from .geojson import GeoJsonProvider
+from .karlsruhe import FEED as KARLSRUHE_FEED
+from .karlsruhe import KARLSRUHE
 from .mannheim import MANNHEIM, MannheimProvider
 from .mannheim.reference import load_reference_data
 from .opendatasoft import OpendatasoftProvider
@@ -38,11 +40,16 @@ async def _async_create_zurich(hass: HomeAssistant) -> Provider:
     return GeoJsonProvider(ZURICH, ZURICH_FEED, async_get_clientsession(hass))
 
 
+async def _async_create_karlsruhe(hass: HomeAssistant) -> Provider:
+    return GeoJsonProvider(KARLSRUHE, KARLSRUHE_FEED, async_get_clientsession(hass))
+
+
 # Network id -> provider factory.
 PROVIDERS: dict[str, Callable[[HomeAssistant], Awaitable[Provider]]] = {
     MANNHEIM.id: _async_create_mannheim,
     DORTMUND.id: _async_create_dortmund,
     ZURICH.id: _async_create_zurich,
+    KARLSRUHE.id: _async_create_karlsruhe,
 }
 
 

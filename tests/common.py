@@ -84,6 +84,13 @@ ZURICH_HOME = (47.3662, 8.5410)
 ZURICH_NOW = datetime(2026, 11, 22, 23, 45, tzinfo=UTC)
 ZURICH_NEAREST = "96"  # Bootsanleger Bürkliplatz, 93 m
 
+# Karlsruhe, Marktplatz; karlsruhe.json was exported at 2026-11-23 16:21 UTC.
+KARLSRUHE_HOME = (49.0093, 8.4037)
+KARLSRUHE_NOW = datetime(2026, 11, 23, 16, 25, tzinfo=UTC)
+KARLSRUHE_NEAREST = (
+    "836952e2-1e16-4f5c-864f-471e0c6995f9"  # 173 - Schlossplatz 3, 316 m
+)
+
 
 def sensors_payload() -> dict[str, Any]:
     """
@@ -113,6 +120,17 @@ def zurich_geojson() -> dict[str, Any]:
     `feature_count` is adjusted.
     """
     return json.loads((FIXTURES / "zurich.json").read_text("utf-8"))
+
+
+def karlsruhe_geojson() -> dict[str, Any]:
+    """
+    Return the real query response of layer 1 of Karlsruhe of 2026-11-23.
+
+    The request of `providers/karlsruhe.py` (air temperature sensors as GeoJSON),
+    trimmed to the 7 of 94 stations within 1.3 km of KARLSRUHE_HOME; the geometry's
+    `crs` is dropped.
+    """
+    return json.loads((FIXTURES / "karlsruhe.json").read_text("utf-8"))
 
 
 def mannheim_provider(network: Network = MANNHEIM) -> MannheimProvider:

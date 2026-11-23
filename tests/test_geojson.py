@@ -1,4 +1,4 @@
-"""Tests for the GeoJSON provider with the Zürich network."""
+"""Tests for the GeoJSON provider with the Zürich and Karlsruhe networks."""
 
 from __future__ import annotations
 
@@ -29,19 +29,28 @@ from custom_components.urban_weather.provider import (
     ApiSensor,
 )
 from custom_components.urban_weather.providers import PROVIDERS, async_create_provider
+from custom_components.urban_weather.providers.common import parse_epoch_ms
 from custom_components.urban_weather.providers.geojson import (
     GeoJsonProvider,
     build_stations,
     parse_measurements,
 )
+from custom_components.urban_weather.providers.karlsruhe import (
+    FEED as KARLSRUHE_FEED,
+)
+from custom_components.urban_weather.providers.karlsruhe import KARLSRUHE
 from custom_components.urban_weather.providers.zurich import FEED, ZURICH
 from custom_components.urban_weather.stations import RecommendationReason, recommend
 
 from .common import (
+    KARLSRUHE_HOME,
+    KARLSRUHE_NEAREST,
+    KARLSRUHE_NOW,
     ZURICH_HOME,
     ZURICH_NEAREST,
     ZURICH_NOW,
     configure,
+    karlsruhe_geojson,
     location,
     zurich_geojson,
 )
@@ -60,6 +69,7 @@ FIELDS = ZURICH.fields
 ALL_FIELDS = frozenset(FIELDS.values())
 # Taken before the autouse fixture `only_mannheim` removes it for each test.
 CREATE_ZURICH = PROVIDERS[ZURICH.id]
+CREATE_KARLSRUHE = PROVIDERS[KARLSRUHE.id]
 
 
 @pytest.fixture
@@ -325,3 +335,155 @@ async def test_location_in_zurich(
     assert states["temperature"].attributes[ATTR_ATTRIBUTION] == ZURICH.attribution
     assert "wind_speed" not in states, "Zürich has no wind"
     assert "pressure" not in states, "Zürich has no pressure"
+
+
+# Karlsruhe: ArcGIS query with parameters, times in milliseconds since the epoch
+
+
+@pytest.fixture
+def karlsruhe(
+    aioclient_mock: AiohttpClientMocker, freezer: FrozenDateTimeFactory
+) -> Generator[AiohttpClientMocker]:
+    """Offer Karlsruhe (query answered from the fixture) shortly after the export."""
+    freezer.move_to(KARLSRUHE_NOW)
+    aioclient_mock.get(KARLSRUHE.endpoint, json=karlsruhe_geojson())
+    with patch.dict(PROVIDERS, {KARLSRUHE.id: CREATE_KARLSRUHE}):
+        yield aioclient_mock
+
+
+@pytest.fixture
+async def karlsruhe_provider(
+    hass: HomeAssistant,
+    aioclient_mock: AiohttpClientMocker,  # noqa: ARG001
+) -> GeoJsonProvider:
+    """Return the Karlsruhe provider using the mocked aiohttp session."""
+    return GeoJsonProvider(KARLSRUHE, KARLSRUHE_FEED, async_get_clientsession(hass))
+
+
+def karlsruhe_features() -> list[dict[str, Any]]:
+    """Return the features of the Karlsruhe fixture."""
+    return karlsruhe_geojson()["features"]
+
+
+async def test_karlsruhe_query_selects_air_temperature(
+    karlsruhe_provider: GeoJsonProvider, aioclient_mock: AiohttpClientMocker
+) -> None:
+    """The request carries the query: air temperature sensors only, as GeoJSON."""
+    aioclient_mock.get(KARLSRUHE.endpoint, json=karlsruhe_geojson())
+    await karlsruhe_provider.async_get_station_payload()
+    [(_, url, _, _)] = aioclient_mock.mock_calls
+    assert url.query["where"] == "beschreibung = 'Temperatur-Sensor'"
+    assert url.query["f"] == "geojson"
+    assert set(url.query["outFields"].split(",")) == {
+        "device_id",
+        "name",
+        "measured_at",
+        "temp",
+        "luftfeuchte",
+    }, "only the properties the integration reads"
+
+
+async def test_karlsruhe_measurements(
+    karlsruhe_provider: GeoJsonProvider, aioclient_mock: AiohttpClientMocker
+) -> None:
+    """The time in milliseconds is read as UTC; temperature and humidity map."""
+    aioclient_mock.get(KARLSRUHE.endpoint, json=karlsruhe_geojson())
+    sensors = [ApiSensor(KARLSRUHE_NEAREST, "Station", *KARLSRUHE_HOME, frozenset())]
+    measurements = await karlsruhe_provider.async_get_all_measurements(sensors)
+    assert len(measurements) == len(karlsruhe_features())
+    [nearest] = measurements[KARLSRUHE_NEAREST]
+    assert nearest.timestamp.isoformat() == "2026-11-23T16:19:08.012000+00:00"
+    assert nearest.values == {Field.TEMPERATURE: 1.3, Field.HUMIDITY: 74.0}
+    assert karlsruhe_provider.requests_per_refresh(7) == 1
+
+
+def test_karlsruhe_stations() -> None:
+    """Each sensor is a station of its own, named by the label of the city."""
+    stations = build_stations(karlsruhe_features(), KARLSRUHE_FEED, KARLSRUHE.fields)
+    assert len(stations) == 7
+    nearest = next(s for s in stations if s.code == KARLSRUHE_NEAREST)
+    assert (nearest.latitude, nearest.longitude) == pytest.approx(
+        (49.011285, 8.406802)
+    ), "lat, lon"
+    assert (
+        nearest.temperature_sensor.name
+        == "173 - Schlossplatz 3 (Kreuzung Kronenstraße)"
+    )
+    assert nearest.temperature_sensor.parameters == frozenset(KARLSRUHE.fields.values())
+    assert nearest.wind_sensor is None
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        (1795450748012, "2026-11-23T16:19:08.012000+00:00"),
+        (0, "1970-01-01T00:00:00+00:00"),
+        (1795450748012.0, "2026-11-23T16:19:08.012000+00:00"),
+        (None, None),
+        ("1795450748012", None),
+        (True, None),
+        (float("nan"), None),
+        (10**30, None),
+    ],
+    ids=["ms", "epoch", "float", "none", "text", "bool", "nan", "out_of_range"],
+)
+def test_parse_epoch_ms(value: Any, expected: str | None) -> None:
+    """A number is a time in milliseconds; anything else gives no time."""
+    parsed = parse_epoch_ms(value)
+    assert (parsed.isoformat() if parsed else None) == expected
+
+
+def test_karlsruhe_iso_time_is_no_time() -> None:
+    """A feed with epoch times gives no measurement for a text time."""
+    feature = karlsruhe_features()[0]
+    feature["properties"]["measured_at"] = "2026-11-23T16:19:08Z"
+    assert parse_measurements([feature], KARLSRUHE_FEED, KARLSRUHE.fields) == {}
+
+
+def test_karlsruhe_recommendation_by_distance() -> None:
+    """Without siting data, the nearest station within 1 km is used alone."""
+    recommendation = recommend(
+        build_stations(karlsruhe_features(), KARLSRUHE_FEED, KARLSRUHE.fields),
+        *KARLSRUHE_HOME,
+        Environment.OPEN_BUILT,
+        3000,
+    )
+    assert recommendation.reason is RecommendationReason.NEAREST_CLOSE
+    assert [s.code for s in recommendation.stations] == [KARLSRUHE_NEAREST]
+    assert recommendation.wind_station is None
+
+
+async def test_location_in_karlsruhe(
+    hass: HomeAssistant,
+    karlsruhe: AiohttpClientMocker,
+    api: Any,  # noqa: ARG001
+    entity_registry: er.EntityRegistry,
+) -> None:
+    """Set up a location: nearest station, one request per refresh, its entities."""
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": SOURCE_USER}
+    )
+    result = await configure(hass, result, location(*KARLSRUHE_HOME))
+    result = await configure(hass, result, {CONF_ENVIRONMENT: Environment.OPEN_BUILT})
+    result = await configure(hass, result, {"next_step_id": "accept"})
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    assert result["title"] == "Karlsruhe"
+    entry = result["result"]
+    assert entry.data[CONF_NETWORK] == KARLSRUHE.id
+    assert entry.options[CONF_TEMPERATURE_SENSORS] == [KARLSRUHE_NEAREST]
+    assert entry.options[CONF_WIND_SENSOR] is None, "Karlsruhe measures no wind"
+    await hass.async_block_till_done()
+    assert karlsruhe.call_count == 2, "station list and one measurement request"
+
+    states = {
+        registry_entry.unique_id.removeprefix(f"{entry.entry_id}_"): hass.states.get(
+            registry_entry.entity_id
+        )
+        for registry_entry in entity_registry.entities.get_entries_for_config_entry_id(
+            entry.entry_id
+        )
+    }
+    assert states["temperature"].state == "1.3"
+    assert states["humidity"].state == "74.0"
+    assert states["temperature"].attributes[ATTR_ATTRIBUTION] == KARLSRUHE.attribution
+    assert "pressure" not in states, "pressure is not read"

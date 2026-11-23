@@ -1,4 +1,4 @@
-<!-- source: 74dab85c8022d1a6cfd155ce80184e76fee2c0e3 -->
+<!-- source: bfa066385f4fb57bc809621eae2e5216c1b51608 -->
 # Architektur
 
 Die Integration liegt in `custom_components/urban_weather/`. Die Konventionen für die
@@ -51,7 +51,7 @@ flowchart TB
 | `provider.py` | Interface `Provider`, Konfiguration `Network`, gemeinsame Typen (`ApiSensor`, `Measurement`) und Fehlertypen (`ApiRateLimitError`, `SensorNotFoundError`, …) |
 | `providers/` | `PROVIDERS` (Messnetz-Id → Provider-Factory), `async_create_provider()`, ein Paket pro Messnetz |
 | `providers/mannheim/` | Messnetz `MANNHEIM` und `MannheimProvider`: HTTP-Client für `/sensors` und `/measurements/{id}` (`api.py`), Gruppieren der Sensoren zu Stationen (`stations.py`), mitgelieferter Metadatenkatalog, LCZ-Raster und Stadtteilnamen (`reference.py`, `data/`) |
-| `providers/opendatasoft.py`, `providers/geojson.py` | Generische Provider für eine Plattform: `OpendatasoftProvider` (Dortmund) und `GeoJsonProvider` (Zürich); ein Messnetz darauf besteht aus der Konfiguration von Datensatz oder Feed und einem `Network` in `providers/<city>.py` |
+| `providers/opendatasoft.py`, `providers/geojson.py` | Generische Provider für eine Plattform: `OpendatasoftProvider` (Dortmund) und `GeoJsonProvider` (Zürich und Karlsruhe über die Abfrageparameter eines ArcGIS FeatureServer); ein Messnetz darauf besteht aus der Konfiguration von Datensatz oder Feed und einem `Network` in `providers/<city>.py` |
 | `hub.py` | `ClimateHub`, einer pro Messnetz (`async_get_hub()`): Rate-Limiter, Messwert-Cache, Stationsliste mit gespeicherter Kopie und Zeitpunkt des ersten Auftauchens |
 | `stations.py` | `Station`, `recommend()`, `networks_in_range()` |
 | `selection.py` | `StationSelection`: Empfehlung, Abfrage-Budget und Beschriftungen, gemeinsam für alle Flows und die Karte |
