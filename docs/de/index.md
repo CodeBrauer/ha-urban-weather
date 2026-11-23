@@ -1,4 +1,4 @@
-<!-- source: 9f7e93d8e13628bd404b70d6f13fe3a60c1161e0 -->
+<!-- source: 9b1cf804b59bf21b834b1210ca7968b06e60e7c4 -->
 # Urban Weather (Stadtklima)
 
 Home-Assistant-Integration für dichte Stadtklima-Messnetze, zunächst
@@ -36,7 +36,7 @@ Home Assistant nutzbar.
 |---|---|---|---|
 | [Smart City Mannheim](networks/mannheim.md) | über 400 | Alle Werte; Wind an einigen Masten | Umgebung, Dach und Hochpunkt |
 | [Klimamessnetz Dortmund](networks/dortmund.md) | 76 | Temperatur und Luftfeuchte; etwa ein Drittel auch Luftdruck, Globalstrahlung und Wind | Keine: [Empfehlung nach Entfernung](user/stations.md#messnetze-ohne-standortdaten) |
-| [Stadtklimamessnetz Zürich](networks/zurich.md) | 107 | Temperatur und Luftfeuchte | Keine: [Empfehlung nach Entfernung](user/stations.md#messnetze-ohne-standortdaten) |
+| [Stadtklimamessnetz Zürich](networks/zurich.md) | 100+ | Temperatur und Luftfeuchte | Keine: [Empfehlung nach Entfernung](user/stations.md#messnetze-ohne-standortdaten) |
 
 Beim Hinzufügen eines Standorts nutzt die Integration das Messnetz mit einer Station in der
 Nähe. Details je Messnetz: [Unterstützte Messnetze](networks/index.md). Datenquellen und

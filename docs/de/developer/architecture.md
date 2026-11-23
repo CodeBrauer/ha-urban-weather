@@ -1,4 +1,4 @@
-<!-- source: c001467b34d3fdbd56b3a9008142d2b65ba77c84 -->
+<!-- source: 74dab85c8022d1a6cfd155ce80184e76fee2c0e3 -->
 # Architektur
 
 Die Integration liegt in `custom_components/urban_weather/`. Die Konventionen für die
@@ -85,7 +85,7 @@ daraus die Stationen. Seine Basisklasse legt das Abfragemodell für Messwerte fe
 | Basisklasse | Messwerte | Abfragen pro Aktualisierung |
 |---|---|---|
 | `SensorProvider` | `async_get_measurements(sensor_id)`: ein Sensor pro Abfrage (Mannheim) | Eine pro Sensor |
-| `BulkProvider` | `async_get_all_measurements(sensors)`: alle Sensoren in einer Abfrage; der Provider darf sie auf die übergebenen Sensoren filtern, z. B. nach Gebiet (Dortmund, Zürich) | Eine, egal wie viele Stationen |
+| `BulkProvider` | `async_get_all_measurements(sensors)`: alle Sensoren in einer Abfrage; der Provider darf sie auf die übergebenen Sensoren filtern, z. B. nach Gebiet | Eine, egal wie viele Stationen |
 
 Stationsauswahl und Kartenseite planen mit `requests_per_refresh()`, der Hub fragt je nach
 Basisklasse ab ([Abfragen und API-Zugriff](data-flow.md)). Referenzdaten sind optional: Ohne sie geben `lcz()` und `district()` `None` zurück, und der

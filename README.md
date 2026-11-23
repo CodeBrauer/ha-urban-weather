@@ -12,7 +12,7 @@ Supported networks:
 
 - [Smart City Mannheim](https://smartmannheim.de/) (400+ stations)
 - [Klimamessnetz Dortmund](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/) (76 stations)
-- [Stadtklimamessnetz Zürich](https://stadtklima-zuerich.ch/) (107 stations)
+- [Stadtklimamessnetz Zürich](https://stadtklima-zuerich.ch/) (100+ stations)
 
 The integration picks the station that represents your place best. If the nearest one does
 not fit (too far away, different surroundings, mounted on a roof), it combines several

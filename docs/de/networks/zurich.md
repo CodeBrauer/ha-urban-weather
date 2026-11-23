@@ -1,4 +1,4 @@
-<!-- source: 93b70d1dad45a132c11bf48a12cc7b9c55bc166b -->
+<!-- source: 790ce115baa322cc5fcb964c6e627c48d5e249fd -->
 # Stadtklimamessnetz Zürich
 
 | | |
@@ -15,7 +15,7 @@
 
 ## Abdeckung
 
-107 Stationen in ganz Zürich. Alle messen Temperatur und Luftfeuchte; Luftdruck,
+Mehr als 100 Stationen in ganz Zürich. Alle messen Temperatur und Luftfeuchte; Luftdruck,
 Globalstrahlung und Wind liefert das Messnetz nicht.
 
 ## Daten

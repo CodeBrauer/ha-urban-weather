@@ -82,7 +82,7 @@ DORTMUND_NEAREST = "6da26775-2b8e-4396-ade6-282e659fdfcb"  # DOBHAP ATM41, 103 m
 # Zürich, Bürkliplatz; zurich.json was exported at 2026-11-22 23:44 UTC.
 ZURICH_HOME = (47.3662, 8.5410)
 ZURICH_NOW = datetime(2026, 11, 22, 23, 45, tzinfo=UTC)
-ZURICH_NEAREST = "96"  # Bootsanleger Bürkliplatz, 49 m
+ZURICH_NEAREST = "96"  # Bootsanleger Bürkliplatz, 93 m
 
 
 def sensors_payload() -> dict[str, Any]:

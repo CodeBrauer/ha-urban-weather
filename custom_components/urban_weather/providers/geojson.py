@@ -8,8 +8,9 @@ its own sensor.
 
 Not covered yet, to be added with the network that needs it:
 
-- A flag property that marks outdated stations (the station list already drops
-  stations silent for STATION_OFFLINE_AFTER through their timestamps).
+- Dropping outdated stations: the station list keeps every station with a value, also
+  one silent for longer than STATION_OFFLINE_AFTER. A feed that keeps stations that
+  stopped sending, or flags them with a property, needs a filter.
 - Query parameters for the request (a WFS GetFeature URL), values sent as strings
   (a value parser instead of `is_number`) and times without a UTC offset in local
   time (a time zone for `parse_timestamp`).
@@ -152,13 +153,22 @@ def parse_measurements(
     feed: GeoJsonFeed,
     fields: Mapping[str, Field],
 ) -> dict[str, list[Measurement]]:
-    """Return the latest measurement by station id, skipping features without time."""
+    """
+    Return the latest measurement by station id, skipping features without time.
+
+    On a repeated id the feature with the newest time is used, as for the stations.
+    """
     measurements: dict[str, list[Measurement]] = {}
     for feature in features:
         properties = _properties(feature)
         station_id = _station_id(properties, feed)
         timestamp = parse_timestamp(properties.get(feed.timestamp))
         if not station_id or timestamp is None:
+            continue
+        if (
+            station_id in measurements
+            and measurements[station_id][0].timestamp >= timestamp
+        ):
             continue
         values = {
             mapped: float(properties[name])

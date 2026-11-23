@@ -83,7 +83,7 @@ from it. Its base class declares the request model for measurements:
 | Base class | Measurements | Requests per refresh |
 |---|---|---|
 | `SensorProvider` | `async_get_measurements(sensor_id)`: one sensor per request (Mannheim) | One per sensor |
-| `BulkProvider` | `async_get_all_measurements(sensors)`: all sensors in one request; the provider may filter it to the given sensors, e.g. by area (Dortmund, Zürich) | One, whatever the number of stations |
+| `BulkProvider` | `async_get_all_measurements(sensors)`: all sensors in one request; the provider may filter it to the given sensors, e.g. by area | One, whatever the number of stations |
 
 Station selection and map page plan with `requests_per_refresh()`, the hub fetches by the
 base class ([Polling and API access](data-flow.md)). Reference data is optional: without it, `lcz()` and `district()` return `None` and the flow falls back to

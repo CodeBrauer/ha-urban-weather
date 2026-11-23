@@ -8,7 +8,7 @@ login. When you add a location, the integration uses the network with a station 
 |---|---|---|---|---|---|
 | [Smart City Mannheim](mannheim.md) | 400+ | All values; wind on some masts | Surroundings, roof and high point | Own API | `api.smartmannheim.de` |
 | [Klimamessnetz Dortmund](dortmund.md) | 76 | Temperature and humidity; about a third also air pressure, global irradiance and wind | None | Opendatasoft | `open-data.dortmund.de` |
-| [Stadtklimamessnetz Zürich](zurich.md) | 107 | Temperature and humidity | None | GeoJSON file | `stadtklima-zuerich.ch` |
+| [Stadtklimamessnetz Zürich](zurich.md) | 100+ | Temperature and humidity | None | GeoJSON file | `stadtklima-zuerich.ch` |
 
 Each network has its own [API limits](../user/api-limits.md) and request budget. Data
 sources and licences: [Data sources](../data-sources.md).

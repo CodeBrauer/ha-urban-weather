@@ -12,7 +12,7 @@ Unterstützte Messnetze:
 
 - [Smart City Mannheim](https://smartmannheim.de/) (über 400 Stationen)
 - [Klimamessnetz Dortmund](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/) (76 Stationen)
-- [Stadtklimamessnetz Zürich](https://stadtklima-zuerich.ch/) (107 Stationen)
+- [Stadtklimamessnetz Zürich](https://stadtklima-zuerich.ch/) (100+ Stationen)
 
 Die Integration wählt die Station, die deinen Ort am besten abbildet. Passt die nächste
 nicht (zu weit weg, andere Umgebung, auf einem Dach montiert), kombiniert sie stattdessen

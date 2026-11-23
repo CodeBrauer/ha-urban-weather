@@ -222,12 +222,18 @@ def test_station_without_a_name_uses_its_id() -> None:
 
 
 def test_newest_feature_wins_on_a_repeated_id() -> None:
-    """A repeated id is one station, described by its newest feature."""
-    old = feature(timestamp="2026-11-22T10:00:00Z", location_name="Old")
-    new = feature(timestamp="2026-11-22T11:00:00Z", location_name="New")
+    """A repeated id is one station, described and measured by its newest feature."""
+    old = feature(
+        timestamp="2026-11-22T10:00:00Z", location_name="Old", temperature_c=1
+    )
+    new = feature(
+        timestamp="2026-11-22T11:00:00Z", location_name="New", temperature_c=2
+    )
     for ordered in ([old, new], [new, old]):
         [station] = build_stations(ordered, FEED, FIELDS)
         assert station.temperature_sensor.name == "New"
+        [measurement] = parse_measurements(ordered, FEED, FIELDS)[ZURICH_NEAREST]
+        assert measurement.values[Field.TEMPERATURE] == 2.0, "not the older value"
 
 
 def test_parse_measurements_skips_missing_values_and_times() -> None:

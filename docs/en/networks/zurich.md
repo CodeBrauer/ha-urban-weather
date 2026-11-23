@@ -14,7 +14,7 @@
 
 ## Coverage
 
-107 stations across Zürich. All of them measure temperature and humidity; the network has
+More than 100 stations across Zürich. All of them measure temperature and humidity; the network has
 no air pressure, irradiance or wind values.
 
 ## Data
