@@ -71,6 +71,16 @@ def parse_timestamp(value: Any) -> datetime | None:
     return timestamp if timestamp.tzinfo else timestamp.replace(tzinfo=UTC)
 
 
+def parse_epoch_ms(value: Any) -> datetime | None:
+    """Return a time in milliseconds since the epoch (ArcGIS dates) as UTC time."""
+    if not is_number(value):
+        return None
+    try:
+        return datetime.fromtimestamp(value / 1000, UTC)
+    except OverflowError, OSError, ValueError:
+        return None
+
+
 async def async_get_json(
     session: aiohttp.ClientSession,
     url: str,
