@@ -14,6 +14,7 @@ from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.data_entry_flow import FlowResultType
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
+from custom_components.urban_weather.aggregation import latest_valid
 from custom_components.urban_weather.const import (
     CONF_ENVIRONMENT,
     CONF_NETWORK,
@@ -34,6 +35,7 @@ from custom_components.urban_weather.provider import (
 from custom_components.urban_weather.providers import PROVIDERS, async_create_provider
 from custom_components.urban_weather.providers.basel import BASEL
 from custom_components.urban_weather.providers.basel import DATASET as BASEL_DATASET
+from custom_components.urban_weather.providers.common import parse_timestamp
 from custom_components.urban_weather.providers.dortmund import DATASET, DORTMUND
 from custom_components.urban_weather.providers.opendatasoft import (
     OpendatasoftProvider,
@@ -382,20 +384,34 @@ def test_time_series_gives_one_station_per_sensor() -> None:
 
 
 @pytest.mark.parametrize("newest_first", [True, False], ids=["desc", "asc"])
-def test_newest_record_of_a_sensor_wins(newest_first: bool) -> None:  # noqa: FBT001
-    """The newest record counts, wherever it is in the response."""
+def test_measurements_of_a_sensor_are_newest_first(newest_first: bool) -> None:  # noqa: FBT001
+    """All records of a sensor are kept, newest first, in any response order."""
     records = sorted(
         basel_records(), key=lambda r: r["dates_max_date"], reverse=newest_first
     )
     measurements = parse_measurements(records, BASEL_DATASET, BASEL_FIELDS)
     assert len(measurements) == 6
-    [latest] = measurements[BASEL_NEAREST]
-    assert latest.timestamp.isoformat() == "2026-11-23T15:58:22+00:00"
+    series = measurements[BASEL_NEAREST]
+    assert len(series) == 6
+    assert series[0].timestamp.isoformat() == "2026-11-23T15:58:22+00:00"
+    assert [m.timestamp for m in series] == sorted(
+        (m.timestamp for m in series), reverse=True
+    )
+
+
+def test_missing_newest_value_falls_back_to_the_previous_record() -> None:
+    """A newest record without temperature leaves the previous hour's value in use."""
+    records = basel_records()
     newest = max(
-        (r for r in basel_records() if r["name_original"] == BASEL_NEAREST),
+        (r for r in records if r["name_original"] == BASEL_NEAREST),
         key=lambda r: r["dates_max_date"],
     )
-    assert latest.values == {Field.TEMPERATURE: newest["meta_airtemp"]}
+    newest["meta_airtemp"] = None
+    series = parse_measurements(records, BASEL_DATASET, BASEL_FIELDS)[BASEL_NEAREST]
+    latest = latest_valid(series, BASEL_NOW + timedelta(minutes=30), BASEL.max_age)
+    assert latest is not None
+    assert latest.timestamp < parse_timestamp(newest["dates_max_date"])
+    assert Field.TEMPERATURE in latest.values
 
 
 def test_hourly_networks_keep_measurements_longer() -> None:

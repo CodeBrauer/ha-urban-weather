@@ -25,7 +25,7 @@ is published too, but not used yet.
   hour, with gaps. The integration uses the newest record of each sensor.
 - Every request has a time window, because the whole dataset holds millions of records: the
   station list looks back 24 hours, the measurements 3 hours.
-- A measurement counts for 90 minutes instead of the usual 40, so the hourly values do not
+- A measurement counts for 120 minutes instead of the usual 40, so the hourly values do not
   drop out for much of each hour.
 - The station id, the sensor id and the sensor name are the ones of the dataset, one sensor
   per station.

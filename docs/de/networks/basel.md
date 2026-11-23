@@ -1,4 +1,4 @@
-<!-- source: d5497ac2749efb3d1d756e271e77f97893c4724c -->
+<!-- source: 25711af1905875fdfda970d20a0c68243d2462c1 -->
 # Smart Climate Luftklima Basel
 
 | | |
@@ -26,7 +26,7 @@ Niederschlag wird ebenfalls veröffentlicht, aber noch nicht genutzt.
   pro Stunde, mit Lücken. Die Integration nutzt den neuesten Eintrag jedes Sensors.
 - Jede Abfrage hat ein Zeitfenster, weil der ganze Datensatz Millionen Einträge enthält: Die
   Stationsliste blickt 24 Stunden zurück, die Messwerte 3 Stunden.
-- Ein Messwert gilt 90 statt der üblichen 40 Minuten, damit die stündlichen Werte nicht in
+- Ein Messwert gilt 120 statt der üblichen 40 Minuten, damit die stündlichen Werte nicht in
   einem großen Teil jeder Stunde wegfallen.
 - Stations-ID, Sensor-ID und Sensorname sind die des Datensatzes, ein Sensor pro Station.
 - Eine Abfrage liefert die Werte aller Stationen, die die Standorte nutzen; die Zahl der

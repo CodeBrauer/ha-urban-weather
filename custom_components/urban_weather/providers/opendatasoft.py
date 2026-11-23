@@ -165,24 +165,23 @@ def parse_measurements(
     dataset: OpendatasoftDataset,
     fields: Mapping[str, Field],
 ) -> dict[str, list[Measurement]]:
-    """Return the newest measurement by sensor id, skipping records without time."""
+    """Return the measurements by sensor id, newest first; undated ones are skipped."""
     measurements: dict[str, list[Measurement]] = {}
     for record in records:
         sensor_id = str(record.get(dataset.sensor_id) or "").strip()
         timestamp = parse_timestamp(record.get(dataset.timestamp))
         if not sensor_id or timestamp is None:
             continue
-        if (
-            sensor_id in measurements
-            and measurements[sensor_id][0].timestamp >= timestamp
-        ):
-            continue
         values = {
             mapped: _convert(float(record[name]), dataset.factors.get(name))
             for name, mapped in fields.items()
             if is_number(record.get(name))
         }
-        measurements[sensor_id] = [Measurement(timestamp=timestamp, values=values)]
+        measurements.setdefault(sensor_id, []).append(
+            Measurement(timestamp=timestamp, values=values)
+        )
+    for series in measurements.values():
+        series.sort(key=lambda measurement: measurement.timestamp, reverse=True)
     return measurements
 
 

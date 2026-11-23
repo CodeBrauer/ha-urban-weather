@@ -56,5 +56,5 @@ BASEL = Network(
     ),
     tiles=OSM_CH,
     # About one value per sensor per hour, with gaps.
-    max_age=timedelta(minutes=90),
+    max_age=timedelta(minutes=120),
 )
