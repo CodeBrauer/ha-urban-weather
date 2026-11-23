@@ -22,6 +22,7 @@ nav:
       - networks/mannheim.md
       - networks/dortmund.md
       - networks/zurich.md
+      - networks/karlsruhe.md
   - Developer guide:
       - developer/architecture.md
       - developer/data-flow.md
