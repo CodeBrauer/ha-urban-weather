@@ -12,6 +12,7 @@ Unterstützte Messnetze:
 
 - [Smart City Mannheim](https://smartmannheim.de/) (über 400 Stationen)
 - [Klimamessnetz Dortmund](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/) (76 Stationen)
+- [Stadtklimamessnetz Zürich](https://stadtklima-zuerich.ch/) (100+ Stationen)
 
 Die Integration wählt die Station, die deinen Ort am besten abbildet. Passt die nächste
 nicht (zu weit weg, andere Umgebung, auf einem Dach montiert), kombiniert sie stattdessen
@@ -166,8 +167,9 @@ sich das Limit.
 
 Dortmund hat ein eigenes Budget: Eine Abfrage liefert alle Stationen, die die Dortmunder
 Standorte nutzen, höchstens 60 pro Stunde (der Datensatz nennt ein Kontingent von 50.000
-Abfragen pro Tag). Details:
-[API-Limits](https://codebrauer.github.io/ha-urban-weather/de/user/api-limits/#dortmund).
+Abfragen pro Tag). Zürich funktioniert genauso, ohne dokumentierte Limits und mit derselben
+Obergrenze von 60 pro Stunde. Details:
+[API-Limits](https://codebrauer.github.io/ha-urban-weather/de/user/api-limits/#eine-abfrage-fur-alle-stationen-dortmund-zurich).
 
 ## Wenn keine Daten mehr kommen
 
@@ -202,10 +204,12 @@ actions:
 |---|---|---|
 | Messwerte, Stationsliste (Mannheim) | [Klima-API Smart City Mannheim](https://opendata.smartmannheim.de/dataset/klimadaten-echtzeit-api) | dl-de/by-2-0 |
 | Messwerte, Stationsliste (Dortmund) | [Stadt Dortmund, Klimasensoren - Aktuelle Messung](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/), Messnetz des Projekts Data2Resilience | dl-de/zero-2-0 |
+| Messwerte, Stationsliste (Zürich) | [Stadt Zürich, Stadtklima Zürich](https://stadtklima-zuerich.ch/), Umwelt- und Gesundheitsschutz (UGZ) | CC0 |
 | Standort-Metadaten der Stationen (Mannheim) | [Metadatenkatalog Stadtklimamessnetze Mannheim](https://opendata.smartmannheim.de/dataset/metadaten-stadtklimamessnetze-mannheim) | dl-de/by-2-0 |
 | Lokale Klimazonen | Demuzere et al. (2022), [Global map of LCZ](https://doi.org/10.5281/zenodo.6364594) | CC BY 4.0 |
 | Stadtteilnamen | © OpenStreetMap-Mitwirkende über Nominatim | ODbL 1.0 |
-| Kartenkacheln der Stationskarte | [basemap.de](https://basemap.de/) / BKG | CC BY 4.0 |
+| Kartenkacheln der Stationskarte (Deutschland) | [basemap.de](https://basemap.de/) / BKG | CC BY 4.0 |
+| Kartenkacheln der Stationskarte (Schweiz) | [osm.ch](https://osm.ch/), © OpenStreetMap-Mitwirkende | ODbL 1.0 |
 | Kartenbibliothek (mitgeliefert) | [Leaflet 1.9.4](https://leafletjs.com/) | BSD-2-Clause |
 
 Die statischen Referenzdateien in `custom_components/urban_weather/providers/mannheim/data/`

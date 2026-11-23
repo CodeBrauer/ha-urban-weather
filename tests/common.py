@@ -79,6 +79,11 @@ DORTMUND_HOME = (51.5136, 7.4653)
 DORTMUND_NOW = datetime(2026, 11, 21, 11, 20, tzinfo=UTC)
 DORTMUND_NEAREST = "6da26775-2b8e-4396-ade6-282e659fdfcb"  # DOBHAP ATM41, 103 m
 
+# Zürich, Bürkliplatz; zurich.json was exported at 2026-11-22 23:44 UTC.
+ZURICH_HOME = (47.3662, 8.5410)
+ZURICH_NOW = datetime(2026, 11, 22, 23, 45, tzinfo=UTC)
+ZURICH_NEAREST = "96"  # Bootsanleger Bürkliplatz, 93 m
+
 
 def sensors_payload() -> dict[str, Any]:
     """
@@ -98,6 +103,16 @@ def dortmund_records() -> list[dict[str, Any]]:
     has a sensor that stopped in May next to its successor.
     """
     return json.loads((FIXTURES / "dortmund.json").read_text("utf-8"))
+
+
+def zurich_geojson() -> dict[str, Any]:
+    """
+    Return the real latest.geojson of Zürich of 2026-11-22 (gzip decoded).
+
+    Trimmed to the 7 of 107 stations within 1.4 km of the Bootsanleger Bürkliplatz;
+    `feature_count` is adjusted.
+    """
+    return json.loads((FIXTURES / "zurich.json").read_text("utf-8"))
 
 
 def mannheim_provider(network: Network = MANNHEIM) -> MannheimProvider:

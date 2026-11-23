@@ -1,4 +1,4 @@
-<!-- source: fd48f8bdeef6d9bdbd224bcc0365b9963e3a7091 -->
+<!-- source: 1e3d5c0799d6ae5c4a8f96cbd0ae86143747a2dd -->
 # Installation
 
 ## Voraussetzungen
@@ -8,7 +8,7 @@
 | Home Assistant | 2026.9 oder neuer |
 | HACS | 2.0.5 oder neuer (nur für die Installation über HACS) |
 | Internet | Zugriff auf die API deines Messnetzes aus Home Assistant, den Endpunkt nennt die [Messnetz-Seite](../networks/index.md) |
-| Browser | Zugriff auf `sgx.geodatenzentrum.de` für die Kartenkacheln (basemap.de) der Stationskarte |
+| Browser | Zugriff auf `sgx.geodatenzentrum.de` (basemap.de, Deutschland) oder `tile.osm.ch` (osm.ch, Schweiz) für die Kartenkacheln der Stationskarte |
 
 Die APIs sind öffentlich und brauchen weder Konto noch Schlüssel.
 

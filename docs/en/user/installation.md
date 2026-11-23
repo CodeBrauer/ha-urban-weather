@@ -7,7 +7,7 @@
 | Home Assistant | 2026.9 or newer |
 | HACS | 2.0.5 or newer (only for installation via HACS) |
 | Internet | Access to the API of your network from Home Assistant, see the endpoint on the [network page](../networks/index.md) |
-| Browser | Access to `sgx.geodatenzentrum.de` for the map tiles (basemap.de) of the station map |
+| Browser | Access to `sgx.geodatenzentrum.de` (basemap.de, Germany) or `tile.osm.ch` (osm.ch, Switzerland) for the map tiles of the station map |
 
 The APIs are public and need no account or key.
 

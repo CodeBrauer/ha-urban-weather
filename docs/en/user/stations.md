@@ -44,7 +44,7 @@ flowchart TD
 
 ## Networks without siting data
 
-Some networks, such as [Dortmund](../networks/dortmund.md), publish no surroundings or
+Some networks, such as [Dortmund](../networks/dortmund.md) and [Zürich](../networks/zurich.md), publish no surroundings or
 mounting data.
 
 - The nearest station within 1 km is used on its own; otherwise up to 4 stations within the

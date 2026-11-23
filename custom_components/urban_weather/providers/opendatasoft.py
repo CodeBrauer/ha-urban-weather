@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
 from custom_components.urban_weather.const import LOGGER, STATION_OFFLINE_AFTER, Field
@@ -22,10 +21,11 @@ from custom_components.urban_weather.provider import (
 )
 from custom_components.urban_weather.stations import Station, pick_sensor
 
-from .common import async_get_json, is_number
+from .common import OLDEST, async_get_json, is_number, parse_timestamp
 
 if TYPE_CHECKING:
     from collections.abc import Collection, Mapping
+    from datetime import datetime
 
     import aiohttp
 
@@ -33,7 +33,6 @@ if TYPE_CHECKING:
 
 # Drops float artifacts of unit conversions (100.59 kPa x 10 = 1005.9000000000001).
 CONVERTED_DIGITS = 6
-OLDEST = datetime.min.replace(tzinfo=UTC)
 
 
 @dataclass(frozen=True, slots=True)
@@ -52,14 +51,6 @@ class OpendatasoftDataset:
     where: str | None = None
     # Field name -> factor to the unit of the integration.
     factors: Mapping[str, float] = field(default_factory=dict)
-
-
-def _timestamp(record: Mapping[str, Any], name: str) -> datetime | None:
-    try:
-        timestamp = datetime.fromisoformat(str(record[name]))
-    except KeyError, TypeError, ValueError:
-        return None
-    return timestamp if timestamp.tzinfo else timestamp.replace(tzinfo=UTC)
 
 
 def _records(payload: Any) -> list[dict[str, Any]]:
@@ -94,7 +85,8 @@ def build_stations(
     """
     by_station: dict[str, list[tuple[ApiSensor, datetime]]] = {}
     dated = [
-        (_timestamp(record, dataset.timestamp) or OLDEST, record) for record in records
+        (parse_timestamp(record.get(dataset.timestamp)) or OLDEST, record)
+        for record in records
     ]
     # The newest measurement stands for the time of the list (fresh or stored).
     listed_at = max((timestamp for timestamp, _ in dated), default=OLDEST)
@@ -165,7 +157,7 @@ def parse_measurements(
     measurements: dict[str, list[Measurement]] = {}
     for record in records:
         sensor_id = str(record.get(dataset.sensor_id) or "").strip()
-        timestamp = _timestamp(record, dataset.timestamp)
+        timestamp = parse_timestamp(record.get(dataset.timestamp))
         if not sensor_id or timestamp is None:
             continue
         values = {

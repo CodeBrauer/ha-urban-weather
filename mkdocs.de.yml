@@ -21,6 +21,7 @@ nav:
       - networks/index.md
       - networks/mannheim.md
       - networks/dortmund.md
+      - networks/zurich.md
   - Entwicklung:
       - developer/architecture.md
       - developer/data-flow.md

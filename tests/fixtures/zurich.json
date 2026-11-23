@@ -1,0 +1,113 @@
+{
+  "type": "FeatureCollection",
+  "generated_at": "2026-11-22T23:44:00.003208+00:00",
+  "schema_version": "1.1",
+  "feature_count": 7,
+  "features": [
+    {
+      "type": "Feature",
+      "id": 96,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [8.54193, 47.36565]
+      },
+      "properties": {
+        "location_id": 96,
+        "location_name": "Bootsanleger Bürkliplatz",
+        "timestamp": "2026-11-22T23:37:04Z",
+        "temperature_c": 4.3,
+        "humidity_relative_percent": 91.4
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 117,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [8.53479, 47.37336]
+      },
+      "properties": {
+        "location_id": 117,
+        "location_name": "Nüschelerstrasse",
+        "timestamp": "2026-11-22T23:42:11Z",
+        "temperature_c": 4.29,
+        "humidity_relative_percent": 89.8
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 133,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [8.54853, 47.3699]
+      },
+      "properties": {
+        "location_id": 133,
+        "location_name": "Rämistrasse",
+        "timestamp": "2026-11-22T23:34:22Z",
+        "temperature_c": 4.0,
+        "humidity_relative_percent": 95.0
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 163,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [8.53702, 47.36038]
+      },
+      "properties": {
+        "location_id": 163,
+        "location_name": "Hafen Mythenquai",
+        "timestamp": "2026-11-22T23:40:09Z",
+        "temperature_c": 3.88,
+        "humidity_relative_percent": 93.6
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 167,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [8.55104, 47.3566]
+      },
+      "properties": {
+        "location_id": 167,
+        "location_name": "Höschgasse",
+        "timestamp": "2026-11-22T23:40:19Z",
+        "temperature_c": 3.6,
+        "humidity_relative_percent": 99.4
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 172,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [8.55333, 47.37507]
+      },
+      "properties": {
+        "location_id": 172,
+        "location_name": "Careum",
+        "timestamp": "2026-11-22T23:40:08Z",
+        "temperature_c": 3.73,
+        "humidity_relative_percent": 93.4
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 206,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [8.55591, 47.36192]
+      },
+      "properties": {
+        "location_id": 206,
+        "location_name": "Zollikerstrasse",
+        "timestamp": "2026-11-22T23:39:55Z",
+        "temperature_c": 3.46,
+        "humidity_relative_percent": 100.0
+      }
+    }
+  ]
+}

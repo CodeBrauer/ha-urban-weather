@@ -12,6 +12,7 @@ Supported networks:
 
 - [Smart City Mannheim](https://smartmannheim.de/) (400+ stations)
 - [Klimamessnetz Dortmund](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/) (76 stations)
+- [Stadtklimamessnetz Zürich](https://stadtklima-zuerich.ch/) (100+ stations)
 
 The integration picks the station that represents your place best. If the nearest one does
 not fit (too far away, different surroundings, mounted on a roof), it combines several
@@ -159,8 +160,9 @@ The integration therefore:
 Other scripts or devices that use the API from the same internet connection share the limit.
 
 Dortmund has its own budget: one request returns all stations the Dortmund locations use,
-at most 60 per hour (the dataset reports a quota of 50,000 requests per day). Details:
-[API limits](https://codebrauer.github.io/ha-urban-weather/user/api-limits/#dortmund).
+at most 60 per hour (the dataset reports a quota of 50,000 requests per day). Zürich works
+the same way, with no documented limits and the same cap of 60 per hour. Details:
+[API limits](https://codebrauer.github.io/ha-urban-weather/user/api-limits/#one-request-for-all-stations-dortmund-zurich).
 
 ## When data stops
 
@@ -194,10 +196,12 @@ actions:
 |---|---|---|
 | Measurements, station list (Mannheim) | [Smart City Mannheim Klima API](https://opendata.smartmannheim.de/dataset/klimadaten-echtzeit-api) | dl-de/by-2-0 |
 | Measurements, station list (Dortmund) | [Stadt Dortmund, Klimasensoren - Aktuelle Messung](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/), network of the project Data2Resilience | dl-de/zero-2-0 |
+| Measurements, station list (Zürich) | [Stadt Zürich, Stadtklima Zürich](https://stadtklima-zuerich.ch/), Umwelt- und Gesundheitsschutz (UGZ) | CC0 |
 | Station siting metadata (Mannheim) | [Metadatenkatalog Stadtklimamessnetze Mannheim](https://opendata.smartmannheim.de/dataset/metadaten-stadtklimamessnetze-mannheim) | dl-de/by-2-0 |
 | Local Climate Zones | Demuzere et al. (2022), [Global map of LCZ](https://doi.org/10.5281/zenodo.6364594) | CC BY 4.0 |
 | District names | © OpenStreetMap contributors via Nominatim | ODbL 1.0 |
-| Map tiles of the station map | [basemap.de](https://basemap.de/) / BKG | CC BY 4.0 |
+| Map tiles of the station map (Germany) | [basemap.de](https://basemap.de/) / BKG | CC BY 4.0 |
+| Map tiles of the station map (Switzerland) | [osm.ch](https://osm.ch/), © OpenStreetMap contributors | ODbL 1.0 |
 | Map library (bundled) | [Leaflet 1.9.4](https://leafletjs.com/) | BSD-2-Clause |
 
 The static reference files in `custom_components/urban_weather/providers/mannheim/data/`
