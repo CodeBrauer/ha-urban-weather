@@ -12,6 +12,7 @@ Unterstützte Messnetze:
 
 - [Smart City Mannheim](https://smartmannheim.de/) (über 400 Stationen)
 - [Klimamessnetz Dortmund](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/) (76 Stationen)
+- [Smart Climate Luftklima Basel](https://data.bs.ch/explore/dataset/100009/) (etwa 70 Stationen)
 - [Stadtklimamessnetz Zürich](https://stadtklima-zuerich.ch/) (100+ Stationen)
 - [Sensor City Karlsruhe](https://geoportal.karlsruhe.de/sensorcity/Dashboard/) (90+ Stationen)
 
@@ -168,9 +169,9 @@ sich das Limit.
 
 Dortmund hat ein eigenes Budget: Eine Abfrage liefert alle Stationen, die die Dortmunder
 Standorte nutzen, höchstens 60 pro Stunde (der Datensatz nennt ein Kontingent von 50.000
-Abfragen pro Tag). Zürich funktioniert genauso, ohne dokumentierte Limits und mit derselben
-Obergrenze von 60 pro Stunde; Karlsruhe ebenfalls, mit einer Obergrenze von 30 pro Stunde. Details:
-[API-Limits](https://codebrauer.github.io/ha-urban-weather/de/user/api-limits/#eine-abfrage-fur-alle-stationen-dortmund-zurich).
+Abfragen pro Tag). Basel und Zürich funktionieren genauso, mit derselben Obergrenze von 60 pro Stunde
+(Basel nennt ein Kontingent von 500.000 Abfragen pro Tag, Zürich dokumentiert keine Limits); Karlsruhe ebenfalls, mit einer Obergrenze von 30 pro Stunde. Details:
+[API-Limits](https://codebrauer.github.io/ha-urban-weather/de/user/api-limits/#eine-abfrage-fur-alle-stationen-dortmund-basel-zurich-karlsruhe).
 
 ## Wenn keine Daten mehr kommen
 
@@ -205,6 +206,7 @@ actions:
 |---|---|---|
 | Messwerte, Stationsliste (Mannheim) | [Klima-API Smart City Mannheim](https://opendata.smartmannheim.de/dataset/klimadaten-echtzeit-api) | dl-de/by-2-0 |
 | Messwerte, Stationsliste (Dortmund) | [Stadt Dortmund, Klimasensoren - Aktuelle Messung](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/), Messnetz des Projekts Data2Resilience | dl-de/zero-2-0 |
+| Messwerte, Stationsliste (Basel) | [Kanton Basel-Stadt, Smart Climate Luftklima](https://data.bs.ch/explore/dataset/100009/) | CC BY 4.0 |
 | Messwerte, Stationsliste (Zürich) | [Stadt Zürich, Stadtklima Zürich](https://stadtklima-zuerich.ch/), Umwelt- und Gesundheitsschutz (UGZ) | CC0 |
 | Messwerte, Stationsliste (Karlsruhe) | [Stadt Karlsruhe, Sensor City / CityCLIM](https://geoportal.karlsruhe.de/sensorcity/Dashboard/) | Nicht angegeben |
 | Standort-Metadaten der Stationen (Mannheim) | [Metadatenkatalog Stadtklimamessnetze Mannheim](https://opendata.smartmannheim.de/dataset/metadaten-stadtklimamessnetze-mannheim) | dl-de/by-2-0 |

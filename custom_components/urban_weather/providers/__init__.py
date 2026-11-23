@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING
 
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
+from .basel import BASEL
+from .basel import DATASET as BASEL_DATASET
 from .dortmund import DATASET as DORTMUND_DATASET
 from .dortmund import DORTMUND
 from .geojson import GeoJsonProvider
@@ -30,6 +32,10 @@ async def _async_create_mannheim(hass: HomeAssistant) -> Provider:
     return MannheimProvider(MANNHEIM, async_get_clientsession(hass), reference)
 
 
+async def _async_create_basel(hass: HomeAssistant) -> Provider:
+    return OpendatasoftProvider(BASEL, BASEL_DATASET, async_get_clientsession(hass))
+
+
 async def _async_create_dortmund(hass: HomeAssistant) -> Provider:
     return OpendatasoftProvider(
         DORTMUND, DORTMUND_DATASET, async_get_clientsession(hass)
@@ -48,6 +54,7 @@ async def _async_create_karlsruhe(hass: HomeAssistant) -> Provider:
 PROVIDERS: dict[str, Callable[[HomeAssistant], Awaitable[Provider]]] = {
     MANNHEIM.id: _async_create_mannheim,
     DORTMUND.id: _async_create_dortmund,
+    BASEL.id: _async_create_basel,
     ZURICH.id: _async_create_zurich,
     KARLSRUHE.id: _async_create_karlsruhe,
 }

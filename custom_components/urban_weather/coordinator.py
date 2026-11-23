@@ -28,7 +28,6 @@ from .const import (
     KEEP_VALUES_INTERVALS,
     KEEP_VALUES_MIN_AGE,
     LOGGER,
-    MAX_MEASUREMENT_AGE,
     STATION_OFFLINE_AFTER,
     Field,
 )
@@ -251,7 +250,7 @@ class ClimateCoordinator(DataUpdateCoordinator[Estimate]):
         except ApiError as err:
             LOGGER.debug("Fetching %s failed: %s", sensor.name, err)
             return None
-        latest = latest_valid(measurements, now, MAX_MEASUREMENT_AGE)
+        latest = latest_valid(measurements, now, self.hub.provider.network.max_age)
         if latest:
             self._last_seen[sensor.id] = now
         offline = now - self._last_seen[sensor.id] > STATION_OFFLINE_AFTER

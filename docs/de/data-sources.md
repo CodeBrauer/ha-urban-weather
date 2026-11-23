@@ -1,10 +1,11 @@
-<!-- source: cc9ffb56347de72d8380429cbcef161ca3f9503a -->
+<!-- source: 3983443c2a13952573bd9b3933fff377b65d007e -->
 # Datenquellen und Lizenzen
 
 | Daten | Quelle | Lizenz |
 |---|---|---|
 | Messwerte, Stationsliste (Mannheim) | [Smart City Mannheim Klima-API](https://opendata.smartmannheim.de/dataset/klimadaten-echtzeit-api) | dl-de/by-2-0 |
 | Messwerte, Stationsliste (Dortmund) | [Stadt Dortmund, Klimasensoren - Aktuelle Messung](https://open-data.dortmund.de/explore/dataset/klimasensoren-aktuelle-messungen/), Messnetz des Projekts Data2Resilience | dl-de/zero-2-0 |
+| Messwerte, Stationsliste (Basel) | [Kanton Basel-Stadt, Smart Climate Luftklima](https://data.bs.ch/explore/dataset/100009/) | CC BY 4.0 |
 | Messwerte, Stationsliste (Zürich) | [Stadt Zürich, Stadtklima Zürich](https://stadtklima-zuerich.ch/), Umwelt- und Gesundheitsschutz (UGZ) | CC0 |
 | Messwerte, Stationsliste (Karlsruhe) | [Stadt Karlsruhe, Sensor City / CityCLIM](https://geoportal.karlsruhe.de/sensorcity/Dashboard/) | Nicht angegeben |
 | Metadaten der Stationsstandorte (Mannheim) | [Metadatenkatalog Stadtklimamessnetze Mannheim](https://opendata.smartmannheim.de/dataset/metadaten-stadtklimamessnetze-mannheim) | dl-de/by-2-0 |
@@ -17,7 +18,7 @@
 Details je Messnetz: [Unterstützte Messnetze](networks/index.md).
 
 Die Entitäten tragen die Quellenangabe ihres Messnetzes: *Smart City Mannheim GmbH,
-dl-de/by-2-0*, *Stadt Dortmund, dl-de/zero-2-0*, *Stadt Zürich (UGZ), CC0* oder *Stadt Karlsruhe (Sensor City)*.
+dl-de/by-2-0*, *Stadt Dortmund, dl-de/zero-2-0*, *Kanton Basel-Stadt, CC BY 4.0*, *Stadt Zürich (UGZ), CC0* oder *Stadt Karlsruhe (Sensor City)*.
 
 Die Stadt Karlsruhe gibt für die Sensor-City-Daten keine Lizenz an.
 

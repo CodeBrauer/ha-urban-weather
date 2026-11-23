@@ -1,8 +1,8 @@
-<!-- source: f1ec8a02f665f9f5a79ff453df4eab4da48ee887 -->
+<!-- source: 01daa176ff6fc7713a5a990e41df1ee75031ec14 -->
 # Urban Weather (Stadtklima)
 
 Home-Assistant-Integration für dichte Stadtklima-Messnetze, zunächst
-[Mannheim, Dortmund, Zürich und Karlsruhe](#unterstutzte-messnetze). Sie liefert Klimawerte für einen Ort deiner
+[Mannheim, Dortmund, Basel, Zürich und Karlsruhe](#unterstutzte-messnetze). Sie liefert Klimawerte für einen Ort deiner
 Wahl: Temperatur, Luftfeuchte, Taupunkt, absolute Feuchte, gefühlte Temperatur, Luftdruck,
 Globalstrahlung und Wind.
 
@@ -36,6 +36,7 @@ Home Assistant nutzbar.
 |---|---|---|---|
 | [Smart City Mannheim](networks/mannheim.md) | über 400 | Alle Werte; Wind an einigen Masten | Umgebung, Dach und Hochpunkt |
 | [Klimamessnetz Dortmund](networks/dortmund.md) | 76 | Temperatur und Luftfeuchte; etwa ein Drittel auch Luftdruck, Globalstrahlung und Wind | Keine: [Empfehlung nach Entfernung](user/stations.md#messnetze-ohne-standortdaten) |
+| [Smart Climate Luftklima Basel](networks/basel.md) | etwa 70 | Temperatur | Keine: [Empfehlung nach Entfernung](user/stations.md#messnetze-ohne-standortdaten) |
 | [Stadtklimamessnetz Zürich](networks/zurich.md) | 100+ | Temperatur und Luftfeuchte | Keine: [Empfehlung nach Entfernung](user/stations.md#messnetze-ohne-standortdaten) |
 | [Sensor City Karlsruhe](networks/karlsruhe.md) | 90+ | Temperatur und Luftfeuchte | Keine: [Empfehlung nach Entfernung](user/stations.md#messnetze-ohne-standortdaten) |
 

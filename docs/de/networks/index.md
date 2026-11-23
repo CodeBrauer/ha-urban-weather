@@ -1,4 +1,4 @@
-<!-- source: 841694d7c4292c59cacb2d93ab01134adb8ff25a -->
+<!-- source: b9c4ae98b951ed569e6dc07f368a7af8d4cf016a -->
 # Unterstützte Messnetze
 
 Die Integration liest Stadtklima-Messnetze von Städten. Ein Messnetz ist eine Reihe von
@@ -10,6 +10,7 @@ Station in der Nähe.
 |---|---|---|---|---|---|
 | [Smart City Mannheim](mannheim.md) | über 400 | Alle Werte; Wind an einigen Masten | Umgebung, Dach und Hochpunkt | Eigene API | `api.smartmannheim.de` |
 | [Klimamessnetz Dortmund](dortmund.md) | 76 | Temperatur und Luftfeuchte; etwa ein Drittel auch Luftdruck, Globalstrahlung und Wind | Keine | Opendatasoft | `open-data.dortmund.de` |
+| [Smart Climate Luftklima Basel](basel.md) | etwa 70 | Temperatur | Keine | Opendatasoft | `data.bs.ch` |
 | [Stadtklimamessnetz Zürich](zurich.md) | 100+ | Temperatur und Luftfeuchte | Keine | GeoJSON-Datei | `stadtklima-zuerich.ch` |
 | [Sensor City Karlsruhe](karlsruhe.md) | 90+ | Temperatur und Luftfeuchte | Keine | ArcGIS FeatureServer (GeoJSON) | `geoportal.karlsruhe.de` |
 
