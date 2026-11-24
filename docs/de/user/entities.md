@@ -1,9 +1,10 @@
-<!-- source: 63bbae45e7488d8c6741127762575b4de38f12ab -->
+<!-- source: d4e4127f5b1f1d9e6a772cdb831f5f99079baaf6 -->
 # Entitäten
 
 Jeder Standort liefert Sensoren und eine Wetter-Entität. Gemessen wird alle 10 Minuten, die
 Werte kommen mit 10–20 Minuten Verzögerung an; Messungen, die älter als 40 Minuten sind,
-werden nicht verwendet.
+werden nicht verwendet (länger bei Messnetzen, die seltener melden, siehe die
+[Messnetz-Seite](../networks/index.md)).
 
 ## Sensoren
 
@@ -65,6 +66,6 @@ Regensensoren hat:
 ## Wenn Werte fehlen
 
 Ist die API nicht erreichbar oder greift ihr Rate-Limit, behalten die Entitäten ihre letzten
-Werte, bis die letzte Messung 60 Minuten alt ist (oder drei Aktualisierungsintervalle, wenn
+Werte, bis die letzte Messung 60 Minuten alt ist (oder drei Aktualisierungsintervalle oder das 1,5-Fache des Höchstalters des Messnetzes, wenn
 das länger ist). Danach werden sie nicht verfügbar. Siehe
 [Reparaturen und Fehlersuche](troubleshooting.md).

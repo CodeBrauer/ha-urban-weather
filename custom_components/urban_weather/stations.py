@@ -54,6 +54,8 @@ class Station:
     zone: MountZone | None
     height_above_ground: int | None
     temperature_height: int | None
+    # Readable name for networks that publish one; the district takes precedence.
+    name: str | None = None
 
     @property
     def environment(self) -> Environment | None:
@@ -70,7 +72,8 @@ class Station:
     @property
     def label(self) -> str:
         """Human-readable station name."""
-        return f"{self.district} ({self.code})" if self.district else self.code
+        place = self.district or self.name
+        return f"{place} ({self.code})" if place else self.code
 
     def distance_to(self, latitude: float, longitude: float) -> float:
         """Return the distance to a coordinate in metres."""

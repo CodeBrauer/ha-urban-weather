@@ -77,7 +77,7 @@ Release steps: [`.claude/skills/release/SKILL.md`](.claude/skills/release/SKILL.
 
 ## The network APIs are shared, rate-limited resources
 
-- The limits of `api.smartmannheim.de` (Mannheim) and the daily quota of `open-data.dortmund.de` (Dortmund) apply per public IP, shared with the maintainer's production Home Assistant. Never poll a live API in loops or scripts; a few manual requests for debugging at most. `stadtklima-zuerich.ch` (Zürich) and `geoportal.karlsruhe.de` (Karlsruhe) document no limits, but the same rule applies.
+- The limits of `api.smartmannheim.de` (Mannheim) and the daily quotas of `open-data.dortmund.de` (Dortmund) apply per public IP, shared with the maintainer's production Home Assistant. Never poll a live API in loops or scripts; a few manual requests for debugging at most. `stadtklima-zuerich.ch` (Zürich) and `geoportal.karlsruhe.de` (Karlsruhe) document no limits, but the same rule applies. `data.bs.ch` (Basel) reports a quota of 500,000 requests per day, the rule is the same.
 - Tests never call a live API (`pytest-socket` blocks it). Use the trimmed real responses in `tests/fixtures/` (`sensors.json` for Mannheim, `dortmund.json` for Dortmund, `basel.json` for Basel, `zurich.json` for Zürich, `karlsruhe.json` for Karlsruhe).
 - The client-side limits and the planned budget are the `RequestLimits` of each network (`MANNHEIM` in `providers/mannheim/`, `DORTMUND` in `providers/dortmund.py`, `BASEL` in `providers/basel.py`, `ZURICH` in `providers/zurich.py`, `KARLSRUHE` in `providers/karlsruhe.py`). Features that add requests must fit the planned budget, which `StationSelection` enforces. Discuss changes to the limits in an issue first.
 

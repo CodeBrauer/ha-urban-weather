@@ -18,8 +18,8 @@ from .opendatasoft import OpendatasoftDataset
 # Precipitation is published too, but not used yet.
 FIELDS: dict[str, Field] = {"meta_airtemp": Field.TEMPERATURE}
 
-# The sensors report about hourly, with gaps; the station list also keeps sensors that
-# skipped a few hours.
+# The sensors report about hourly, with gaps; some are silent for days, so the station
+# list looks back a week to keep them as offline stations instead of dropping them.
 DATASET = OpendatasoftDataset(
     id="100009",
     sensor_id="name_original",
@@ -27,7 +27,8 @@ DATASET = OpendatasoftDataset(
     sensor_name="name_custom",
     position="coords",
     timestamp="dates_max_date",
-    station_window=timedelta(hours=24),
+    station_name="name_custom",
+    station_window=timedelta(days=7),
     measurement_window=timedelta(hours=3),
 )
 

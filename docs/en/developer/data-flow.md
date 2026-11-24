@@ -110,9 +110,10 @@ stateDiagram-v2
     Unavailable --> Current: readings
 ```
 
-- A reading is the newest measurement of a station within `MAX_MEASUREMENT_AGE` that has
-  plausible values.
-- The keep time is `max(KEEP_VALUES_MIN_AGE, KEEP_VALUES_INTERVALS × scan_interval)`,
+- A reading is the newest measurement of a station within the `max_age` of the network
+  (`MAX_MEASUREMENT_AGE` by default) that has plausible values.
+- The keep time is `max(KEEP_VALUES_MIN_AGE, KEEP_VALUES_INTERVALS × scan_interval,
+  KEEP_VALUES_AGE_FACTOR × max_age)` (`max_age` of the network),
   measured from the newest measurement of the kept estimate.
 - Unavailable means the update raised `UpdateFailed`: `waiting_for_budget` (with
   `retry_after`) if requests were deferred, otherwise `no_recent_data`.

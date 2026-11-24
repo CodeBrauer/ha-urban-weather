@@ -1,4 +1,4 @@
-<!-- source: 25711af1905875fdfda970d20a0c68243d2462c1 -->
+<!-- source: 7e69d3bdd27c0fad5eaf01aab2c58674ee07256e -->
 # Smart Climate Luftklima Basel
 
 | | |
@@ -23,12 +23,13 @@ Niederschlag wird ebenfalls veröffentlicht, aber noch nicht genutzt.
 ## Daten
 
 - Der Datensatz ist eine Zeitreihe, kein Eintrag pro Sensor: Jeder Sensor meldet etwa einmal
-  pro Stunde, mit Lücken. Die Integration nutzt den neuesten Eintrag jedes Sensors.
+  pro Stunde, mit Lücken. Die Integration nutzt den neuesten Eintrag jedes Sensors, der einen Wert hat.
 - Jede Abfrage hat ein Zeitfenster, weil der ganze Datensatz Millionen Einträge enthält: Die
-  Stationsliste blickt 24 Stunden zurück, die Messwerte 3 Stunden.
+  Stationsliste blickt 7 Tage zurück, die Messwerte 3 Stunden. Sensoren, die tagelang
+  schweigen, bleiben als Offline-Stationen in der Liste.
 - Ein Messwert gilt 120 statt der üblichen 40 Minuten, damit die stündlichen Werte nicht in
-  einem großen Teil jeder Stunde wegfallen.
-- Stations-ID, Sensor-ID und Sensorname sind die des Datensatzes, ein Sensor pro Station.
+  einem großen Teil jeder Stunde wegfallen. Die letzten Werte bleiben 180 Minuten erhalten.
+- Stations-ID und Sensor-ID sind die des Datensatzes, ein Sensor pro Station; der Stationsname steht vor dem Code.
 - Eine Abfrage liefert die Werte aller Stationen, die die Standorte nutzen; die Zahl der
   Stationen kostet also keine Abfragen.
 - Der Datensatz enthält keine Standortdaten. Die Stationsempfehlung arbeitet allein nach

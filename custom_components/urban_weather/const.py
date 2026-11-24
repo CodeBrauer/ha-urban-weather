@@ -57,9 +57,11 @@ STATIC_URL = f"/{DOMAIN}_static"
 # Aggregation
 MAX_MEASUREMENT_AGE = timedelta(minutes=40)
 # Without fresh data the last estimate stays until its newest measurement is
-# max(KEEP_VALUES_MIN_AGE, KEEP_VALUES_INTERVALS x update interval) old.
+# max(KEEP_VALUES_MIN_AGE, KEEP_VALUES_INTERVALS x update interval, ...) old.
 KEEP_VALUES_MIN_AGE = timedelta(minutes=60)
 KEEP_VALUES_INTERVALS = 3
+# ... KEEP_VALUES_AGE_FACTOR x the maximum measurement age of the network.
+KEEP_VALUES_AGE_FACTOR = 1.5
 OUTLIER_MIN_STATIONS = 4
 OUTLIER_MAX_DEVIATION_K = 2.5
 STATION_OFFLINE_AFTER = timedelta(hours=24)

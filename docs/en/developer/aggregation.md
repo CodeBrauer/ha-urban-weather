@@ -4,7 +4,7 @@
 
 ```mermaid
 flowchart TD
-    M[Measurements of the last 60 minutes<br>per temperature station] --> V[Newest measurement within 40 minutes<br>with plausible values]
+    M[Measurements of the last 60 minutes<br>per temperature station] --> V[Newest measurement within the maximum age<br>with plausible values]
     V --> O{4 or more stations?}
     O -- yes --> D[Drop stations more than 2.5 K<br>from the median temperature]
     O -- no --> U

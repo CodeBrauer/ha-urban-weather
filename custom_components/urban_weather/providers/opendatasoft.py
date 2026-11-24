@@ -49,10 +49,12 @@ class OpendatasoftDataset:
     sensor_name: str
     position: str
     timestamp: str
+    # Field name of a readable station name, shown with the station code.
+    station_name: str | None = None
     # ODSQL condition selecting the records that are sensors the integration uses.
     where: str | None = None
     # Time series only: how far back the station list and the measurements look.
-    # The station list wants a long window (sensors report in gaps), the
+    # The station list wants a long window (sensors fall silent for days), the
     # measurements a short one, as it is requested often.
     station_window: timedelta | None = None
     measurement_window: timedelta | None = None
@@ -77,6 +79,28 @@ def _position(record: Mapping[str, Any], name: str) -> tuple[float, float] | Non
     return float(latitude), float(longitude)
 
 
+def _has_values(record: Mapping[str, Any], fields: Mapping[str, Field]) -> bool:
+    return any(is_number(record.get(name)) for name in fields)
+
+
+def _newest_per_sensor(
+    records: list[dict[str, Any]],
+    dataset: OpendatasoftDataset,
+    fields: Mapping[str, Field],
+) -> list[dict[str, Any]]:
+    """Return the newest record with a value of each sensor, newest first."""
+    newest: dict[str, dict[str, Any]] = {}
+    for record in sorted(
+        records,
+        key=lambda item: parse_timestamp(item.get(dataset.timestamp)) or OLDEST,
+        reverse=True,
+    ):
+        sensor_id = str(record.get(dataset.sensor_id) or "").strip()
+        if sensor_id not in newest and _has_values(record, fields):
+            newest[sensor_id] = record
+    return list(newest.values())
+
+
 def build_stations(
     records: list[dict[str, Any]],
     dataset: OpendatasoftDataset,
@@ -89,7 +113,7 @@ def build_stations(
     sensor with the most fields is used, on a tie the most recent one. Sensors
     silent for STATION_OFFLINE_AFTER are left out if their station has a current
     one, so a sensor that stopped sending does not shadow its replacement. Of a
-    repeated sensor the newest record is used.
+    repeated sensor the newest record with a value is used.
     """
     by_station: dict[str, list[tuple[ApiSensor, datetime]]] = {}
     dated = [
@@ -99,6 +123,7 @@ def build_stations(
     # The newest measurement stands for the time of the list (fresh or stored).
     listed_at = max((timestamp for timestamp, _ in dated), default=OLDEST)
     seen: set[str] = set()
+    names: dict[str, str] = {}
     for timestamp, record in sorted(dated, key=lambda item: item[0], reverse=True):
         sensor_id = str(record.get(dataset.sensor_id) or "").strip()
         station_id = str(record.get(dataset.station_id) or "").strip()
@@ -106,9 +131,11 @@ def build_stations(
         if not sensor_id or not station_id or position is None:
             LOGGER.debug("Skipping record without id or position: %s", record)
             continue
-        if sensor_id in seen:
+        if sensor_id in seen or not _has_values(record, fields):
             continue
         seen.add(sensor_id)
+        if dataset.station_name and record.get(dataset.station_name):
+            names.setdefault(station_id, str(record[dataset.station_name]).strip())
         sensor = ApiSensor(
             id=sensor_id,
             name=str(record.get(dataset.sensor_name) or sensor_id).strip(),
@@ -140,6 +167,7 @@ def build_stations(
                 zone=None,
                 height_above_ground=None,
                 temperature_height=None,
+                name=names.get(code),
             )
         )
     return stations
@@ -228,10 +256,15 @@ class OpendatasoftProvider(BulkProvider):
             dataset.timestamp,
             *self.network.fields,
         ]
+        if dataset.station_name:
+            select.append(dataset.station_name)
         records = await self._async_export(
             select,
             _all_of(dataset.where, _within(dataset.timestamp, dataset.station_window)),
         )
+        if dataset.station_window:
+            # A time series is long; the stored list keeps what the stations need.
+            records = _newest_per_sensor(records, dataset, self.network.fields)
         return {"records": records}
 
     def build_stations(self, payload: dict[str, Any]) -> list[Station]:

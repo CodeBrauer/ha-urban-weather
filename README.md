@@ -156,7 +156,7 @@ The integration therefore:
   interval accordingly (default 15 minutes; values arrive every 10 minutes with
   10–20 minutes delay anyway),
 - keeps the last values during a `429` or an API outage until the last measurement is
-  60 minutes old (or three update intervals, if that is longer); only then do the entities
+  60 minutes old (or three update intervals or 1.5 times the maximum age of the network, if that is longer); only then do the entities
   become unavailable.
 
 Other scripts or devices that use the API from the same internet connection share the limit.

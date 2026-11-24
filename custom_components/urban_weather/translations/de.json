@@ -194,7 +194,7 @@
   },
   "exceptions": {
     "no_recent_data": {
-      "message": "Keine der gewählten Stationen hat in den letzten 40 Minuten Daten geliefert."
+      "message": "Keine der gewählten Stationen hat zuletzt aktuelle Daten geliefert."
     },
     "waiting_for_budget": {
       "message": "Das Abfrage-Budget der API ist gerade aufgebraucht. Neuer Versuch in {seconds} Sekunden."

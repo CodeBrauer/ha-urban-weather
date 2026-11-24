@@ -22,13 +22,14 @@ is published too, but not used yet.
 ## Data
 
 - The dataset is a time series, not one record per sensor: each sensor reports about once an
-  hour, with gaps. The integration uses the newest record of each sensor.
+  hour, with gaps. The integration uses the newest record of each sensor that has a value.
 - Every request has a time window, because the whole dataset holds millions of records: the
-  station list looks back 24 hours, the measurements 3 hours.
+  station list looks back 7 days, the measurements 3 hours. Sensors that fall silent for
+  days stay in the list as offline stations.
 - A measurement counts for 120 minutes instead of the usual 40, so the hourly values do not
-  drop out for much of each hour.
-- The station id, the sensor id and the sensor name are the ones of the dataset, one sensor
-  per station.
+  drop out for much of each hour. The last values are kept for 180 minutes.
+- The station id and the sensor id are the ones of the dataset, one sensor per station; the
+  station name is shown before the code.
 - One request returns the values of all stations the locations use, so the number of
   stations costs no requests.
 - The dataset has no siting data. The station recommendation works by distance only, see

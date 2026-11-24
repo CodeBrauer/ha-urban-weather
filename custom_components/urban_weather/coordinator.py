@@ -25,6 +25,7 @@ from .const import (
     DOMAIN,
     ISSUE_ENTRY_ID,
     ISSUE_SENSOR_ID,
+    KEEP_VALUES_AGE_FACTOR,
     KEEP_VALUES_INTERVALS,
     KEEP_VALUES_MIN_AGE,
     LOGGER,
@@ -77,7 +78,9 @@ class ClimateCoordinator(DataUpdateCoordinator[Estimate]):
             update_interval=interval,
         )
         self._keep_values_for = max(
-            KEEP_VALUES_MIN_AGE, KEEP_VALUES_INTERVALS * interval
+            KEEP_VALUES_MIN_AGE,
+            KEEP_VALUES_INTERVALS * interval,
+            KEEP_VALUES_AGE_FACTOR * hub.provider.network.max_age,
         )
         self.hub = hub
         self.stations = stations

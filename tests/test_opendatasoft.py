@@ -361,7 +361,7 @@ async def test_time_series_requests_have_a_window_each(
     provider = OpendatasoftProvider(BASEL, BASEL_DATASET, async_get_clientsession(hass))
     aioclient_mock.get(BASEL_EXPORT_URL, json=basel_records())
     await provider.async_get_station_payload()
-    assert query(aioclient_mock)["where"] == "dates_max_date >= now(minutes=-1440)"
+    assert query(aioclient_mock)["where"] == "dates_max_date >= now(minutes=-10080)"
     await provider.async_get_all_measurements(
         [
             ApiSensor(
@@ -381,6 +381,52 @@ def test_time_series_gives_one_station_per_sensor() -> None:
     nearest = next(s for s in stations if s.code == BASEL_NEAREST)
     assert nearest.temperature_sensor.name == "Schulhaus Leonhard 2"
     assert nearest.wind_sensor is None, "temperature only"
+
+
+def test_station_survives_a_newest_record_without_value() -> None:
+    """A null newest record does not drop the station; the previous record counts."""
+    records = basel_records()
+    newest = max(
+        (r for r in records if r["name_original"] == BASEL_NEAREST),
+        key=lambda r: r["dates_max_date"],
+    )
+    newest["meta_airtemp"] = None
+    stations = build_stations(records, BASEL_DATASET, BASEL_FIELDS)
+    assert len(stations) == 6
+    nearest = next(s for s in stations if s.code == BASEL_NEAREST)
+    assert nearest.temperature_sensor is not None
+
+
+def test_station_is_labelled_with_its_name() -> None:
+    """The readable name stands before the code; without one the code stays."""
+    nearest = next(
+        s
+        for s in build_stations(basel_records(), BASEL_DATASET, BASEL_FIELDS)
+        if s.code == BASEL_NEAREST
+    )
+    assert nearest.label == f"Schulhaus Leonhard 2 ({BASEL_NEAREST})"
+    [dortmund] = build_stations(dortmund_records()[:1], DATASET, FIELDS)
+    assert dortmund.label == dortmund.code
+
+
+async def test_stored_station_list_has_one_record_per_sensor(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+) -> None:
+    """The time series is reduced to the newest record with a value of each sensor."""
+    records = basel_records()
+    newest = max(
+        (r for r in records if r["name_original"] == BASEL_NEAREST),
+        key=lambda r: r["dates_max_date"],
+    )
+    newest["meta_airtemp"] = None
+    aioclient_mock.get(BASEL_EXPORT_URL, json=records)
+    provider = OpendatasoftProvider(BASEL, BASEL_DATASET, async_get_clientsession(hass))
+    payload = await provider.async_get_station_payload()
+    assert len(payload["records"]) == 6
+    stored = next(r for r in payload["records"] if r["name_original"] == BASEL_NEAREST)
+    assert stored["meta_airtemp"] is not None
+    assert stored["dates_max_date"] < newest["dates_max_date"], "previous record"
+    assert "name_custom" in query(aioclient_mock)["select"]
 
 
 @pytest.mark.parametrize("newest_first", [True, False], ids=["desc", "asc"])
