@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import timedelta
 from typing import TYPE_CHECKING, Any
+from unittest.mock import patch
 
 import pytest
 from pytest_homeassistant.common import async_fire_time_changed
@@ -25,6 +27,8 @@ from custom_components.urban_weather.provider import (
     ApiRateLimitError,
     SensorNotFoundError,
 )
+from custom_components.urban_weather.providers import PROVIDERS
+from custom_components.urban_weather.providers.mannheim import MANNHEIM
 
 from .common import (
     CATALOG_SENSOR,
@@ -34,6 +38,7 @@ from .common import (
     SECOND_SENSOR,
     add_home_entry,
     add_location,
+    mannheim_provider,
     respond,
     store_sensor_list,
 )
@@ -191,6 +196,26 @@ async def test_last_values_kept_without_recent_data(
     await refresh_after(hass, coordinator, freezer, timedelta(seconds=1))
     assert not coordinator.last_update_success
     assert coordinator.last_exception.translation_key == "no_recent_data"
+
+
+async def test_last_values_kept_longer_for_a_slow_network(
+    hass: HomeAssistant, api: MagicMock, freezer: FrozenDateTimeFactory
+) -> None:
+    """A network with a maximum age of 2 h keeps values for 1.5 times that."""
+    slow = replace(MANNHEIM, max_age=timedelta(hours=2))
+
+    async def create(_hass: HomeAssistant) -> Any:
+        return mannheim_provider(slow)
+
+    with patch.dict(PROVIDERS, {MANNHEIM.id: create}):
+        coordinator = await set_up(hass, api, [NEAREST_SENSOR])
+        api.async_get_measurements.side_effect = ApiConnectionError("timeout")
+        kept_for = timedelta(hours=3)
+        await refresh_after(hass, coordinator, freezer, kept_for - MEASUREMENT_AGE)
+        assert coordinator.last_update_success
+        assert coordinator.data.temperature == 12.0
+        await refresh_after(hass, coordinator, freezer, timedelta(seconds=1))
+        assert not coordinator.last_update_success
 
 
 async def test_removed_station_creates_repair_issue(

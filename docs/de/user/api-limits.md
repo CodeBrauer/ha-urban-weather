@@ -1,4 +1,4 @@
-<!-- source: b0490bc717689fee9549a565f1f0511d43397e31 -->
+<!-- source: 25a1dde849c05d25f0b975580af516ffdf3435df -->
 # API-Limits
 
 Jedes Messnetz hat eigene Limits und ein eigenes Abfrage-Budget; Standorte in einem Messnetz
@@ -6,6 +6,7 @@ nehmen Standorten in einem anderen keine Stationen weg. Die dokumentierten Limit
 Integration sendet, stehen auf der Seite des jeweiligen Messnetzes:
 [Smart City Mannheim](../networks/mannheim.md#limits),
 [Klimamessnetz Dortmund](../networks/dortmund.md#limits),
+[Smart Climate Luftklima Basel](../networks/basel.md#limits),
 [Stadtklimamessnetz Zürich](../networks/zurich.md#limits) und
 [Sensor City Karlsruhe](../networks/karlsruhe.md#limits). Diese Seite erklärt, wie das
 Budget die Zahl der Stationen begrenzt.
@@ -16,7 +17,7 @@ Integrationen in Home Assistant, Skripte oder Geräte, die dieselbe API nutzen, 
 ## Wie viele Stationen passen
 
 Die Summe der Abfragen aller aktivierten Standorte eines Messnetzes darf höchstens die
-geplanten Abfragen pro Stunde betragen (24 in Mannheim und Karlsruhe, 60 in Dortmund und Zürich). Wie viele Abfragen
+geplanten Abfragen pro Stunde betragen (24 in Mannheim und Karlsruhe, 60 in Dortmund, Basel und Zürich). Wie viele Abfragen
 ein Standort braucht, hängt davon ab, wie das Messnetz seine Werte liefert.
 
 ### Eine Abfrage pro Station (Mannheim)
@@ -45,7 +46,7 @@ das Budget es zulässt.
 - Bei mehreren Standorten lässt jeder den anderen weniger Stationen oder ein längeres
   Intervall.
 
-### Eine Abfrage für alle Stationen (Dortmund, Zürich)
+### Eine Abfrage für alle Stationen (Dortmund, Basel, Zürich, Karlsruhe)
 
 Eine Abfrage liefert die Werte aller Stationen, die die Standorte nutzen. Die Anzahl der
 Stationen kostet also keine Abfragen. [Karlsruhe](../networks/karlsruhe.md) funktioniert genauso:

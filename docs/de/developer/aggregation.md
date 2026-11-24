@@ -1,11 +1,11 @@
-<!-- source: fd2e2df10160afab53716a8364de768481196429 -->
+<!-- source: 92520ca74013f0524d4a5ed4e31f1a95e4bb4a66 -->
 # Aggregation
 
 `aggregation.py` macht aus den letzten Messungen der gewählten Stationen eine `Estimate`.
 
 ```mermaid
 flowchart TD
-    M[Messwerte der letzten 60 Minuten<br>pro Temperaturstation] --> V[Neueste Messung innerhalb von 40 Minuten<br>mit plausiblen Werten]
+    M[Messwerte der letzten 60 Minuten<br>pro Temperaturstation] --> V[Neueste Messung innerhalb des Höchstalters<br>mit plausiblen Werten]
     V --> O{4 oder mehr Stationen?}
     O -- ja --> D[Stationen verwerfen, die mehr als 2,5 K<br>vom Median der Temperatur abweichen]
     O -- nein --> U

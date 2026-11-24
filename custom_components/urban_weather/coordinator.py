@@ -25,10 +25,10 @@ from .const import (
     DOMAIN,
     ISSUE_ENTRY_ID,
     ISSUE_SENSOR_ID,
+    KEEP_VALUES_AGE_FACTOR,
     KEEP_VALUES_INTERVALS,
     KEEP_VALUES_MIN_AGE,
     LOGGER,
-    MAX_MEASUREMENT_AGE,
     STATION_OFFLINE_AFTER,
     Field,
 )
@@ -78,7 +78,9 @@ class ClimateCoordinator(DataUpdateCoordinator[Estimate]):
             update_interval=interval,
         )
         self._keep_values_for = max(
-            KEEP_VALUES_MIN_AGE, KEEP_VALUES_INTERVALS * interval
+            KEEP_VALUES_MIN_AGE,
+            KEEP_VALUES_INTERVALS * interval,
+            KEEP_VALUES_AGE_FACTOR * hub.provider.network.max_age,
         )
         self.hub = hub
         self.stations = stations
@@ -251,7 +253,7 @@ class ClimateCoordinator(DataUpdateCoordinator[Estimate]):
         except ApiError as err:
             LOGGER.debug("Fetching %s failed: %s", sensor.name, err)
             return None
-        latest = latest_valid(measurements, now, MAX_MEASUREMENT_AGE)
+        latest = latest_valid(measurements, now, self.hub.provider.network.max_age)
         if latest:
             self._last_seen[sensor.id] = now
         offline = now - self._last_seen[sensor.id] > STATION_OFFLINE_AFTER

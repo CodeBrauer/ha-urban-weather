@@ -1,7 +1,8 @@
-"""Tests for the Opendatasoft provider with the Dortmund network."""
+"""Tests for the Opendatasoft provider with the Dortmund and Basel networks."""
 
 from __future__ import annotations
 
+from datetime import timedelta
 from typing import TYPE_CHECKING, Any
 from unittest.mock import patch
 from urllib.parse import parse_qs
@@ -13,6 +14,7 @@ from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.data_entry_flow import FlowResultType
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
+from custom_components.urban_weather.aggregation import latest_valid
 from custom_components.urban_weather.const import (
     CONF_ENVIRONMENT,
     CONF_NETWORK,
@@ -20,6 +22,7 @@ from custom_components.urban_weather.const import (
     CONF_TEMPERATURE_SENSORS,
     CONF_WIND_SENSOR,
     DOMAIN,
+    MAX_MEASUREMENT_AGE,
     Environment,
     Field,
 )
@@ -30,6 +33,9 @@ from custom_components.urban_weather.provider import (
     ApiSensor,
 )
 from custom_components.urban_weather.providers import PROVIDERS, async_create_provider
+from custom_components.urban_weather.providers.basel import BASEL
+from custom_components.urban_weather.providers.basel import DATASET as BASEL_DATASET
+from custom_components.urban_weather.providers.common import parse_timestamp
 from custom_components.urban_weather.providers.dortmund import DATASET, DORTMUND
 from custom_components.urban_weather.providers.opendatasoft import (
     OpendatasoftProvider,
@@ -39,9 +45,13 @@ from custom_components.urban_weather.providers.opendatasoft import (
 from custom_components.urban_weather.stations import RecommendationReason, recommend
 
 from .common import (
+    BASEL_HOME,
+    BASEL_NEAREST,
+    BASEL_NOW,
     DORTMUND_HOME,
     DORTMUND_NEAREST,
     DORTMUND_NOW,
+    basel_records,
     configure,
     dortmund_records,
     location,
@@ -68,6 +78,7 @@ CURRENT_SENSOR = "cbdfeec3-ca72-4141-ac07-7f0ec93edc84"  # DOBDKP, its successor
 SHT35_SENSOR = "3f7964d9-a03c-4756-942a-a65093951555"  # DOTKLS
 # Taken before the autouse fixture `only_mannheim` removes it for each test.
 CREATE_DORTMUND = PROVIDERS[DORTMUND.id]
+CREATE_BASEL = PROVIDERS[BASEL.id]
 
 
 @pytest.fixture
@@ -324,3 +335,157 @@ async def test_location_in_dortmund(
     assert states["wind_speed"].state == "3.78", "1.05 m/s in km/h"
     assert states["temperature"].attributes[ATTR_ATTRIBUTION] == DORTMUND.attribution
     assert "min_temperature" not in states, "Dortmund has no min/max values"
+
+
+# Time series (Basel)
+
+BASEL_EXPORT_URL = f"{BASEL.endpoint}/catalog/datasets/100009/exports/json"
+BASEL_FIELDS = BASEL.fields
+
+
+@pytest.fixture
+def basel(
+    aioclient_mock: AiohttpClientMocker, freezer: FrozenDateTimeFactory
+) -> Generator[AiohttpClientMocker]:
+    """Offer Basel (export answered from the fixture) at the time of the export."""
+    freezer.move_to(BASEL_NOW)
+    aioclient_mock.get(BASEL_EXPORT_URL, json=basel_records())
+    with patch.dict(PROVIDERS, {BASEL.id: CREATE_BASEL}):
+        yield aioclient_mock
+
+
+async def test_time_series_requests_have_a_window_each(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+) -> None:
+    """The station list looks back 24 h, the measurements 3 h; neither is unbounded."""
+    provider = OpendatasoftProvider(BASEL, BASEL_DATASET, async_get_clientsession(hass))
+    aioclient_mock.get(BASEL_EXPORT_URL, json=basel_records())
+    await provider.async_get_station_payload()
+    assert query(aioclient_mock)["where"] == "dates_max_date >= now(minutes=-10080)"
+    await provider.async_get_all_measurements(
+        [
+            ApiSensor(
+                BASEL_NEAREST, "Leonhard", *BASEL_HOME, frozenset({Field.TEMPERATURE})
+            )
+        ]
+    )
+    assert query(aioclient_mock)["where"] == (
+        f'(name_original="{BASEL_NEAREST}") AND (dates_max_date >= now(minutes=-180))'
+    )
+
+
+def test_time_series_gives_one_station_per_sensor() -> None:
+    """Many records of a sensor give one station, positioned and named by the sensor."""
+    stations = build_stations(basel_records(), BASEL_DATASET, BASEL_FIELDS)
+    assert len(stations) == 6, "36 records"
+    nearest = next(s for s in stations if s.code == BASEL_NEAREST)
+    assert nearest.temperature_sensor.name == "Schulhaus Leonhard 2"
+    assert nearest.wind_sensor is None, "temperature only"
+
+
+def test_station_survives_a_newest_record_without_value() -> None:
+    """A null newest record does not drop the station; the previous record counts."""
+    records = basel_records()
+    newest = max(
+        (r for r in records if r["name_original"] == BASEL_NEAREST),
+        key=lambda r: r["dates_max_date"],
+    )
+    newest["meta_airtemp"] = None
+    stations = build_stations(records, BASEL_DATASET, BASEL_FIELDS)
+    assert len(stations) == 6
+    nearest = next(s for s in stations if s.code == BASEL_NEAREST)
+    assert nearest.temperature_sensor is not None
+
+
+def test_station_is_labelled_with_its_name() -> None:
+    """The readable name stands before the code; without one the code stays."""
+    nearest = next(
+        s
+        for s in build_stations(basel_records(), BASEL_DATASET, BASEL_FIELDS)
+        if s.code == BASEL_NEAREST
+    )
+    assert nearest.label == f"Schulhaus Leonhard 2 ({BASEL_NEAREST})"
+    [dortmund] = build_stations(dortmund_records()[:1], DATASET, FIELDS)
+    assert dortmund.label == dortmund.code
+
+
+async def test_stored_station_list_has_one_record_per_sensor(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+) -> None:
+    """The time series is reduced to the newest record with a value of each sensor."""
+    records = basel_records()
+    newest = max(
+        (r for r in records if r["name_original"] == BASEL_NEAREST),
+        key=lambda r: r["dates_max_date"],
+    )
+    newest["meta_airtemp"] = None
+    aioclient_mock.get(BASEL_EXPORT_URL, json=records)
+    provider = OpendatasoftProvider(BASEL, BASEL_DATASET, async_get_clientsession(hass))
+    payload = await provider.async_get_station_payload()
+    assert len(payload["records"]) == 6
+    stored = next(r for r in payload["records"] if r["name_original"] == BASEL_NEAREST)
+    assert stored["meta_airtemp"] is not None
+    assert stored["dates_max_date"] < newest["dates_max_date"], "previous record"
+    assert "name_custom" in query(aioclient_mock)["select"]
+
+
+@pytest.mark.parametrize("newest_first", [True, False], ids=["desc", "asc"])
+def test_measurements_of_a_sensor_are_newest_first(newest_first: bool) -> None:  # noqa: FBT001
+    """All records of a sensor are kept, newest first, in any response order."""
+    records = sorted(
+        basel_records(), key=lambda r: r["dates_max_date"], reverse=newest_first
+    )
+    measurements = parse_measurements(records, BASEL_DATASET, BASEL_FIELDS)
+    assert len(measurements) == 6
+    series = measurements[BASEL_NEAREST]
+    assert len(series) == 6
+    assert series[0].timestamp.isoformat() == "2026-11-23T15:58:22+00:00"
+    assert [m.timestamp for m in series] == sorted(
+        (m.timestamp for m in series), reverse=True
+    )
+
+
+def test_missing_newest_value_falls_back_to_the_previous_record() -> None:
+    """A newest record without temperature leaves the previous hour's value in use."""
+    records = basel_records()
+    newest = max(
+        (r for r in records if r["name_original"] == BASEL_NEAREST),
+        key=lambda r: r["dates_max_date"],
+    )
+    newest["meta_airtemp"] = None
+    series = parse_measurements(records, BASEL_DATASET, BASEL_FIELDS)[BASEL_NEAREST]
+    latest = latest_valid(series, BASEL_NOW + timedelta(minutes=30), BASEL.max_age)
+    assert latest is not None
+    assert latest.timestamp < parse_timestamp(newest["dates_max_date"])
+    assert Field.TEMPERATURE in latest.values
+
+
+def test_hourly_networks_keep_measurements_longer() -> None:
+    """Only Basel, reporting hourly, widens the maximum age; the default stays."""
+    assert BASEL.max_age > MAX_MEASUREMENT_AGE
+    assert DORTMUND.max_age == MAX_MEASUREMENT_AGE
+
+
+async def test_location_in_basel_uses_hourly_values(
+    hass: HomeAssistant,
+    basel: AiohttpClientMocker,  # noqa: ARG001
+    freezer: FrozenDateTimeFactory,
+    api: Any,  # noqa: ARG001
+) -> None:
+    """A value over an hour old, too old for other networks, is still used."""
+    freezer.move_to(BASEL_NOW + timedelta(minutes=64))
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": SOURCE_USER}
+    )
+    result = await configure(hass, result, location(*BASEL_HOME))
+    result = await configure(hass, result, {CONF_ENVIRONMENT: Environment.OPEN_BUILT})
+    result = await configure(hass, result, {"next_step_id": "accept"})
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    entry = result["result"]
+    assert entry.data[CONF_NETWORK] == BASEL.id
+    assert BASEL_NEAREST in entry.options[CONF_TEMPERATURE_SENSORS]
+    await hass.async_block_till_done()
+    state = hass.states.get("sensor.basel_temperature")
+    assert state is not None
+    assert state.state not in {"unknown", "unavailable"}
+    assert state.attributes[ATTR_ATTRIBUTION] == BASEL.attribution

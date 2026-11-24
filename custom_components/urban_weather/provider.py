@@ -7,9 +7,11 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlsplit
 
+from .const import MAX_MEASUREMENT_AGE
+
 if TYPE_CHECKING:
     from collections.abc import Collection, Mapping
-    from datetime import datetime
+    from datetime import datetime, timedelta
 
     from .const import Field
     from .stations import Station
@@ -93,6 +95,8 @@ class Network:
     attribution: str
     limits: RequestLimits
     tiles: TileLayer
+    # Older measurements are not used; a network that reports less often sets more.
+    max_age: timedelta = MAX_MEASUREMENT_AGE
 
     @property
     def measurements(self) -> frozenset[Field]:

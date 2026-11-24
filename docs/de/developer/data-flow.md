@@ -1,4 +1,4 @@
-<!-- source: 901eda8c855d64af453296ab48f0429abcbcf43c -->
+<!-- source: 9c1c939272f099262d9237024e6da10956a4ff79 -->
 # Abfragen und API-Zugriff
 
 Jeder API-Zugriff läuft über den `ClimateHub` des Messnetzes (`hub.py`). Die Limits des Messnetzes
@@ -113,8 +113,9 @@ stateDiagram-v2
 ```
 
 - Eine Messung zählt, wenn sie die neueste einer Station innerhalb von
-  `MAX_MEASUREMENT_AGE` mit plausiblen Werten ist.
-- Die Haltezeit ist `max(KEEP_VALUES_MIN_AGE, KEEP_VALUES_INTERVALS × scan_interval)`,
+  `max_age` des Messnetzes (standardmäßig `MAX_MEASUREMENT_AGE`) mit plausiblen Werten ist.
+- Die Haltezeit ist `max(KEEP_VALUES_MIN_AGE, KEEP_VALUES_INTERVALS × scan_interval,
+  KEEP_VALUES_AGE_FACTOR × max_age)` (`max_age` des Messnetzes),
   gerechnet ab der neuesten Messung der gehaltenen Schätzung.
 - Nicht verfügbar heißt, die Aktualisierung hat `UpdateFailed` ausgelöst:
   `waiting_for_budget` (mit `retry_after`), wenn Abfragen verschoben wurden, sonst

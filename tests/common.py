@@ -79,6 +79,11 @@ DORTMUND_HOME = (51.5136, 7.4653)
 DORTMUND_NOW = datetime(2026, 11, 21, 11, 20, tzinfo=UTC)
 DORTMUND_NEAREST = "6da26775-2b8e-4396-ade6-282e659fdfcb"  # DOBHAP ATM41, 103 m
 
+# Basel, Marktplatz; basel.json was exported at BASEL_NOW.
+BASEL_HOME = (47.5584, 7.5886)
+BASEL_NOW = datetime(2026, 11, 23, 16, 10, tzinfo=UTC)
+BASEL_NEAREST = "0340AD71"  # Schulhaus Leonhard 2, 455 m
+
 # Zürich, Bürkliplatz; zurich.json was exported at 2026-11-22 23:44 UTC.
 ZURICH_HOME = (47.3662, 8.5410)
 ZURICH_NOW = datetime(2026, 11, 22, 23, 45, tzinfo=UTC)
@@ -110,6 +115,16 @@ def dortmund_records() -> list[dict[str, Any]]:
     has a sensor that stopped in May next to its successor.
     """
     return json.loads((FIXTURES / "dortmund.json").read_text("utf-8"))
+
+
+def basel_records() -> list[dict[str, Any]]:
+    """
+    Return a real export of dataset 100009 of Basel of 2026-11-23 (station list query).
+
+    A time series: trimmed to the 6 newest records (about hourly, over 6 h) of each of
+    the 6 sensors within 940 m of BASEL_HOME, in the order of the export.
+    """
+    return json.loads((FIXTURES / "basel.json").read_text("utf-8"))
 
 
 def zurich_geojson() -> dict[str, Any]:

@@ -1,7 +1,8 @@
 # Entities
 
 Every location provides sensors and a weather entity. Values are measured every 10 minutes
-and arrive with 10–20 minutes delay; measurements older than 40 minutes are not used.
+and arrive with 10–20 minutes delay; measurements older than 40 minutes are not used (longer for
+networks that report less often, see the [network page](../networks/index.md)).
 
 ## Sensors
 
@@ -63,5 +64,6 @@ rain sensors:
 ## When values are missing
 
 If the API is unreachable or rate limited, the entities keep their last values until the last
-measurement is 60 minutes old (or three update intervals, if that is longer). Then they
+measurement is 60 minutes old (or three update intervals, or 1.5 times the maximum age of the network, if that is
+longer). Then they
 become unavailable. See [Repairs and troubleshooting](troubleshooting.md).

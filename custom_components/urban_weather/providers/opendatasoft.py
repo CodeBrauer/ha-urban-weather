@@ -1,9 +1,11 @@
 """
 Networks published as a dataset on an Opendatasoft portal (Explore API v2.1).
 
-The dataset holds one record per sensor with its latest measurement. Both the station
-list and the measurements come from the export endpoint, which returns all matching
-records in one response (the records endpoint pages by 100).
+The dataset holds either one record per sensor with its latest measurement or a time
+series of them; the newest record of a sensor is used. Both the station list and the
+measurements come from the export endpoint, which returns all matching records in one
+response (the records endpoint pages by 100). A time series needs a window for each
+request, as the export returns the whole dataset otherwise.
 """
 
 from __future__ import annotations
@@ -25,7 +27,7 @@ from .common import OLDEST, async_get_json, is_number, parse_timestamp
 
 if TYPE_CHECKING:
     from collections.abc import Collection, Mapping
-    from datetime import datetime
+    from datetime import datetime, timedelta
 
     import aiohttp
 
@@ -47,8 +49,15 @@ class OpendatasoftDataset:
     sensor_name: str
     position: str
     timestamp: str
+    # Field name of a readable station name, shown with the station code.
+    station_name: str | None = None
     # ODSQL condition selecting the records that are sensors the integration uses.
     where: str | None = None
+    # Time series only: how far back the station list and the measurements look.
+    # The station list wants a long window (sensors fall silent for days), the
+    # measurements a short one, as it is requested often.
+    station_window: timedelta | None = None
+    measurement_window: timedelta | None = None
     # Field name -> factor to the unit of the integration.
     factors: Mapping[str, float] = field(default_factory=dict)
 
@@ -70,6 +79,28 @@ def _position(record: Mapping[str, Any], name: str) -> tuple[float, float] | Non
     return float(latitude), float(longitude)
 
 
+def _has_values(record: Mapping[str, Any], fields: Mapping[str, Field]) -> bool:
+    return any(is_number(record.get(name)) for name in fields)
+
+
+def _newest_per_sensor(
+    records: list[dict[str, Any]],
+    dataset: OpendatasoftDataset,
+    fields: Mapping[str, Field],
+) -> list[dict[str, Any]]:
+    """Return the newest record with a value of each sensor, newest first."""
+    newest: dict[str, dict[str, Any]] = {}
+    for record in sorted(
+        records,
+        key=lambda item: parse_timestamp(item.get(dataset.timestamp)) or OLDEST,
+        reverse=True,
+    ):
+        sensor_id = str(record.get(dataset.sensor_id) or "").strip()
+        if sensor_id not in newest and _has_values(record, fields):
+            newest[sensor_id] = record
+    return list(newest.values())
+
+
 def build_stations(
     records: list[dict[str, Any]],
     dataset: OpendatasoftDataset,
@@ -81,7 +112,8 @@ def build_stations(
     A sensor provides the mapped fields that have a value. Within a station the
     sensor with the most fields is used, on a tie the most recent one. Sensors
     silent for STATION_OFFLINE_AFTER are left out if their station has a current
-    one, so a sensor that stopped sending does not shadow its replacement.
+    one, so a sensor that stopped sending does not shadow its replacement. Of a
+    repeated sensor the newest record with a value is used.
     """
     by_station: dict[str, list[tuple[ApiSensor, datetime]]] = {}
     dated = [
@@ -90,6 +122,8 @@ def build_stations(
     ]
     # The newest measurement stands for the time of the list (fresh or stored).
     listed_at = max((timestamp for timestamp, _ in dated), default=OLDEST)
+    seen: set[str] = set()
+    names: dict[str, str] = {}
     for timestamp, record in sorted(dated, key=lambda item: item[0], reverse=True):
         sensor_id = str(record.get(dataset.sensor_id) or "").strip()
         station_id = str(record.get(dataset.station_id) or "").strip()
@@ -97,6 +131,11 @@ def build_stations(
         if not sensor_id or not station_id or position is None:
             LOGGER.debug("Skipping record without id or position: %s", record)
             continue
+        if sensor_id in seen or not _has_values(record, fields):
+            continue
+        seen.add(sensor_id)
+        if dataset.station_name and record.get(dataset.station_name):
+            names.setdefault(station_id, str(record[dataset.station_name]).strip())
         sensor = ApiSensor(
             id=sensor_id,
             name=str(record.get(dataset.sensor_name) or sensor_id).strip(),
@@ -128,6 +167,7 @@ def build_stations(
                 zone=None,
                 height_above_ground=None,
                 temperature_height=None,
+                name=names.get(code),
             )
         )
     return stations
@@ -153,7 +193,7 @@ def parse_measurements(
     dataset: OpendatasoftDataset,
     fields: Mapping[str, Field],
 ) -> dict[str, list[Measurement]]:
-    """Return the latest measurement by sensor id, skipping records without time."""
+    """Return the measurements by sensor id, newest first; undated ones are skipped."""
     measurements: dict[str, list[Measurement]] = {}
     for record in records:
         sensor_id = str(record.get(dataset.sensor_id) or "").strip()
@@ -165,12 +205,25 @@ def parse_measurements(
             for name, mapped in fields.items()
             if is_number(record.get(name))
         }
-        measurements[sensor_id] = [Measurement(timestamp=timestamp, values=values)]
+        measurements.setdefault(sensor_id, []).append(
+            Measurement(timestamp=timestamp, values=values)
+        )
+    for series in measurements.values():
+        series.sort(key=lambda measurement: measurement.timestamp, reverse=True)
     return measurements
 
 
 def _all_of(*conditions: str | None) -> str:
-    return " AND ".join(f"({condition})" for condition in conditions if condition)
+    present = [condition for condition in conditions if condition]
+    if len(present) == 1:
+        return present[0]
+    return " AND ".join(f"({condition})" for condition in present)
+
+
+def _within(timestamp: str, window: timedelta | None) -> str | None:
+    if window is None:
+        return None
+    return f"{timestamp} >= now(minutes=-{int(window.total_seconds() // 60)})"
 
 
 class OpendatasoftProvider(BulkProvider):
@@ -203,7 +256,15 @@ class OpendatasoftProvider(BulkProvider):
             dataset.timestamp,
             *self.network.fields,
         ]
-        records = await self._async_export(select, dataset.where)
+        if dataset.station_name:
+            select.append(dataset.station_name)
+        records = await self._async_export(
+            select,
+            _all_of(dataset.where, _within(dataset.timestamp, dataset.station_window)),
+        )
+        if dataset.station_window:
+            # A time series is long; the stored list keeps what the stations need.
+            records = _newest_per_sensor(records, dataset, self.network.fields)
         return {"records": records}
 
     def build_stations(self, payload: dict[str, Any]) -> list[Station]:
@@ -224,12 +285,16 @@ class OpendatasoftProvider(BulkProvider):
         )
         records = await self._async_export(
             [dataset.sensor_id, dataset.timestamp, *self.network.fields],
-            _all_of(by_id, dataset.where),
+            _all_of(
+                by_id,
+                dataset.where,
+                _within(dataset.timestamp, dataset.measurement_window),
+            ),
         )
         return parse_measurements(records, dataset, self.network.fields)
 
     async def _async_export(
-        self, select: list[str], where: str | None
+        self, select: list[str], where: str
     ) -> list[dict[str, Any]]:
         path = f"/catalog/datasets/{self.dataset.id}/exports/json"
         params = {"select": ",".join(select)}

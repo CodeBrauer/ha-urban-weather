@@ -8,6 +8,7 @@ login. When you add a location, the integration uses the network with a station 
 |---|---|---|---|---|---|
 | [Smart City Mannheim](mannheim.md) | 400+ | All values; wind on some masts | Surroundings, roof and high point | Own API | `api.smartmannheim.de` |
 | [Klimamessnetz Dortmund](dortmund.md) | 76 | Temperature and humidity; about a third also air pressure, global irradiance and wind | None | Opendatasoft | `open-data.dortmund.de` |
+| [Smart Climate Luftklima Basel](basel.md) | about 70 | Temperature | None | Opendatasoft | `data.bs.ch` |
 | [Stadtklimamessnetz Zürich](zurich.md) | 100+ | Temperature and humidity | None | GeoJSON file | `stadtklima-zuerich.ch` |
 | [Sensor City Karlsruhe](karlsruhe.md) | 90+ | Temperature and humidity | None | ArcGIS FeatureServer (GeoJSON) | `geoportal.karlsruhe.de` |
 

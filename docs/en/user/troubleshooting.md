@@ -93,7 +93,7 @@ actions:
 | Too many API requests per hour. | The selection does not fit the budget. Select fewer stations, no wind station or a longer interval. |
 | None of the selected stations exists any more. | All stations of the location are gone. Choose new ones under *Configure*. |
 | The API request budget is used up for the moment. | The location retries by itself after the given time. |
-| None of the selected stations delivered data in the last 40 minutes. | The entities are unavailable until data arrives. |
+| None of the selected stations delivered recent data. | The entities are unavailable until data arrives. |
 
 ## Diagnostics and logs
 

@@ -1,4 +1,4 @@
-<!-- source: c299c2fbbca73e6006301ff103bfd34917d6146c -->
+<!-- source: c64903c3d4a4cac0f2a64da294cb11a78272f4cb -->
 # Reparaturen und Fehlersuche
 
 ## Reparaturhinweise
@@ -95,7 +95,7 @@ actions:
 | Zu viele API-Abfragen pro Stunde. | Die Auswahl passt nicht ins Budget. Wähle weniger Stationen, keine Windstation oder ein längeres Intervall. |
 | Keine der gewählten Stationen existiert mehr. | Alle Stationen des Standorts sind weg. Wähle unter *Konfigurieren* neue. |
 | Das Abfrage-Budget der API ist gerade aufgebraucht. | Der Standort versucht es nach der angegebenen Zeit von selbst erneut. |
-| Keine der gewählten Stationen hat in den letzten 40 Minuten Daten geliefert. | Die Entitäten sind nicht verfügbar, bis wieder Daten kommen. |
+| Keine der gewählten Stationen hat zuletzt aktuelle Daten geliefert. | Die Entitäten sind nicht verfügbar, bis wieder Daten kommen. |
 
 ## Diagnose und Logs
 

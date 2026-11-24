@@ -1,0 +1,362 @@
+[
+ {
+  "name_original": "03400161",
+  "name_custom": "Spitalstrasse",
+  "dates_max_date": "2026-11-23T16:06:32+00:00",
+  "meta_airtemp": 2.3,
+  "coords": {
+   "lon": 7.58294,
+   "lat": 47.56335
+  }
+ },
+ {
+  "name_original": "0340AD8B",
+  "name_custom": "Klingelbergstrasse1",
+  "dates_max_date": "2026-11-23T16:05:55+00:00",
+  "meta_airtemp": 3.15,
+  "coords": {
+   "lon": 7.58068,
+   "lat": 47.56157
+  }
+ },
+ {
+  "name_original": "0340AD71",
+  "name_custom": "Schulhaus Leonhard 2",
+  "dates_max_date": "2026-11-23T15:58:22+00:00",
+  "meta_airtemp": 3.22,
+  "coords": {
+   "lon": 7.586940062736751,
+   "lat": 47.5544591200586
+  }
+ },
+ {
+  "name_original": "034001A7",
+  "name_custom": "Schulhaus Leonhard 4",
+  "dates_max_date": "2026-11-23T15:56:36+00:00",
+  "meta_airtemp": 3.14,
+  "coords": {
+   "lon": 7.586700005026201,
+   "lat": 47.55445323222687
+  }
+ },
+ {
+  "name_original": "03409988",
+  "name_custom": "Heuwaage",
+  "dates_max_date": "2026-11-23T15:55:59+00:00",
+  "meta_airtemp": 2.71,
+  "coords": {
+   "lon": 7.587,
+   "lat": 47.55095
+  }
+ },
+ {
+  "name_original": "0340AD90",
+  "name_custom": "Claraplatz",
+  "dates_max_date": "2026-11-23T15:11:17+00:00",
+  "meta_airtemp": 3.18,
+  "coords": {
+   "lon": 7.59474,
+   "lat": 47.56191
+  }
+ },
+ {
+  "name_original": "03400161",
+  "name_custom": "Spitalstrasse",
+  "dates_max_date": "2026-11-23T15:06:32+00:00",
+  "meta_airtemp": 2.7,
+  "coords": {
+   "lon": 7.58294,
+   "lat": 47.56335
+  }
+ },
+ {
+  "name_original": "0340AD71",
+  "name_custom": "Schulhaus Leonhard 2",
+  "dates_max_date": "2026-11-23T14:58:22+00:00",
+  "meta_airtemp": 3.61,
+  "coords": {
+   "lon": 7.586940062736751,
+   "lat": 47.5544591200586
+  }
+ },
+ {
+  "name_original": "034001A7",
+  "name_custom": "Schulhaus Leonhard 4",
+  "dates_max_date": "2026-11-23T14:56:36+00:00",
+  "meta_airtemp": 3.46,
+  "coords": {
+   "lon": 7.586700005026201,
+   "lat": 47.55445323222687
+  }
+ },
+ {
+  "name_original": "0340AD90",
+  "name_custom": "Claraplatz",
+  "dates_max_date": "2026-11-23T14:56:17+00:00",
+  "meta_airtemp": 3.27,
+  "coords": {
+   "lon": 7.59474,
+   "lat": 47.56191
+  }
+ },
+ {
+  "name_original": "03409988",
+  "name_custom": "Heuwaage",
+  "dates_max_date": "2026-11-23T14:55:59+00:00",
+  "meta_airtemp": 3.02,
+  "coords": {
+   "lon": 7.587,
+   "lat": 47.55095
+  }
+ },
+ {
+  "name_original": "0340AD8B",
+  "name_custom": "Klingelbergstrasse1",
+  "dates_max_date": "2026-11-23T14:35:55+00:00",
+  "meta_airtemp": 3.56,
+  "coords": {
+   "lon": 7.58068,
+   "lat": 47.56157
+  }
+ },
+ {
+  "name_original": "03400161",
+  "name_custom": "Spitalstrasse",
+  "dates_max_date": "2026-11-23T14:06:32+00:00",
+  "meta_airtemp": 2.94,
+  "coords": {
+   "lon": 7.58294,
+   "lat": 47.56335
+  }
+ },
+ {
+  "name_original": "0340AD71",
+  "name_custom": "Schulhaus Leonhard 2",
+  "dates_max_date": "2026-11-23T13:58:23+00:00",
+  "meta_airtemp": 4.0,
+  "coords": {
+   "lon": 7.586940062736751,
+   "lat": 47.5544591200586
+  }
+ },
+ {
+  "name_original": "034001A7",
+  "name_custom": "Schulhaus Leonhard 4",
+  "dates_max_date": "2026-11-23T13:56:36+00:00",
+  "meta_airtemp": 3.84,
+  "coords": {
+   "lon": 7.586700005026201,
+   "lat": 47.55445323222687
+  }
+ },
+ {
+  "name_original": "0340AD90",
+  "name_custom": "Claraplatz",
+  "dates_max_date": "2026-11-23T13:56:17+00:00",
+  "meta_airtemp": 3.44,
+  "coords": {
+   "lon": 7.59474,
+   "lat": 47.56191
+  }
+ },
+ {
+  "name_original": "03409988",
+  "name_custom": "Heuwaage",
+  "dates_max_date": "2026-11-23T13:55:59+00:00",
+  "meta_airtemp": 3.29,
+  "coords": {
+   "lon": 7.587,
+   "lat": 47.55095
+  }
+ },
+ {
+  "name_original": "0340AD8B",
+  "name_custom": "Klingelbergstrasse1",
+  "dates_max_date": "2026-11-23T13:50:49+00:00",
+  "meta_airtemp": 3.6,
+  "coords": {
+   "lon": 7.58068,
+   "lat": 47.56157
+  }
+ },
+ {
+  "name_original": "03400161",
+  "name_custom": "Spitalstrasse",
+  "dates_max_date": "2026-11-23T13:06:32+00:00",
+  "meta_airtemp": 2.99,
+  "coords": {
+   "lon": 7.58294,
+   "lat": 47.56335
+  }
+ },
+ {
+  "name_original": "0340AD71",
+  "name_custom": "Schulhaus Leonhard 2",
+  "dates_max_date": "2026-11-23T12:58:23+00:00",
+  "meta_airtemp": 4.21,
+  "coords": {
+   "lon": 7.586940062736751,
+   "lat": 47.5544591200586
+  }
+ },
+ {
+  "name_original": "034001A7",
+  "name_custom": "Schulhaus Leonhard 4",
+  "dates_max_date": "2026-11-23T12:56:36+00:00",
+  "meta_airtemp": 4.06,
+  "coords": {
+   "lon": 7.586700005026201,
+   "lat": 47.55445323222687
+  }
+ },
+ {
+  "name_original": "0340AD90",
+  "name_custom": "Claraplatz",
+  "dates_max_date": "2026-11-23T12:56:17+00:00",
+  "meta_airtemp": 3.55,
+  "coords": {
+   "lon": 7.59474,
+   "lat": 47.56191
+  }
+ },
+ {
+  "name_original": "03409988",
+  "name_custom": "Heuwaage",
+  "dates_max_date": "2026-11-23T12:55:59+00:00",
+  "meta_airtemp": 3.43,
+  "coords": {
+   "lon": 7.587,
+   "lat": 47.55095
+  }
+ },
+ {
+  "name_original": "0340AD8B",
+  "name_custom": "Klingelbergstrasse1",
+  "dates_max_date": "2026-11-23T12:35:49+00:00",
+  "meta_airtemp": 3.72,
+  "coords": {
+   "lon": 7.58068,
+   "lat": 47.56157
+  }
+ },
+ {
+  "name_original": "03400161",
+  "name_custom": "Spitalstrasse",
+  "dates_max_date": "2026-11-23T12:06:32+00:00",
+  "meta_airtemp": 3.48,
+  "coords": {
+   "lon": 7.58294,
+   "lat": 47.56335
+  }
+ },
+ {
+  "name_original": "0340AD71",
+  "name_custom": "Schulhaus Leonhard 2",
+  "dates_max_date": "2026-11-23T11:58:23+00:00",
+  "meta_airtemp": 4.63,
+  "coords": {
+   "lon": 7.586940062736751,
+   "lat": 47.5544591200586
+  }
+ },
+ {
+  "name_original": "034001A7",
+  "name_custom": "Schulhaus Leonhard 4",
+  "dates_max_date": "2026-11-23T11:56:36+00:00",
+  "meta_airtemp": 4.4,
+  "coords": {
+   "lon": 7.586700005026201,
+   "lat": 47.55445323222687
+  }
+ },
+ {
+  "name_original": "0340AD90",
+  "name_custom": "Claraplatz",
+  "dates_max_date": "2026-11-23T11:56:17+00:00",
+  "meta_airtemp": 3.97,
+  "coords": {
+   "lon": 7.59474,
+   "lat": 47.56191
+  }
+ },
+ {
+  "name_original": "03409988",
+  "name_custom": "Heuwaage",
+  "dates_max_date": "2026-11-23T11:55:59+00:00",
+  "meta_airtemp": 4.04,
+  "coords": {
+   "lon": 7.587,
+   "lat": 47.55095
+  }
+ },
+ {
+  "name_original": "0340AD8B",
+  "name_custom": "Klingelbergstrasse1",
+  "dates_max_date": "2026-11-23T11:35:56+00:00",
+  "meta_airtemp": 4.1,
+  "coords": {
+   "lon": 7.58068,
+   "lat": 47.56157
+  }
+ },
+ {
+  "name_original": "03400161",
+  "name_custom": "Spitalstrasse",
+  "dates_max_date": "2026-11-23T11:06:32+00:00",
+  "meta_airtemp": 3.76,
+  "coords": {
+   "lon": 7.58294,
+   "lat": 47.56335
+  }
+ },
+ {
+  "name_original": "0340AD8B",
+  "name_custom": "Klingelbergstrasse1",
+  "dates_max_date": "2026-11-23T11:05:49+00:00",
+  "meta_airtemp": 3.93,
+  "coords": {
+   "lon": 7.58068,
+   "lat": 47.56157
+  }
+ },
+ {
+  "name_original": "0340AD71",
+  "name_custom": "Schulhaus Leonhard 2",
+  "dates_max_date": "2026-11-23T10:58:23+00:00",
+  "meta_airtemp": 4.5,
+  "coords": {
+   "lon": 7.586940062736751,
+   "lat": 47.5544591200586
+  }
+ },
+ {
+  "name_original": "034001A7",
+  "name_custom": "Schulhaus Leonhard 4",
+  "dates_max_date": "2026-11-23T10:56:36+00:00",
+  "meta_airtemp": 4.4,
+  "coords": {
+   "lon": 7.586700005026201,
+   "lat": 47.55445323222687
+  }
+ },
+ {
+  "name_original": "0340AD90",
+  "name_custom": "Claraplatz",
+  "dates_max_date": "2026-11-23T10:56:17+00:00",
+  "meta_airtemp": 4.05,
+  "coords": {
+   "lon": 7.59474,
+   "lat": 47.56191
+  }
+ },
+ {
+  "name_original": "03409988",
+  "name_custom": "Heuwaage",
+  "dates_max_date": "2026-11-23T10:55:59+00:00",
+  "meta_airtemp": 3.96,
+  "coords": {
+   "lon": 7.587,
+   "lat": 47.55095
+  }
+ }
+]
