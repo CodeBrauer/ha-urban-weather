@@ -193,6 +193,7 @@ def test_one_station_per_feature() -> None:
     assert nearest.temperature_sensor.name == "Bootsanleger Bürkliplatz"
     assert nearest.temperature_sensor.parameters == ALL_FIELDS
     assert nearest.wind_sensor is None
+    assert nearest.label == f"Bootsanleger Bürkliplatz ({ZURICH_NEAREST})"
     assert all(
         s.lcz is None and s.district is None and s.zone is None
         for s in stations.values()
@@ -229,6 +230,16 @@ def test_station_without_a_name_uses_its_id() -> None:
     """The id stands in for a missing name."""
     [station] = build_stations([feature(location_name=None)], FEED, FIELDS)
     assert station.temperature_sensor.name == ZURICH_NEAREST
+    assert station.name is None
+    assert station.label == ZURICH_NEAREST, "no name, no repeated id"
+
+
+def test_name_equal_to_the_id_is_no_name() -> None:
+    """A name that only repeats the id is not shown twice."""
+    [station] = build_stations(
+        [feature(location_name=f" {ZURICH_NEAREST} ")], FEED, FIELDS
+    )
+    assert station.label == ZURICH_NEAREST
 
 
 def test_newest_feature_wins_on_a_repeated_id() -> None:
@@ -411,6 +422,9 @@ def test_karlsruhe_stations() -> None:
     )
     assert nearest.temperature_sensor.parameters == frozenset(KARLSRUHE.fields.values())
     assert nearest.wind_sensor is None
+    assert nearest.label == (
+        f"173 - Schlossplatz 3 (Kreuzung Kronenstraße) ({KARLSRUHE_NEAREST})"
+    )
 
 
 @pytest.mark.parametrize(

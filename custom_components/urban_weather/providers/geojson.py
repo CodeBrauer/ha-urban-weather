@@ -124,9 +124,10 @@ def build_stations(
             continue
         if station_id in stations:
             continue
+        name = str(properties.get(feed.station_name) or "").strip()
         sensor = ApiSensor(
             id=station_id,
-            name=str(properties.get(feed.station_name) or station_id).strip(),
+            name=name or station_id,
             latitude=position[0],
             longitude=position[1],
             parameters=frozenset(
@@ -151,6 +152,7 @@ def build_stations(
             zone=None,
             height_above_ground=None,
             temperature_height=None,
+            name=name if name not in ("", station_id) else None,
         )
     return list(stations.values())
 
