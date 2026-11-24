@@ -1,0 +1,33 @@
+version: 2
+
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "ci"
+    labels: []
+    groups:
+      actions:
+        patterns:
+          - "*"
+
+  # Dev, lint and docs requirements only: the integration ships no runtime requirements.
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels: []
+    groups:
+      # pytest-homeassistant pins homeassistant exactly, both move together.
+      home-assistant:
+        patterns:
+          - "homeassistant"
+          - "pytest-homeassistant"
+      tooling:
+        patterns:
+          - "*"
