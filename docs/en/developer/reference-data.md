@@ -53,3 +53,6 @@ uv run --no-project --with openpyxl --with rasterio python scripts/build_referen
 The script fetches the station list once (or reuses a saved response with `--sensors-file`)
 and asks Nominatim once per station location that is not cached in `.cache/reference-build/`
 yet, with a pause between requests. `--only catalog|lcz|districts` builds a single file.
+
+The Reference data workflow (`.github/workflows/reference-data.yml`) checks the metadata
+catalogue once a month and opens an issue when it changed after `catalog.json` was generated.

@@ -1,4 +1,4 @@
-<!-- source: 0cc35d7872b30c02bff25d7e2002055b118b6d24 -->
+<!-- source: c003f4ef1abf1a13fc2098979d174599c97ad207 -->
 # Stationen und Referenzdaten
 
 Die Mannheimer API listet Sensoren (Module), keine Stationen, und hat keine Metadaten zum
@@ -57,3 +57,7 @@ Das Skript ruft die Stationsliste einmal ab (oder nutzt mit `--sensors-file` ein
 gespeicherte Antwort) und fragt Nominatim einmal pro Stationsstandort, der noch nicht in
 `.cache/reference-build/` liegt, mit einer Pause zwischen den Abfragen.
 `--only catalog|lcz|districts` erzeugt eine einzelne Datei.
+
+Der Workflow Reference data (`.github/workflows/reference-data.yml`) prüft den
+Metadatenkatalog einmal im Monat und öffnet ein Issue, wenn er sich nach dem Erzeugen von
+`catalog.json` geändert hat.

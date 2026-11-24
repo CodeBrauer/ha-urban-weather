@@ -1,0 +1,87 @@
+name: Reference data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 6 1 * *"
+
+permissions: {}
+
+jobs:
+  mannheim-catalog:
+    name: "Mannheim metadata catalogue"
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: read
+      issues: write
+    defaults:
+      run:
+        shell: bash
+    env:
+      PACKAGE_URL: "https://opendata.smartmannheim.de/api/3/action/package_show?id=metadaten-stadtklimamessnetze-mannheim"
+      CATALOG_FILE: "custom_components/urban_weather/providers/mannheim/data/catalog.json"
+      ISSUE_TITLE: "Mannheim metadata catalogue changed: rebuild catalog.json"
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Compare the catalogue with catalog.json
+        id: compare
+        run: |
+          generated=$(jq -r '.source.generated' "$CATALOG_FILE")
+          resource_id=$(grep -oE 'resource/[0-9a-f-]+' scripts/build_reference_data.py | head -n 1 | cut -d/ -f2)
+          package=$(curl --silent --show-error --fail --max-time 60 "$PACKAGE_URL")
+          jq -e '.success == true' <<<"$package" >/dev/null
+
+          package_modified=$(jq -r '.result.metadata_modified' <<<"$package")
+          resource_modified=$(jq -r --arg id "$resource_id" \
+            '.result.resources[] | select(.id == $id) | .last_modified // .created' <<<"$package")
+
+          reasons=()
+          if [[ -z "$resource_modified" ]]; then
+            reasons+=("Resource \`$resource_id\` from \`CATALOG_URL\` is no longer listed; the download URL will break.")
+          elif [[ "${resource_modified:0:10}" > "$generated" ]]; then
+            reasons+=("Resource \`$resource_id\` was modified on $resource_modified.")
+          fi
+          if [[ "${package_modified:0:10}" > "$generated" ]]; then
+            reasons+=("Package metadata was modified on $package_modified.")
+          fi
+
+          echo "generated=$generated, package=$package_modified, resource=${resource_modified:-missing}"
+          if (( ${#reasons[@]} == 0 )); then
+            echo "catalog.json is up to date."
+            exit 0
+          fi
+
+          {
+            echo 'body<<EOF'
+            echo "The [Mannheim metadata catalogue](https://opendata.smartmannheim.de/dataset/metadaten-stadtklimamessnetze-mannheim) changed after \`catalog.json\` was generated ($generated):"
+            echo
+            printf -- '- %s\n' "${reasons[@]}"
+            echo
+            echo 'Rebuild it (update `CATALOG_URL` first if the resource was replaced):'
+            echo
+            echo '```bash'
+            echo 'uv run --no-project --with openpyxl --with rasterio python scripts/build_reference_data.py --only catalog'
+            echo '```'
+            echo
+            echo "Opened by the [Reference data workflow]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)."
+            echo 'EOF'
+          } >>"$GITHUB_OUTPUT"
+
+      - name: Open an issue
+        if: steps.compare.outputs.body != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          BODY: ${{ steps.compare.outputs.body }}
+        run: |
+          open=$(gh issue list --state open --search "in:title \"$ISSUE_TITLE\"" --json title \
+            --jq "map(select(.title == env.ISSUE_TITLE)) | length")
+          if (( open > 0 )); then
+            echo "An issue with this title is already open."
+            exit 0
+          fi
+          gh issue create --title "$ISSUE_TITLE" --label "city: mannheim" --body "$BODY"
