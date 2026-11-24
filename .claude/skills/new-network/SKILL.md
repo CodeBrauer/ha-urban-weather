@@ -25,7 +25,7 @@ A network is visible in many places. Work through every section; a section that 
   - `name`, `operator`: device info of the entities.
   - `area`: title of a location without a known district.
   - `endpoint`: its host appears in error messages.
-  - `fields`: only the values the network measures; entities follow from them.
+  - `fields`: only the values the network measures; entities follow from them. Units and combination rules: `docs/en/developer/fields.md`; a planned value gets its `Field` member as described there.
   - `attribution`: operator and licence, as in the data sources table.
   - `limits`: `RequestLimits` from the documented limits, planned budget below them.
   - `tiles`: `BASEMAP_DE`, `OSM_CH` or `OPENSTREETMAP`; a new layer goes to `providers/common.py`.

@@ -28,6 +28,7 @@ nav:
       - developer/architecture.md
       - developer/data-flow.md
       - developer/aggregation.md
+      - developer/fields.md
       - developer/reference-data.md
       - developer/contributing.md
   - data-sources.md
