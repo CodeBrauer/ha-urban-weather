@@ -1,4 +1,5 @@
 /* Interactive station selection for the Urban Weather config flow. */
+/* global L -- Leaflet, loaded by map.html from www/leaflet/ */
 (() => {
   "use strict";
 
