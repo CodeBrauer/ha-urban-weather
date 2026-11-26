@@ -1,4 +1,4 @@
-<!-- source: 1e3d5c0799d6ae5c4a8f96cbd0ae86143747a2dd -->
+<!-- source: 080b20bea07b40da5d221c17a9e2a31b7b45e66e -->
 # Installation
 
 ## Voraussetzungen
@@ -12,15 +12,12 @@
 
 Die APIs sind öffentlich und brauchen weder Konto noch Schlüssel.
 
-## HACS (benutzerdefiniertes Repository)
+## HACS
 
 [![In HACS öffnen](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=CodeBrauer&repository=ha-urban-weather&category=integration)
 
-Oder von Hand:
-
-1. HACS → ⋮ → *Benutzerdefinierte Repositories* →
-   `https://github.com/CodeBrauer/ha-urban-weather` mit Typ *Integration* hinzufügen.
-2. *Urban Weather (Stadtklima)* installieren und Home Assistant neu starten.
+Oder in HACS (ab Home Assistant 2026.11 *Marketplace*) nach *Urban Weather (Stadtklima)*
+suchen, installieren und Home Assistant neu starten.
 
 HACS installiert die ZIP-Datei, die an jedem GitHub-Release hängt, und zeigt neue Versionen
 als Updates an. Die Release Notes nennen Breaking Changes und was du nach dem Update tun

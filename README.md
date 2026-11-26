@@ -83,15 +83,12 @@ Both can be installed side by side but share the API limit per internet connecti
 
 ## Installation
 
-### HACS (custom repository)
+### HACS
 
 [![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=CodeBrauer&repository=ha-urban-weather&category=integration)
 
-Or manually:
-
-1. HACS → ⋮ → *Custom repositories* → add `https://github.com/CodeBrauer/ha-urban-weather`
-   with type *Integration*.
-2. Install *Urban Weather (Stadtklima)* and restart Home Assistant.
+Or search for *Urban Weather (Stadtklima)* in HACS (called *Marketplace* from Home
+Assistant 2026.11 on), install it and restart Home Assistant.
 
 Upgrading from *Klimamessnetz Mannheim* 0.2.x: updating in HACS does not work, see
 [Upgrade from 0.2.x](https://codebrauer.github.io/ha-urban-weather/user/upgrade/).
