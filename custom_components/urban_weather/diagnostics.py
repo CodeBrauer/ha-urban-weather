@@ -32,7 +32,6 @@ async def async_get_config_entry_diagnostics(
             {
                 "code": station.code,
                 "district": station.district,
-                "distance_m": round(coordinator.distance_to(station)),
                 "lcz": station.lcz,
                 "lcz_source": station.lcz_source,
                 "zone": station.zone,
