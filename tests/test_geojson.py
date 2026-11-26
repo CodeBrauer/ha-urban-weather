@@ -716,6 +716,43 @@ def test_dresden_late_stations_are_stale(station: str, current: bool) -> None:  
     assert (latest is not None) is current
 
 
+def test_dresden_value_missing_in_the_newest_hour_comes_from_an_older_one() -> None:
+    """A station's newest hour with humidity only keeps the temperature before it."""
+    features = [
+        dresden_feature(messzeit="26.11.2026 20:00:00", wert_n=1.0),
+        dresden_feature(
+            messzeit="26.11.2026 20:00:00", bemerk="rel_humidity", wert_n=60.0
+        ),
+        dresden_feature(
+            messzeit="26.11.2026 21:00:00", bemerk="rel_humidity", wert_n=65.0
+        ),
+    ]
+    station = features[0]["properties"]["device"]
+    [measurement] = parse_measurements(features, DRESDEN_FEED, DRESDEN.fields)[station]
+    assert measurement.values == {Field.TEMPERATURE: 1.0, Field.HUMIDITY: 65.0}
+    assert measurement.timestamp.isoformat() == "2026-11-26T20:00:00+01:00", (
+        "as old as its oldest value"
+    )
+
+
+async def test_dresden_station_payload_skips_newer_unusable_values(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+) -> None:
+    """A newer feature without a value does not hide the last valid one."""
+    valid = dresden_feature(messzeit="26.11.2026 20:00:00", wert_n=1.0)
+    empty = dresden_feature(messzeit="26.11.2026 21:00:00", wert_n=None)
+    aioclient_mock.get(
+        DRESDEN.endpoint,
+        json={"type": "FeatureCollection", "features": [valid, empty]},
+    )
+    provider = GeoJsonProvider(DRESDEN, DRESDEN_FEED, async_get_clientsession(hass))
+    payload = await provider.async_get_station_payload()
+    assert [f["properties"]["wert_n"] for f in payload["features"]] == [1.0]
+    assert [s.code for s in provider.build_stations(payload)] == [
+        valid["properties"]["device"]
+    ]
+
+
 def test_dresden_humidity_of_zero_is_dropped() -> None:
     """A humidity of 0 % is implausible; the temperature of that hour is used."""
     [measurement] = dresden_measurements()["280"]

@@ -173,6 +173,8 @@ def _newest_features(
     newest: dict[tuple[str, str], dict[str, Any]] = {}
     for feature in _newest_first(features, feed):
         properties = _properties(feature)
+        if feed.value and not is_number(properties.get(feed.value)):
+            continue
         parameter = properties.get(feed.parameter) if feed.parameter else None
         newest.setdefault((_station_id(properties, feed), str(parameter)), feature)
     return list(newest.values())
@@ -246,26 +248,33 @@ def parse_measurements(
     Return the latest measurement by station id, skipping features without time.
 
     On a repeated id the feature with the newest time is used, as for the stations.
+    In long format a value missing at the newest time comes from an older one, and
+    the measurement is then as old as its oldest value.
     """
-    measurements: dict[str, list[Measurement]] = {}
-    for feature in _merge_long_format(features, feed, fields):
+    measurements: dict[str, Measurement] = {}
+    for feature in _newest_first(_merge_long_format(features, feed, fields), feed):
         properties = _properties(feature)
         station_id = _station_id(properties, feed)
         timestamp = feed.parse_time(properties.get(feed.timestamp))
         if not station_id or timestamp is None:
-            continue
-        if (
-            station_id in measurements
-            and measurements[station_id][0].timestamp >= timestamp
-        ):
             continue
         values = {
             mapped: float(properties[name])
             for name, mapped in fields.items()
             if is_number(properties.get(name))
         }
-        measurements[station_id] = [Measurement(timestamp=timestamp, values=values)]
-    return measurements
+        newer = measurements.get(station_id)
+        if newer is None:
+            measurements[station_id] = Measurement(timestamp=timestamp, values=values)
+            continue
+        missing = {
+            key: value for key, value in values.items() if key not in newer.values
+        }
+        if feed.parameter is not None and missing:
+            measurements[station_id] = Measurement(
+                timestamp=timestamp, values={**newer.values, **missing}
+            )
+    return {station_id: [m] for station_id, m in measurements.items()}
 
 
 class GeoJsonProvider(BulkProvider):
