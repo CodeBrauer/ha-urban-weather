@@ -4,7 +4,8 @@
 
 **English** · [Deutsch](README.de.md) · [Documentation](https://codebrauer.github.io/ha-urban-weather/)
 
-[![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz)
+[![HACS Default](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://hacs.xyz)
+[![codecov](https://codecov.io/gh/CodeBrauer/ha-urban-weather/graph/badge.svg)](https://codecov.io/gh/CodeBrauer/ha-urban-weather)
 
 Climate values for your location from dense urban climate networks: temperature, humidity,
 dew point, absolute humidity, apparent temperature, air pressure, global irradiance and wind.

@@ -33,4 +33,18 @@ jobs:
         run: python3 -m pip install -r requirements_dev.txt
 
       - name: Run tests
-        run: python3 -m pytest --cov=custom_components.urban_weather --cov-report=term-missing
+        run: >-
+          python3 -m pytest --cov=custom_components.urban_weather
+          --cov-report=term-missing --cov-report=xml --cov-fail-under=95
+
+      - name: Coverage summary
+        if: ${{ !cancelled() }}
+        run: python3 -m coverage report --format=markdown >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          files: coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false

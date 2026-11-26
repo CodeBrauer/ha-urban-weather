@@ -4,7 +4,8 @@
 
 [English](README.md) · **Deutsch** · [Dokumentation](https://codebrauer.github.io/ha-urban-weather/de/)
 
-[![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz)
+[![HACS Default](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://hacs.xyz)
+[![codecov](https://codecov.io/gh/CodeBrauer/ha-urban-weather/graph/badge.svg)](https://codecov.io/gh/CodeBrauer/ha-urban-weather)
 
 Klimawerte für deinen Standort aus dichten Stadtklima-Messnetzen: Temperatur, Luftfeuchte,
 Taupunkt, absolute Feuchte, gefühlte Temperatur, Luftdruck, Globalstrahlung und Wind.

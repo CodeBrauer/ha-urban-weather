@@ -1,0 +1,11 @@
+# The coverage gate is --cov-fail-under in .github/workflows/test.yml; Codecov only reports.
+coverage:
+  status:
+    project:
+      default:
+        informational: true
+    patch:
+      default:
+        informational: true
+comment:
+  layout: "condensed_header, diff, files"
