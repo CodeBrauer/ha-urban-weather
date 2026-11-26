@@ -96,6 +96,8 @@ FEED = GeoJsonFeed(
     ),
     # The 24 h station list also holds sensors that stopped sending.
     current_within=MAX_AGE,
+    # The two values of an hour can arrive in different hours.
+    fill_within=timedelta(hours=1),
 )
 
 # No limits are documented. Values are hourly and one request returns all stations,

@@ -730,9 +730,25 @@ def test_dresden_value_missing_in_the_newest_hour_comes_from_an_older_one() -> N
     station = features[0]["properties"]["device"]
     [measurement] = parse_measurements(features, DRESDEN_FEED, DRESDEN.fields)[station]
     assert measurement.values == {Field.TEMPERATURE: 1.0, Field.HUMIDITY: 65.0}
-    assert measurement.timestamp.isoformat() == "2026-11-26T20:00:00+01:00", (
-        "as old as its oldest value"
+    assert measurement.timestamp.isoformat() == "2026-11-26T21:00:00+01:00", (
+        "the time of the newest value"
     )
+
+
+def test_dresden_old_value_does_not_make_a_fresh_one_stale() -> None:
+    """A value older than an hour is not filled in, so the fresh one stays current."""
+    features = [
+        dresden_feature(
+            messzeit="26.11.2026 17:00:00", bemerk="rel_humidity", wert_n=60.0
+        ),
+        dresden_feature(messzeit="26.11.2026 21:00:00", wert_n=1.0),
+    ]
+    station = features[0]["properties"]["device"]
+    [measurement] = parse_measurements(features, DRESDEN_FEED, DRESDEN.fields)[station]
+    assert measurement.values == {Field.TEMPERATURE: 1.0}
+    assert measurement.timestamp.isoformat() == "2026-11-26T21:00:00+01:00"
+    latest = latest_valid([measurement], DRESDEN_NOW, DRESDEN.max_age)
+    assert latest is not None, "the fresh temperature is used"
 
 
 async def test_dresden_station_payload_skips_newer_unusable_values(

@@ -24,7 +24,7 @@ Not covered yet, to be added with the network that needs it:
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, Any
 
 from homeassistant.util import dt as dt_util
@@ -87,6 +87,9 @@ class GeoJsonFeed:
     # Stations whose newest value is older than this before the newest value of the
     # payload are left out of the station list; None keeps every station.
     current_within: timedelta | None = None
+    # Long format only: a value missing at a station's newest time is taken from an
+    # older time up to this much earlier; None fills nothing.
+    fill_within: timedelta | None = None
 
 
 def _features(features: Any) -> list[dict[str, Any]]:
@@ -248,8 +251,9 @@ def parse_measurements(
     Return the latest measurement by station id, skipping features without time.
 
     On a repeated id the feature with the newest time is used, as for the stations.
-    In long format a value missing at the newest time comes from an older one, and
-    the measurement is then as old as its oldest value.
+    With `fill_within`, a value missing at the newest time comes from an older one
+    within that span; the measurement keeps the newest time, so an old value never
+    makes a fresh one look stale.
     """
     measurements: dict[str, Measurement] = {}
     for feature in _newest_first(_merge_long_format(features, feed, fields), feed):
@@ -267,12 +271,14 @@ def parse_measurements(
         if newer is None:
             measurements[station_id] = Measurement(timestamp=timestamp, values=values)
             continue
+        if feed.fill_within is None or newer.timestamp - timestamp > feed.fill_within:
+            continue
         missing = {
             key: value for key, value in values.items() if key not in newer.values
         }
-        if feed.parameter is not None and missing:
-            measurements[station_id] = Measurement(
-                timestamp=timestamp, values={**newer.values, **missing}
+        if missing:
+            measurements[station_id] = replace(
+                newer, values={**newer.values, **missing}
             )
     return {station_id: [m] for station_id, m in measurements.items()}
 
