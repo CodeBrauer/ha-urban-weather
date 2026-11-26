@@ -68,7 +68,7 @@ def format_distance(distance: float, language: str) -> str:
 class StationSelection:
     """Recommendation, budget and presentation of the stations around a location."""
 
-    def __init__(  # noqa: PLR0913
+    def __init__(  # noqa: PLR0913, PLR0917
         self,
         hass: HomeAssistant,
         hub: ClimateHub,

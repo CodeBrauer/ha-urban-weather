@@ -321,7 +321,7 @@ async def test_new_station_in_recommendation_is_suggested_for_thirty_days(
     [(None, [SECOND_SENSOR]), (NEAREST_SENSOR, [NEAREST_SENSOR, SECOND_SENSOR])],
     ids=["first_refresh_after_update", "already_selected"],
 )
-async def test_no_suggestion_without_new_unselected_station(  # noqa: PLR0913
+async def test_no_suggestion_without_new_unselected_station(  # noqa: PLR0913, PLR0917
     hass: HomeAssistant,
     api: MagicMock,
     hass_storage: dict[str, Any],
