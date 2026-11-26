@@ -15,6 +15,7 @@ Supported networks:
 - [Smart Climate Luftklima Basel](https://data.bs.ch/explore/dataset/100009/) (about 70 stations)
 - [Stadtklimamessnetz Zürich](https://stadtklima-zuerich.ch/) (100+ stations)
 - [Sensor City Karlsruhe](https://geoportal.karlsruhe.de/sensorcity/Dashboard/) (90+ stations)
+- [KLIPS Dresden](https://stadtplan.dresden.de/?TH=UW_KLIPS_TEMPERATUR_MESS) (about 120 stations, hourly values)
 
 The integration picks the station that represents your place best. If the nearest one does
 not fit (too far away, different surroundings, mounted on a roof), it combines several
@@ -161,8 +162,8 @@ Other scripts or devices that use the API from the same internet connection shar
 Dortmund has its own budget: one request returns all stations the Dortmund locations use,
 at most 60 per hour (the dataset reports a quota of 50,000 requests per day). Basel and
 Zürich work the same way with the same cap of 60 per hour (Basel reports a quota of 500,000
-requests per day, Zürich documents no limits); Karlsruhe too, with a cap of 30 per hour. Details:
-[API limits](https://codebrauer.github.io/ha-urban-weather/user/api-limits/#one-request-for-all-stations-dortmund-basel-zurich-karlsruhe).
+requests per day, Zürich documents no limits); Karlsruhe too, with a cap of 30 per hour, and Dresden with hourly values and a cap of 24 per hour (12 planned). Details:
+[API limits](https://codebrauer.github.io/ha-urban-weather/user/api-limits/#one-request-for-all-stations-dortmund-basel-zurich-karlsruhe-dresden).
 
 ## When data stops
 
@@ -199,6 +200,7 @@ actions:
 | Measurements, station list (Basel) | [Kanton Basel-Stadt, Smart Climate Luftklima](https://data.bs.ch/explore/dataset/100009/) | CC BY 4.0 |
 | Measurements, station list (Zürich) | [Stadt Zürich, Stadtklima Zürich](https://stadtklima-zuerich.ch/), Umwelt- und Gesundheitsschutz (UGZ) | CC0 |
 | Measurements, station list (Karlsruhe) | [Stadt Karlsruhe, Sensor City / CityCLIM](https://geoportal.karlsruhe.de/sensorcity/Dashboard/) | Not stated |
+| Measurements, station list (Dresden) | [Landeshauptstadt Dresden, KLIPS temperature sensors](https://stadtplan.dresden.de/?TH=UW_KLIPS_TEMPERATUR_MESS), Umweltamt | dl-de/by-2-0 |
 | Station siting metadata (Mannheim) | [Metadatenkatalog Stadtklimamessnetze Mannheim](https://opendata.smartmannheim.de/dataset/metadaten-stadtklimamessnetze-mannheim) | dl-de/by-2-0 |
 | Local Climate Zones | Demuzere et al. (2022), [Global map of LCZ](https://doi.org/10.5281/zenodo.6364594) | CC BY 4.0 |
 | District names | © OpenStreetMap contributors via Nominatim | ODbL 1.0 |

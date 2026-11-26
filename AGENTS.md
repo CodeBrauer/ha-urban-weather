@@ -2,7 +2,7 @@
 
 Instructions for AI coding agents (and humans) working on this repository.
 
-Home Assistant custom integration `urban_weather` ("Urban Weather (Stadtklima)"). It combines stations of an urban climate network (Smart City Mannheim, Klimamessnetz Dortmund, Smart Climate Luftklima Basel, Stadtklimamessnetz Zürich, Sensor City Karlsruhe) into values for one location. The repository is public and installed by other people via HACS, so every release reaches real installations.
+Home Assistant custom integration `urban_weather` ("Urban Weather (Stadtklima)"). It combines stations of an urban climate network (Smart City Mannheim, Klimamessnetz Dortmund, Smart Climate Luftklima Basel, Stadtklimamessnetz Zürich, Sensor City Karlsruhe, KLIPS Dresden) into values for one location. The repository is public and installed by other people via HACS, so every release reaches real installations.
 
 ## Layout
 
@@ -13,7 +13,7 @@ Home Assistant custom integration `urban_weather` ("Urban Weather (Stadtklima)")
 | `providers/` | `PROVIDERS` registry; `common.py`: HTTP helpers and map tile layers shared by the providers |
 | `providers/mannheim/` | Mannheim provider: HTTP client and response parsing, sensors grouped into stations, siting metadata (`data/`) |
 | `providers/opendatasoft.py`, `providers/dortmund.py`, `providers/basel.py` | Generic Opendatasoft provider (all stations in one request; a time series is read with a window per request); the Dortmund and Basel networks as its configuration |
-| `providers/geojson.py`, `providers/zurich.py`, `providers/karlsruhe.py` | Generic GeoJSON provider (a file or query with a point per station, all stations in one request); the Zürich and Karlsruhe (ArcGIS FeatureServer query) networks as its configuration |
+| `providers/geojson.py`, `providers/zurich.py`, `providers/karlsruhe.py`, `providers/dresden.py` | Generic GeoJSON provider (a file or query with a point per station, all stations in one request; optionally long format and a time window per request); the Zürich, Karlsruhe (ArcGIS FeatureServer query) and Dresden (WFS, long format, time window) networks as its configuration |
 | `hub.py` | One per network: rate limiter, measurement cache, station list (refreshed daily, stored copy as fallback) |
 | `stations.py` | Stations and station recommendation |
 | `aggregation.py` | Combining readings (median, outliers, dew point, apparent temperature) |
@@ -77,9 +77,9 @@ Release steps: [`.claude/skills/release/SKILL.md`](.claude/skills/release/SKILL.
 
 ## The network APIs are shared, rate-limited resources
 
-- The limits of `api.smartmannheim.de` (Mannheim) and the daily quotas of `open-data.dortmund.de` (Dortmund) apply per public IP, shared with the maintainer's production Home Assistant. Never poll a live API in loops or scripts; a few manual requests for debugging at most. `stadtklima-zuerich.ch` (Zürich) and `geoportal.karlsruhe.de` (Karlsruhe) document no limits, but the same rule applies. `data.bs.ch` (Basel) reports a quota of 500,000 requests per day, the rule is the same.
-- Tests never call a live API (`pytest-socket` blocks it). Use the trimmed real responses in `tests/fixtures/` (`sensors.json` for Mannheim, `dortmund.json` for Dortmund, `basel.json` for Basel, `zurich.json` for Zürich, `karlsruhe.json` for Karlsruhe).
-- The client-side limits and the planned budget are the `RequestLimits` of each network (`MANNHEIM` in `providers/mannheim/`, `DORTMUND` in `providers/dortmund.py`, `BASEL` in `providers/basel.py`, `ZURICH` in `providers/zurich.py`, `KARLSRUHE` in `providers/karlsruhe.py`). Features that add requests must fit the planned budget, which `StationSelection` enforces. Discuss changes to the limits in an issue first.
+- The limits of `api.smartmannheim.de` (Mannheim) and the daily quotas of `open-data.dortmund.de` (Dortmund) apply per public IP, shared with the maintainer's production Home Assistant. Never poll a live API in loops or scripts; a few manual requests for debugging at most. `stadtklima-zuerich.ch` (Zürich), `geoportal.karlsruhe.de` (Karlsruhe) and `kommisdd.dresden.de` (Dresden) document no limits, but the same rule applies. The Dresden WFS returns its whole history since 2023 (~330 MB) without a time filter: never send an unfiltered request. `data.bs.ch` (Basel) reports a quota of 500,000 requests per day, the rule is the same.
+- Tests never call a live API (`pytest-socket` blocks it). Use the trimmed real responses in `tests/fixtures/` (`sensors.json` for Mannheim, `dortmund.json` for Dortmund, `basel.json` for Basel, `zurich.json` for Zürich, `karlsruhe.json` for Karlsruhe, `dresden.json` for Dresden).
+- The client-side limits and the planned budget are the `RequestLimits` of each network (`MANNHEIM` in `providers/mannheim/`, `DORTMUND` in `providers/dortmund.py`, `BASEL` in `providers/basel.py`, `ZURICH` in `providers/zurich.py`, `KARLSRUHE` in `providers/karlsruhe.py`, `DRESDEN` in `providers/dresden.py`). Features that add requests must fit the planned budget, which `StationSelection` enforces. Discuss changes to the limits in an issue first.
 
 ## Adding a network
 
@@ -98,7 +98,7 @@ Do not edit these by hand:
 
 - `custom_components/urban_weather/providers/mannheim/data/*.json`: generated by `scripts/build_reference_data.py` (see its docstring).
 - `www/leaflet/`: vendored Leaflet 1.9.4, verified against the npm sha512 (`SOURCE.txt`). Update only together with a new hash check and `SOURCE.txt`.
-- `tests/fixtures/sensors.json`, `tests/fixtures/dortmund.json`, `tests/fixtures/basel.json`, `tests/fixtures/zurich.json` and `tests/fixtures/karlsruhe.json`: trimmed API responses, source and filter in `tests/common.py`.
+- `tests/fixtures/sensors.json`, `tests/fixtures/dortmund.json`, `tests/fixtures/basel.json`, `tests/fixtures/zurich.json`, `tests/fixtures/karlsruhe.json` and `tests/fixtures/dresden.json`: trimmed API responses, source and filter in `tests/common.py`.
 
 ## Dev instance
 

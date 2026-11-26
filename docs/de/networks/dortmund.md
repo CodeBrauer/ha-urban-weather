@@ -1,4 +1,4 @@
-<!-- source: d09173ef125e50bfdc670ccfd3344e8da9501ba7 -->
+<!-- source: a521c61b911c60418d04a97b060b179ba60a2a18 -->
 # Klimamessnetz Dortmund
 
 | | |
@@ -44,7 +44,7 @@ weitere Limits sind nicht dokumentiert.
 | Geplante Abfragen | Höchstens 60 pro Stunde für alle Standorte zusammen |
 
 Eine Abfrage liefert alle Stationen, die Anzahl der Stationen kostet also nichts:
-[wie viele Stationen passen](../user/api-limits.md#eine-abfrage-fur-alle-stationen-dortmund-basel-zurich-karlsruhe).
+[wie viele Stationen passen](../user/api-limits.md#eine-abfrage-fur-alle-stationen-dortmund-basel-zurich-karlsruhe-dresden).
 
 ## Besonderheiten
 

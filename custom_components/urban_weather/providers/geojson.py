@@ -9,19 +9,25 @@ its own sensor.
 The request can carry query parameters (an ArcGIS FeatureServer `query` or a WFS
 GetFeature URL), and a feed with times that are not ISO 8601 brings its own parser.
 
+A feed in long format has one feature per station, value and time: a property names
+the value (a key of the network's fields), another holds it. A feed that holds a time
+series selects a window for each request, as it returns its whole history otherwise.
+
+A feed can leave out stations that fell silent: those whose newest value is older than
+`current_within` before the newest value of the payload. The cut is relative to the
+payload, not to now, as the hub also builds stations from a stored copy.
+
 Not covered yet, to be added with the network that needs it:
 
-- Dropping outdated stations: the station list keeps every station with a value, also
-  one silent for longer than STATION_OFFLINE_AFTER. A feed that keeps stations that
-  stopped sending, or flags them with a property, needs a filter.
-- Values sent as strings (a value parser instead of `is_number`) and times without a
-  UTC offset in local time (a time zone for `parse_timestamp`).
+- Values sent as strings (a value parser instead of `is_number`).
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
+
+from homeassistant.util import dt as dt_util
 
 from custom_components.urban_weather.const import LOGGER, Field
 from custom_components.urban_weather.provider import (
@@ -36,7 +42,7 @@ from .common import OLDEST, async_get_json, is_number, parse_timestamp
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Collection, Mapping
-    from datetime import datetime
+    from datetime import datetime, timedelta
 
     import aiohttp
 
@@ -47,16 +53,40 @@ POSITION_LENGTH = 2
 
 
 @dataclass(frozen=True, slots=True)
+class TimeWindow:
+    """How far back the requests of a feed holding a time series look."""
+
+    # Query parameters selecting the features measured after a time.
+    params: Callable[[datetime], Mapping[str, str]]
+    # The station list wants a long window (stations fall silent for hours), the
+    # measurements a short one, as they are requested often.
+    station_list: timedelta
+    measurements: timedelta
+
+
+@dataclass(frozen=True, slots=True)
 class GeoJsonFeed:
     """How to read a feed: its request, and the properties of a station and its time."""
 
     station_id: str
     station_name: str
     timestamp: str
-    # Query parameters of the request.
+    # Query parameters and extra headers of the request.
     params: Mapping[str, str] | None = None
+    headers: Mapping[str, str] | None = None
     # Turns the value of the timestamp property into an aware datetime, else None.
     parse_time: Callable[[Any], datetime | None] = parse_timestamp
+    # Turns the value of the name property (as text) into the name shown.
+    parse_name: Callable[[str], str] = str.strip
+    # Long format only: the properties holding the name of a value (a key of the
+    # network's fields) and the value itself.
+    parameter: str | None = None
+    value: str | None = None
+    # Time series only: the window of each request.
+    window: TimeWindow | None = None
+    # Stations whose newest value is older than this before the newest value of the
+    # payload are left out of the station list; None keeps every station.
+    current_within: timedelta | None = None
 
 
 def _features(features: Any) -> list[dict[str, Any]]:
@@ -97,6 +127,57 @@ def _station_id(properties: Mapping[str, Any], feed: GeoJsonFeed) -> str:
     return str(properties.get(feed.station_id) or "").strip()
 
 
+def _time(feature: Mapping[str, Any], feed: GeoJsonFeed) -> datetime:
+    return feed.parse_time(_properties(feature).get(feed.timestamp)) or OLDEST
+
+
+def _newest_first(
+    features: list[dict[str, Any]], feed: GeoJsonFeed
+) -> list[dict[str, Any]]:
+    return sorted(features, key=lambda item: _time(item, feed), reverse=True)
+
+
+def _merge_long_format(
+    features: list[dict[str, Any]],
+    feed: GeoJsonFeed,
+    fields: Mapping[str, Field],
+) -> list[dict[str, Any]]:
+    """Return one feature per station and time with the values as properties."""
+    if feed.parameter is None:
+        return features
+    merged: dict[tuple[str, str], dict[str, Any]] = {}
+    for feature in features:
+        properties = _properties(feature)
+        name = properties.get(feed.parameter)
+        value = properties.get(feed.value) if feed.value else None
+        if not isinstance(name, str) or name not in fields or not is_number(value):
+            continue
+        key = (_station_id(properties, feed), str(properties.get(feed.timestamp)))
+        if key not in merged:
+            merged[key] = {
+                **feature,
+                "properties": {
+                    feed.station_id: properties.get(feed.station_id),
+                    feed.station_name: properties.get(feed.station_name),
+                    feed.timestamp: properties.get(feed.timestamp),
+                },
+            }
+        merged[key]["properties"][name] = value
+    return list(merged.values())
+
+
+def _newest_features(
+    features: list[dict[str, Any]], feed: GeoJsonFeed
+) -> list[dict[str, Any]]:
+    """Return the newest feature of each station (and value in long format)."""
+    newest: dict[tuple[str, str], dict[str, Any]] = {}
+    for feature in _newest_first(features, feed):
+        properties = _properties(feature)
+        parameter = properties.get(feed.parameter) if feed.parameter else None
+        newest.setdefault((_station_id(properties, feed), str(parameter)), feature)
+    return list(newest.values())
+
+
 def build_stations(
     features: list[dict[str, Any]],
     feed: GeoJsonFeed,
@@ -109,13 +190,9 @@ def build_stations(
     On a repeated id the feature with the newest measurement is used.
     """
     stations: dict[str, Station] = {}
-    for feature in sorted(
-        features,
-        key=lambda item: (
-            feed.parse_time(_properties(item).get(feed.timestamp)) or OLDEST
-        ),
-        reverse=True,
-    ):
+    ordered = _newest_first(_merge_long_format(features, feed, fields), feed)
+    newest = _time(ordered[0], feed) if ordered else OLDEST
+    for feature in ordered:
         properties = _properties(feature)
         station_id = _station_id(properties, feed)
         position = _position(feature)
@@ -124,7 +201,10 @@ def build_stations(
             continue
         if station_id in stations:
             continue
-        name = str(properties.get(feed.station_name) or "").strip()
+        if feed.current_within and newest - _time(feature, feed) > feed.current_within:
+            # Newest first: the station's newest value is already too old.
+            continue
+        name = feed.parse_name(str(properties.get(feed.station_name) or ""))
         sensor = ApiSensor(
             id=station_id,
             name=name or station_id,
@@ -168,7 +248,7 @@ def parse_measurements(
     On a repeated id the feature with the newest time is used, as for the stations.
     """
     measurements: dict[str, list[Measurement]] = {}
-    for feature in features:
+    for feature in _merge_long_format(features, feed, fields):
         properties = _properties(feature)
         station_id = _station_id(properties, feed)
         timestamp = feed.parse_time(properties.get(feed.timestamp))
@@ -193,7 +273,8 @@ class GeoJsonProvider(BulkProvider):
     One request for the measurements of all stations.
 
     The file holds every station, so the request is the same for the station list
-    and the measurements; the hub keeps the stations the locations use.
+    and the measurements (apart from the window of a time series); the hub keeps the
+    stations the locations use.
     """
 
     def __init__(
@@ -209,7 +290,12 @@ class GeoJsonProvider(BulkProvider):
 
     async def async_get_station_payload(self) -> dict[str, Any]:
         """Return the features (the hub stores a dict)."""
-        return {"features": await self._async_features()}
+        window = self.feed.window
+        if window is None:
+            return {"features": await self._async_features(None)}
+        # A time series is long; the stored list keeps what the stations need.
+        features = await self._async_features(window.station_list)
+        return {"features": _newest_features(features, self.feed)}
 
     def build_stations(self, payload: dict[str, Any]) -> list[Station]:
         """Turn the stored features into stations."""
@@ -223,12 +309,27 @@ class GeoJsonProvider(BulkProvider):
         """Return the latest measurement of all stations (none without sensors)."""
         if not sensors:
             return {}
+        window = self.feed.window
         return parse_measurements(
-            await self._async_features(), self.feed, self.network.fields
+            await self._async_features(window.measurements if window else None),
+            self.feed,
+            self.network.fields,
         )
 
-    async def _async_features(self) -> list[dict[str, Any]]:
+    async def _async_features(
+        self, look_back: timedelta | None
+    ) -> list[dict[str, Any]]:
+        """Request the features, of the last `look_back` for a time series."""
+        params = dict(self.feed.params or {})
+        if self.feed.window and look_back:
+            params.update(self.feed.window.params(dt_util.utcnow() - look_back))
         url = self.network.endpoint
         return _collection_features(
-            await async_get_json(self._session, url, url, params=self.feed.params)
+            await async_get_json(
+                self._session,
+                url,
+                url,
+                params=params or None,
+                headers=self.feed.headers,
+            )
         )

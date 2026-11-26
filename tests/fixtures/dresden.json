@@ -1,0 +1,917 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.731986100000388,
+          51.0514549999856
+        ]
+      },
+      "id": 778,
+      "properties": {
+        "idm": 1217,
+        "art": "Temperatursensor",
+        "bezeichnung": "Postplatz",
+        "status": "A",
+        "messzeit": "26.11.2026 21:00:00",
+        "wert_n": 0.6,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "222",
+        "fremd_id": "222",
+        "ostwert": 411123.936610922,
+        "nordwert": 5656311.80655773
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.731986100000388,
+          51.0514549999856
+        ]
+      },
+      "id": 778,
+      "properties": {
+        "idm": 1218,
+        "art": "Temperatursensor",
+        "bezeichnung": "Postplatz",
+        "status": "A",
+        "messzeit": "26.11.2026 21:00:00",
+        "wert_n": 65.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "222",
+        "fremd_id": "222",
+        "ostwert": 411123.936610922,
+        "nordwert": 5656311.80655773
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.738193100000386,
+          51.04697379998557
+        ]
+      },
+      "id": 780,
+      "properties": {
+        "idm": 1221,
+        "art": "Temperatursensor",
+        "bezeichnung": "Waisenhausstraße",
+        "status": "A",
+        "messzeit": "26.11.2026 21:00:00",
+        "wert_n": 0.6,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "224",
+        "fremd_id": "224",
+        "ostwert": 411550.439534623,
+        "nordwert": 5655806.03061251
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "id": 1062,
+      "properties": {
+        "idm": 1860,
+        "art": "Temperatursensor",
+        "bezeichnung": "Rasberger Straße 2",
+        "status": "A",
+        "messzeit": "26.11.2026 21:00:00",
+        "wert_n": 0.3,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "550",
+        "fremd_id": "550",
+        "ostwert": 298820.535040587,
+        "nordwert": 5658659.65308279
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "id": 1062,
+      "properties": {
+        "idm": 1861,
+        "art": "Temperatursensor",
+        "bezeichnung": "Rasberger Straße 2",
+        "status": "A",
+        "messzeit": "26.11.2026 21:00:00",
+        "wert_n": 94.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "550",
+        "fremd_id": "550",
+        "ostwert": 298820.535040587,
+        "nordwert": 5658659.65308279
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.745777200000388,
+          51.04958079998561
+        ]
+      },
+      "id": 771,
+      "properties": {
+        "idm": 1203,
+        "art": "Temperatursensor",
+        "bezeichnung": "St. Petersburger Straße 7",
+        "status": "A",
+        "messzeit": "26.11.2026 21:00:00",
+        "wert_n": 0.3,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "200",
+        "fremd_id": "200",
+        "ostwert": 412086.984383512,
+        "nordwert": 5656086.84823462
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.745777200000388,
+          51.04958079998561
+        ]
+      },
+      "id": 771,
+      "properties": {
+        "idm": 1204,
+        "art": "Temperatursensor",
+        "bezeichnung": "St. Petersburger Straße 7",
+        "status": "A",
+        "messzeit": "26.11.2026 21:00:00",
+        "wert_n": 66.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "200",
+        "fremd_id": "200",
+        "ostwert": 412086.984383512,
+        "nordwert": 5656086.84823462
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.738193100000386,
+          51.04697379998557
+        ]
+      },
+      "id": 780,
+      "properties": {
+        "idm": 1222,
+        "art": "Temperatursensor",
+        "bezeichnung": "Waisenhausstraße",
+        "status": "A",
+        "messzeit": "26.11.2026 21:00:00",
+        "wert_n": 64.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "224",
+        "fremd_id": "224",
+        "ostwert": 411550.439534623,
+        "nordwert": 5655806.03061251
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.731986100000388,
+          51.0514549999856
+        ]
+      },
+      "id": 778,
+      "properties": {
+        "idm": 1217,
+        "art": "Temperatursensor",
+        "bezeichnung": "Postplatz",
+        "status": "A",
+        "messzeit": "26.11.2026 20:00:00",
+        "wert_n": 0.6,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "222",
+        "fremd_id": "222",
+        "ostwert": 411123.936610922,
+        "nordwert": 5656311.80655773
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.731986100000388,
+          51.0514549999856
+        ]
+      },
+      "id": 778,
+      "properties": {
+        "idm": 1218,
+        "art": "Temperatursensor",
+        "bezeichnung": "Postplatz",
+        "status": "A",
+        "messzeit": "26.11.2026 20:00:00",
+        "wert_n": 64.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "222",
+        "fremd_id": "222",
+        "ostwert": 411123.936610922,
+        "nordwert": 5656311.80655773
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.738193100000386,
+          51.04697379998557
+        ]
+      },
+      "id": 780,
+      "properties": {
+        "idm": 1221,
+        "art": "Temperatursensor",
+        "bezeichnung": "Waisenhausstraße",
+        "status": "A",
+        "messzeit": "26.11.2026 20:00:00",
+        "wert_n": 0.6,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "224",
+        "fremd_id": "224",
+        "ostwert": 411550.439534623,
+        "nordwert": 5655806.03061251
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.737394300000387,
+          51.047340999985565
+        ]
+      },
+      "id": 1032,
+      "properties": {
+        "idm": 1791,
+        "art": "Temperatursensor",
+        "bezeichnung": "Prager Straße Haltestelle (DVB)",
+        "status": "U",
+        "messzeit": "26.11.2026 20:00:00",
+        "wert_n": 1.0,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "491",
+        "fremd_id": "491",
+        "ostwert": 411495.147369475,
+        "nordwert": 5655847.82229253
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.737394300000387,
+          51.047340999985565
+        ]
+      },
+      "id": 1032,
+      "properties": {
+        "idm": 1792,
+        "art": "Temperatursensor",
+        "bezeichnung": "Prager Straße Haltestelle (DVB)",
+        "status": "U",
+        "messzeit": "26.11.2026 20:00:00",
+        "wert_n": 62.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "491",
+        "fremd_id": "491",
+        "ostwert": 411495.147369475,
+        "nordwert": 5655847.82229253
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "id": 1062,
+      "properties": {
+        "idm": 1860,
+        "art": "Temperatursensor",
+        "bezeichnung": "Rasberger Straße 2",
+        "status": "A",
+        "messzeit": "26.11.2026 20:00:00",
+        "wert_n": 0.4,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "550",
+        "fremd_id": "550",
+        "ostwert": 298820.535040587,
+        "nordwert": 5658659.65308279
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "id": 1062,
+      "properties": {
+        "idm": 1861,
+        "art": "Temperatursensor",
+        "bezeichnung": "Rasberger Straße 2",
+        "status": "A",
+        "messzeit": "26.11.2026 20:00:00",
+        "wert_n": 94.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "550",
+        "fremd_id": "550",
+        "ostwert": 298820.535040587,
+        "nordwert": 5658659.65308279
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.738193100000386,
+          51.04697379998557
+        ]
+      },
+      "id": 780,
+      "properties": {
+        "idm": 1222,
+        "art": "Temperatursensor",
+        "bezeichnung": "Waisenhausstraße",
+        "status": "A",
+        "messzeit": "26.11.2026 20:00:00",
+        "wert_n": 64.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "224",
+        "fremd_id": "224",
+        "ostwert": 411550.439534623,
+        "nordwert": 5655806.03061251
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.734052900000385,
+          51.050777199985546
+        ]
+      },
+      "id": 1033,
+      "properties": {
+        "idm": 1793,
+        "art": "Temperatursensor",
+        "bezeichnung": "Postplatz (DVB)",
+        "status": "A",
+        "messzeit": "26.11.2026 20:00:00",
+        "wert_n": 1.2,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "492",
+        "fremd_id": "492",
+        "ostwert": 411267.499940236,
+        "nordwert": 5656233.94419958
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.734052900000385,
+          51.050777199985546
+        ]
+      },
+      "id": 1033,
+      "properties": {
+        "idm": 1794,
+        "art": "Temperatursensor",
+        "bezeichnung": "Postplatz (DVB)",
+        "status": "A",
+        "messzeit": "26.11.2026 20:00:00",
+        "wert_n": 62.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "492",
+        "fremd_id": "492",
+        "ostwert": 411267.499940236,
+        "nordwert": 5656233.94419958
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.745777200000388,
+          51.04958079998561
+        ]
+      },
+      "id": 771,
+      "properties": {
+        "idm": 1203,
+        "art": "Temperatursensor",
+        "bezeichnung": "St. Petersburger Straße 7",
+        "status": "A",
+        "messzeit": "26.11.2026 20:00:00",
+        "wert_n": 0.4,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "200",
+        "fremd_id": "200",
+        "ostwert": 412086.984383512,
+        "nordwert": 5656086.84823462
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.745777200000388,
+          51.04958079998561
+        ]
+      },
+      "id": 771,
+      "properties": {
+        "idm": 1204,
+        "art": "Temperatursensor",
+        "bezeichnung": "St. Petersburger Straße 7",
+        "status": "A",
+        "messzeit": "26.11.2026 20:00:00",
+        "wert_n": 65.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "200",
+        "fremd_id": "200",
+        "ostwert": 412086.984383512,
+        "nordwert": 5656086.84823462
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.732690100000383,
+          51.051442699985586
+        ]
+      },
+      "id": 779,
+      "properties": {
+        "idm": 1219,
+        "art": "Temperatursensor",
+        "bezeichnung": "Postplatz ",
+        "status": "U",
+        "messzeit": "26.11.2026 19:00:00",
+        "wert_n": 0.8,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "223",
+        "fremd_id": "223",
+        "ostwert": 411173.255296681,
+        "nordwert": 5656309.58965061
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.732690100000383,
+          51.051442699985586
+        ]
+      },
+      "id": 779,
+      "properties": {
+        "idm": 1220,
+        "art": "Temperatursensor",
+        "bezeichnung": "Postplatz ",
+        "status": "U",
+        "messzeit": "26.11.2026 19:00:00",
+        "wert_n": 62.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "223",
+        "fremd_id": "223",
+        "ostwert": 411173.255296681,
+        "nordwert": 5656309.58965061
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.737394300000387,
+          51.047340999985565
+        ]
+      },
+      "id": 1032,
+      "properties": {
+        "idm": 1791,
+        "art": "Temperatursensor",
+        "bezeichnung": "Prager Straße Haltestelle (DVB)",
+        "status": "U",
+        "messzeit": "26.11.2026 19:00:00",
+        "wert_n": 1.0,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "491",
+        "fremd_id": "491",
+        "ostwert": 411495.147369475,
+        "nordwert": 5655847.82229253
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.737394300000387,
+          51.047340999985565
+        ]
+      },
+      "id": 1032,
+      "properties": {
+        "idm": 1792,
+        "art": "Temperatursensor",
+        "bezeichnung": "Prager Straße Haltestelle (DVB)",
+        "status": "U",
+        "messzeit": "26.11.2026 19:00:00",
+        "wert_n": 60.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "491",
+        "fremd_id": "491",
+        "ostwert": 411495.147369475,
+        "nordwert": 5655847.82229253
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.734052900000385,
+          51.050777199985546
+        ]
+      },
+      "id": 1033,
+      "properties": {
+        "idm": 1793,
+        "art": "Temperatursensor",
+        "bezeichnung": "Postplatz (DVB)",
+        "status": "A",
+        "messzeit": "26.11.2026 19:00:00",
+        "wert_n": 1.3,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "492",
+        "fremd_id": "492",
+        "ostwert": 411267.499940236,
+        "nordwert": 5656233.94419958
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.734052900000385,
+          51.050777199985546
+        ]
+      },
+      "id": 1033,
+      "properties": {
+        "idm": 1794,
+        "art": "Temperatursensor",
+        "bezeichnung": "Postplatz (DVB)",
+        "status": "A",
+        "messzeit": "26.11.2026 19:00:00",
+        "wert_n": 60.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "492",
+        "fremd_id": "492",
+        "ostwert": 411267.499940236,
+        "nordwert": 5656233.94419958
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.732690100000383,
+          51.051442699985586
+        ]
+      },
+      "id": 779,
+      "properties": {
+        "idm": 1219,
+        "art": "Temperatursensor",
+        "bezeichnung": "Postplatz ",
+        "status": "U",
+        "messzeit": "26.11.2026 18:00:00",
+        "wert_n": 0.8,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "223",
+        "fremd_id": "223",
+        "ostwert": 411173.255296681,
+        "nordwert": 5656309.58965061
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.732690100000383,
+          51.051442699985586
+        ]
+      },
+      "id": 779,
+      "properties": {
+        "idm": 1220,
+        "art": "Temperatursensor",
+        "bezeichnung": "Postplatz ",
+        "status": "U",
+        "messzeit": "26.11.2026 18:00:00",
+        "wert_n": 61.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "223",
+        "fremd_id": "223",
+        "ostwert": 411173.255296681,
+        "nordwert": 5656309.58965061
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.781386900000365,
+          51.05430409998567
+        ]
+      },
+      "id": 856,
+      "properties": {
+        "idm": 1425,
+        "art": "Temperatursensor",
+        "bezeichnung": "$ Fiedlerstraße 19",
+        "status": "U",
+        "messzeit": "26.11.2026 09:00:00",
+        "wert_n": 0.4,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "280",
+        "fremd_id": "280",
+        "ostwert": 414591.606620001,
+        "nordwert": 5656570.18311793
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.781386900000365,
+          51.05430409998567
+        ]
+      },
+      "id": 856,
+      "properties": {
+        "idm": 1426,
+        "art": "Temperatursensor",
+        "bezeichnung": "$ Fiedlerstraße 19",
+        "status": "U",
+        "messzeit": "26.11.2026 09:00:00",
+        "wert_n": 0.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "280",
+        "fremd_id": "280",
+        "ostwert": 414591.606620001,
+        "nordwert": 5656570.18311793
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.781386900000365,
+          51.05430409998567
+        ]
+      },
+      "id": 856,
+      "properties": {
+        "idm": 1425,
+        "art": "Temperatursensor",
+        "bezeichnung": "$ Fiedlerstraße 19",
+        "status": "U",
+        "messzeit": "26.11.2026 08:00:00",
+        "wert_n": -1.0,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "280",
+        "fremd_id": "280",
+        "ostwert": 414591.606620001,
+        "nordwert": 5656570.18311793
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.781386900000365,
+          51.05430409998567
+        ]
+      },
+      "id": 856,
+      "properties": {
+        "idm": 1426,
+        "art": "Temperatursensor",
+        "bezeichnung": "$ Fiedlerstraße 19",
+        "status": "U",
+        "messzeit": "26.11.2026 08:00:00",
+        "wert_n": 0.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "280",
+        "fremd_id": "280",
+        "ostwert": 414591.606620001,
+        "nordwert": 5656570.18311793
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.73590400000039,
+          51.040691799985574
+        ]
+      },
+      "id": 939,
+      "properties": {
+        "idm": 1605,
+        "art": "Temperatursensor",
+        "bezeichnung": "Wiener Straße",
+        "status": "U",
+        "messzeit": "26.11.2026 06:00:00",
+        "wert_n": -2.2,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "167",
+        "fremd_id": "167",
+        "ostwert": 411377.998018726,
+        "nordwert": 5655110.2295798
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.73590400000039,
+          51.040691799985574
+        ]
+      },
+      "id": 939,
+      "properties": {
+        "idm": 1606,
+        "art": "Temperatursensor",
+        "bezeichnung": "Wiener Straße",
+        "status": "U",
+        "messzeit": "26.11.2026 06:00:00",
+        "wert_n": 74.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "167",
+        "fremd_id": "167",
+        "ostwert": 411377.998018726,
+        "nordwert": 5655110.2295798
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.73590400000039,
+          51.040691799985574
+        ]
+      },
+      "id": 939,
+      "properties": {
+        "idm": 1605,
+        "art": "Temperatursensor",
+        "bezeichnung": "Wiener Straße",
+        "status": "U",
+        "messzeit": "26.11.2026 05:00:00",
+        "wert_n": -1.8,
+        "einheit": "°C",
+        "bemerk": "air_temperature",
+        "parameter": "Lufttemperatur",
+        "device": "167",
+        "fremd_id": "167",
+        "ostwert": 411377.998018726,
+        "nordwert": 5655110.2295798
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.73590400000039,
+          51.040691799985574
+        ]
+      },
+      "id": 939,
+      "properties": {
+        "idm": 1606,
+        "art": "Temperatursensor",
+        "bezeichnung": "Wiener Straße",
+        "status": "U",
+        "messzeit": "26.11.2026 05:00:00",
+        "wert_n": 78.0,
+        "einheit": "%",
+        "bemerk": "rel_humidity",
+        "parameter": "Relative Luftfeuchte",
+        "device": "167",
+        "fremd_id": "167",
+        "ostwert": 411377.998018726,
+        "nordwert": 5655110.2295798
+      }
+    }
+  ]
+}

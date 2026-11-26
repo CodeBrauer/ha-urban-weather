@@ -1,4 +1,4 @@
-<!-- source: d98b1f03f5e55c290965ed555a3f5424d71aace0 -->
+<!-- source: 62faa68982af15bf9263efa45a9d3c87ca1095c0 -->
 # Stationsempfehlung
 
 Dichte Netze wie [das Mannheimer](../networks/mannheim.md) mit über 400 Stationen haben viele davon in
@@ -47,7 +47,7 @@ flowchart TD
 
 ## Messnetze ohne Standortdaten
 
-Manche Messnetze, etwa [Dortmund](../networks/dortmund.md), [Zürich](../networks/zurich.md) und [Karlsruhe](../networks/karlsruhe.md), veröffentlichen keine Daten zu
+Manche Messnetze, etwa [Dortmund](../networks/dortmund.md), [Zürich](../networks/zurich.md), [Karlsruhe](../networks/karlsruhe.md) und [Dresden](../networks/dresden.md), veröffentlichen keine Daten zu
 Umgebung oder Montage.
 
 - Die nächste Station im Umkreis von 1 km wird allein verwendet; sonst werden bis zu

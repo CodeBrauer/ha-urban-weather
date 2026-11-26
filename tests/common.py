@@ -96,6 +96,11 @@ KARLSRUHE_NEAREST = (
     "836952e2-1e16-4f5c-864f-471e0c6995f9"  # 173 - Schlossplatz 3, 316 m
 )
 
+# Dresden, Altmarkt; dresden.json was exported at 2026-11-26 22:30 UTC.
+DRESDEN_HOME = (51.0505, 13.7383)
+DRESDEN_NOW = datetime(2026, 11, 26, 22, 35, tzinfo=UTC)
+DRESDEN_NEAREST = "492"  # Postplatz (DVB), 299 m
+
 
 def sensors_payload() -> dict[str, Any]:
     """
@@ -146,6 +151,18 @@ def karlsruhe_geojson() -> dict[str, Any]:
     `crs` is dropped.
     """
     return json.loads((FIXTURES / "karlsruhe.json").read_text("utf-8"))
+
+
+def dresden_geojson() -> dict[str, Any]:
+    """
+    Return the real WFS response of the KLIPS layer of Dresden of 2026-11-26.
+
+    The request of `providers/dresden.py` with the station list window (values after
+    2026-11-25 23:30 CET), trimmed to the two newest hours of 9 of 168 stations: the 6
+    within 600 m of DRESDEN_HOME (491 and 223 with `status: U`, 223 two hours behind),
+    167 (silent since 06:00), 280 (humidity 0.0) and 550 (no geometry).
+    """
+    return json.loads((FIXTURES / "dresden.json").read_text("utf-8"))
 
 
 def mannheim_provider(network: Network = MANNHEIM) -> MannheimProvider:
