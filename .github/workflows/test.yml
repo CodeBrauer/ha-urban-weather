@@ -35,7 +35,7 @@ jobs:
       - name: Run tests
         run: >-
           python3 -m pytest --cov=custom_components.urban_weather
-          --cov-report=term-missing --cov-report=xml --cov-fail-under=95
+          --cov-report=term-missing --cov-report=xml --cov-fail-under=95 --cov-precision=2
 
       - name: Coverage summary
         if: ${{ !cancelled() }}
