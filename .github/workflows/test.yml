@@ -33,4 +33,20 @@ jobs:
         run: python3 -m pip install -r requirements_dev.txt
 
       - name: Run tests
-        run: python3 -m pytest --cov=custom_components.urban_weather --cov-report=term-missing
+        run: >-
+          python3 -m pytest --cov=custom_components.urban_weather
+          --cov-report=term-missing --cov-report=xml --cov-fail-under=95 --cov-precision=2
+
+      - name: Coverage summary
+        if: ${{ !cancelled() }}
+        run: python3 -m coverage report --format=markdown >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage to Codacy
+        # Informational only; fails without the secret (e.g. pull requests from forks).
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699 # v1.3.0
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: coverage.xml
+          coverage-reporter-version: "14.1.3"
