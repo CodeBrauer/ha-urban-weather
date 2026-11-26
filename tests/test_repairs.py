@@ -116,7 +116,7 @@ def default(result: dict[str, Any], name: str) -> Any:
     [(NEAREST_SENSOR, NEAREST_WIND_SENSOR), (NEAREST_WIND_SENSOR, NEAREST_SENSOR)],
     ids=["temperature", "wind"],
 )
-async def test_fix_uses_recommendation_without_sensor(  # noqa: PLR0913
+async def test_fix_uses_recommendation_without_sensor(  # noqa: PLR0913, PLR0917
     hass: HomeAssistant,
     api: MagicMock,
     client: TestClient,
