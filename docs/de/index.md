@@ -1,8 +1,8 @@
-<!-- source: 88b015419e9ff7364434539a29b0befb55199ae4 -->
+<!-- source: f37a2a4d5573beab11b33466dbc1c5e2ef8a0dca -->
 # Urban Weather (Stadtklima)
 
 Home-Assistant-Integration für dichte Stadtklima-Messnetze, zunächst
-[Mannheim, Dortmund, Basel, Zürich, Karlsruhe und Dresden](#unterstutzte-messnetze). Sie liefert Klimawerte für einen Ort deiner
+[Mannheim, Dortmund, Basel, Zürich, Karlsruhe und Dresden](networks/index.md). Sie liefert Klimawerte für einen Ort deiner
 Wahl: Temperatur, Luftfeuchte, Taupunkt, absolute Feuchte, gefühlte Temperatur, Luftdruck,
 Globalstrahlung und Wind.
 
