@@ -43,8 +43,9 @@ The weather entity shows the current temperature, apparent temperature, dew poin
 pressure, wind speed, gust and direction, as far as the selected stations measure them.
 It has no forecast.
 
-The condition is estimated from the global irradiance, because the network has no cloud or
-rain sensors:
+The condition is estimated from the global irradiance, because the networks have no cloud or
+rain sensors. Only Mannheim and Dortmund measure irradiance; in the other networks the
+condition stays unknown.
 
 | Condition | Measured irradiance compared to a clear sky |
 |---|---|

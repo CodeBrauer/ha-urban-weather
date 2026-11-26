@@ -1,4 +1,4 @@
-<!-- source: d4e4127f5b1f1d9e6a772cdb831f5f99079baaf6 -->
+<!-- source: f1e719bbb765e93451da2eba142a00c666918a6f -->
 # Entitäten
 
 Jeder Standort liefert Sensoren und eine Wetter-Entität. Gemessen wird alle 10 Minuten, die
@@ -45,8 +45,9 @@ Die Wetter-Entität zeigt die aktuelle Temperatur, gefühlte Temperatur, Taupunk
 Luftfeuchte, Luftdruck, Windgeschwindigkeit, Böe und Windrichtung, soweit die gewählten Stationen sie messen.
 Eine Vorhersage hat sie nicht.
 
-Der Zustand wird aus der Globalstrahlung geschätzt, weil das Netz keine Wolken- oder
-Regensensoren hat:
+Der Zustand wird aus der Globalstrahlung geschätzt, weil die Netze keine Wolken- oder
+Regensensoren haben. Nur Mannheim und Dortmund messen Strahlung; in den anderen Netzen
+bleibt der Zustand unbekannt.
 
 | Zustand | Gemessene Strahlung im Vergleich zu wolkenlosem Himmel |
 |---|---|
