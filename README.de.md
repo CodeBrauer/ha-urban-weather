@@ -6,6 +6,7 @@
 
 [![HACS Default](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://hacs.xyz)
 [![Codacy coverage](https://app.codacy.com/project/badge/Coverage/07138bad942d41b39ab46b6f3760580e)](https://app.codacy.com/gh/CodeBrauer/ha-urban-weather/coverage)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/07138bad942d41b39ab46b6f3760580e)](https://app.codacy.com/gh/CodeBrauer/ha-urban-weather/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 Klimawerte für deinen Standort aus dichten Stadtklima-Messnetzen: Temperatur, Luftfeuchte,
 Taupunkt, absolute Feuchte, gefühlte Temperatur, Luftdruck, Globalstrahlung und Wind.
