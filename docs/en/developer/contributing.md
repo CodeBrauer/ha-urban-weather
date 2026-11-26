@@ -42,7 +42,7 @@ SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/
 | Workflow | Runs on | Checks |
 |---|---|---|
 | Lint | push, pull request | `ruff check`, `ruff format --check` |
-| Test | push, pull request | pytest; fails below 95 % coverage. The coverage table is in the job summary and on [Codecov](https://codecov.io/gh/CodeBrauer/ha-urban-weather) |
+| Test | push, pull request | pytest; fails below 95 % coverage. The coverage table is in the job summary and on [Codacy](https://app.codacy.com/gh/CodeBrauer/ha-urban-weather/coverage) |
 | Validate | push, pull request, daily | hassfest, HACS validation |
 | Docs | changes to the documentation | translation check, strict build of both languages; deploys to GitHub Pages from `main` |
 | Release | published release | Attaches `urban_weather.zip`, which HACS installs |

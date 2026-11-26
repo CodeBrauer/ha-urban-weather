@@ -1,4 +1,4 @@
-<!-- source: 465282e63fe037ebe80db2753bb12e5ef1844738 -->
+<!-- source: c89a3a79eee6c82ea6bcd434f54a1316c7f15091 -->
 # Mitarbeit
 
 Die Regeln für Code, Tests, Commits, Pull Requests und Versionierung stehen in
@@ -44,7 +44,7 @@ SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/
 | Workflow | Läuft bei | Prüft |
 |---|---|---|
 | Lint | Push, Pull Request | `ruff check`, `ruff format --check` |
-| Test | Push, Pull Request | pytest; schlägt unter 95 % Coverage fehl. Die Coverage-Tabelle steht in der Zusammenfassung des Jobs und auf [Codecov](https://codecov.io/gh/CodeBrauer/ha-urban-weather) |
+| Test | Push, Pull Request | pytest; schlägt unter 95 % Coverage fehl. Die Coverage-Tabelle steht in der Zusammenfassung des Jobs und auf [Codacy](https://app.codacy.com/gh/CodeBrauer/ha-urban-weather/coverage) |
 | Validate | Push, Pull Request, täglich | hassfest, HACS-Validierung |
 | Docs | Änderungen an der Doku | Übersetzungs-Check, strikter Build beider Sprachen; Deploy auf GitHub Pages von `main` |
 | Release | veröffentlichtes Release | Hängt `urban_weather.zip` an, das HACS installiert |
