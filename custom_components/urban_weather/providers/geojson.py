@@ -140,6 +140,11 @@ def _newest_first(
     return sorted(features, key=lambda item: _time(item, feed), reverse=True)
 
 
+def _fills(feed: GeoJsonFeed, newer: datetime, older: datetime) -> bool:
+    """Return whether values of `older` fill in those missing at `newer`."""
+    return feed.fill_within is not None and newer - older <= feed.fill_within
+
+
 def _merge_long_format(
     features: list[dict[str, Any]],
     feed: GeoJsonFeed,
@@ -192,16 +197,23 @@ def build_stations(
     Return one station for each feature that has an id, a position and a value.
 
     The station is a sensor of its own providing the mapped fields that have a value
-    in any of its features (in long format its values can be of different times).
-    On a repeated id the feature with the newest measurement is used.
+    in its newest feature, or in an older one that fills it in (`fill_within`), as
+    the measurements do. On a repeated id the feature with the newest measurement is
+    used.
     """
     stations: dict[str, Station] = {}
     ordered = _newest_first(_merge_long_format(features, feed, fields), feed)
     newest = _time(ordered[0], feed) if ordered else OLDEST
+    station_times: dict[str, datetime] = {}
     measured: dict[str, set[Field]] = {}
     for feature in ordered:
         properties = _properties(feature)
-        measured.setdefault(_station_id(properties, feed), set()).update(
+        station_id = _station_id(properties, feed)
+        time = _time(feature, feed)
+        station_time = station_times.setdefault(station_id, time)
+        if time != station_time and not _fills(feed, station_time, time):
+            continue
+        measured.setdefault(station_id, set()).update(
             mapped for name, mapped in fields.items() if is_number(properties.get(name))
         )
     for feature in ordered:
@@ -274,7 +286,7 @@ def parse_measurements(
         if newer is None:
             measurements[station_id] = Measurement(timestamp=timestamp, values=values)
             continue
-        if feed.fill_within is None or newer.timestamp - timestamp > feed.fill_within:
+        if not _fills(feed, newer.timestamp, timestamp):
             continue
         missing = {
             key: value for key, value in values.items() if key not in newer.values

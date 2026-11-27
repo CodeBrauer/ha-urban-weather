@@ -260,11 +260,17 @@ def test_newest_feature_wins_on_a_repeated_id() -> None:
         timestamp="2026-11-22T10:00:00Z", location_name="Old", temperature_c=1
     )
     new = feature(
-        timestamp="2026-11-22T11:00:00Z", location_name="New", temperature_c=2
+        timestamp="2026-11-22T11:00:00Z",
+        location_name="New",
+        temperature_c=2,
+        humidity_relative_percent=None,
     )
     for ordered in ([old, new], [new, old]):
         [station] = build_stations(ordered, FEED, FIELDS)
         assert station.temperature_sensor.name == "New"
+        assert Field.HUMIDITY not in station.temperature_sensor.parameters, (
+            "only the newest feature says what the station measures"
+        )
         [measurement] = parse_measurements(ordered, FEED, FIELDS)[ZURICH_NEAREST]
         assert measurement.values[Field.TEMPERATURE] == 2.0, "not the older value"
 
@@ -765,6 +771,10 @@ def test_dresden_old_value_does_not_make_a_fresh_one_stale() -> None:
     assert measurement.timestamp.isoformat() == "2026-11-26T21:00:00+01:00"
     latest = latest_valid([measurement], DRESDEN_NOW, DRESDEN.max_age)
     assert latest is not None, "the fresh temperature is used"
+    [built] = build_stations(features, DRESDEN_FEED, DRESDEN.fields)
+    assert built.temperature_sensor.parameters == {Field.TEMPERATURE}, (
+        "a value that is never filled in does not create an entity"
+    )
 
 
 async def test_dresden_station_payload_skips_newer_unusable_values(
