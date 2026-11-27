@@ -735,6 +735,22 @@ def test_dresden_value_missing_in_the_newest_hour_comes_from_an_older_one() -> N
     )
 
 
+def test_dresden_station_measures_values_of_different_hours() -> None:
+    """A station's values in different hours still count as what it measures."""
+    features = [
+        dresden_feature(
+            messzeit="26.11.2026 20:00:00", bemerk="rel_humidity", wert_n=60.0
+        ),
+        dresden_feature(messzeit="26.11.2026 21:00:00", wert_n=1.0),
+    ]
+    [station] = build_stations(features, DRESDEN_FEED, DRESDEN.fields)
+    assert station.temperature_sensor is not None
+    assert station.temperature_sensor.parameters == {
+        Field.TEMPERATURE,
+        Field.HUMIDITY,
+    }
+
+
 def test_dresden_old_value_does_not_make_a_fresh_one_stale() -> None:
     """A value older than an hour is not filled in, so the fresh one stays current."""
     features = [
