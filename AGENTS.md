@@ -36,7 +36,7 @@ scripts/docs       # docs on http://localhost:8000 (`de`: German, `build`: check
 uv run --no-project --with playwright python scripts/screenshots.py  # docs screenshots, needs scripts/develop
 ```
 
-Run `scripts/lint` and `scripts/test` before every push. CI runs lint, pytest, hassfest, HACS validation, the PR title check and, for docs changes, the strict docs build; all must pass.
+Run `scripts/lint` and `scripts/test` before every push. CI runs lint, pytest (at least 95 % coverage), hassfest, HACS validation, the PR title check and, for docs changes, the strict docs build; all must pass.
 
 ## Language
 
