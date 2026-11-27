@@ -65,7 +65,7 @@ Release steps: [`.claude/skills/release/SKILL.md`](.claude/skills/release/SKILL.
 
 - Every PR that changes behaviour includes tests: new behaviour is covered, a bug fix comes with a test that fails without the fix. Docs- or CI-only PRs are exempt.
 - Tests may follow manual testing of new logic, but a PR is not marked ready for review without them.
-- Extend the existing `tests/test_<module>.py`; add a file only for a new module.
+- Tests of a behaviour go where similar behaviour is already tested, usually the existing `tests/test_<module>.py`. A file that grows too large can be split by topic (for example one file per network).
 - Reuse `tests/common.py` (test location `HOME`, sensor ids from the fixture, `add_home_entry`, `add_location`, `respond`, `make_station`) and the `api` fixture in `tests/conftest.py`, which replaces the `MannheimClimateApi` of the Mannheim provider.
 - Gotchas:
   - Fixtures that need a running event loop (`hass`-bound objects) must be `async def`.
