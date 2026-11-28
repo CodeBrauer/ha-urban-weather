@@ -5,10 +5,6 @@ name: Social preview
 # uploads it under Settings -> Social preview.
 
 on:
-  # TODO: temporary trigger to test the workflow before the merge; remove before ready.
-  pull_request:
-    paths:
-      - ".github/workflows/social-preview.yml"
   release:
     types:
       - published
