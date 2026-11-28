@@ -222,6 +222,10 @@ erzeugt `scripts/build_reference_data.py` (Quelle und Datum stehen jeweils im Fe
 
 ## Entwicklung
 
+Beiträge sind willkommen: siehe [CONTRIBUTING](.github/CONTRIBUTING.md), den
+[Code of Conduct](.github/CODE_OF_CONDUCT.md), die [Sicherheitsrichtlinie](.github/SECURITY.md)
+und die [Erklärung zur Barrierefreiheit](.github/ACCESSIBILITY.md) (alle auf Englisch).
+
 ```bash
 scripts/setup      # legt .venv mit Home Assistant an (uv)
 scripts/develop    # startet Home Assistant auf http://localhost:8123 mit dieser Integration
