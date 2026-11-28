@@ -277,7 +277,7 @@ def parse_measurements(
         timestamp = feed.parse_time(properties.get(feed.timestamp))
         if not station_id or timestamp is None:
             continue
-        values = {
+        values: dict[str, float] = {
             mapped: float(properties[name])
             for name, mapped in fields.items()
             if is_number(properties.get(name))

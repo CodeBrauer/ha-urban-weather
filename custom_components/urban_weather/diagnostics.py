@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING, Any
 from homeassistant.components.diagnostics import async_redact_data
 from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE
 
+from .provider import required
+
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
 
@@ -36,8 +38,8 @@ async def async_get_config_entry_diagnostics(
                 "lcz_source": station.lcz_source,
                 "zone": station.zone,
                 "height_above_ground": station.height_above_ground,
-                "temperature_sensor": station.temperature_sensor.name,
-                "parameters": sorted(station.temperature_sensor.parameters),
+                "temperature_sensor": required(station.temperature_sensor).name,
+                "parameters": sorted(required(station.temperature_sensor).parameters),
             }
             for station in coordinator.stations
         ],

@@ -12,6 +12,7 @@ from .const import (
     OUTLIER_MIN_STATIONS,
     Field,
 )
+from .provider import required
 
 if TYPE_CHECKING:
     from datetime import datetime, timedelta
@@ -26,7 +27,7 @@ WATER_VAPOUR_GAS_CONSTANT = 216.7  # g K / m³ / hPa for absolute humidity
 KELVIN_OFFSET = 273.15
 MAX_HUMIDITY = 100.0
 
-PLAUSIBLE_RANGES: dict[Field, tuple[float, float]] = {
+PLAUSIBLE_RANGES: dict[str, tuple[float, float]] = {
     Field.TEMPERATURE: (-30.0, 45.0),
     Field.MIN_TEMPERATURE: (-30.0, 45.0),
     Field.MAX_TEMPERATURE: (-30.0, 45.0),
@@ -115,6 +116,11 @@ class StationReading:
         """Return a value of this reading."""
         return self.measurement.values.get(key)
 
+    @property
+    def temperature(self) -> float:
+        """Return the temperature of a reading known to have one."""
+        return required(self.get(Field.TEMPERATURE))
+
 
 @dataclass(slots=True)
 class Estimate:
@@ -146,11 +152,9 @@ def _drop_outliers(
 ) -> tuple[list[StationReading], list[StationReading]]:
     if len(readings) < OUTLIER_MIN_STATIONS:
         return readings, []
-    median = statistics.median(r.get(Field.TEMPERATURE) for r in readings)
+    median = statistics.median(r.temperature for r in readings)
     kept = [
-        r
-        for r in readings
-        if abs(r.get(Field.TEMPERATURE) - median) <= OUTLIER_MAX_DEVIATION_K
+        r for r in readings if abs(r.temperature - median) <= OUTLIER_MAX_DEVIATION_K
     ]
     return kept, [r for r in readings if r not in kept]
 
@@ -179,30 +183,28 @@ def estimate(
     result.used = sorted(used, key=lambda r: r.distance_m)
 
     if used:
-        temperatures = [r.get(Field.TEMPERATURE) for r in used]
-        result.temperature = statistics.median(temperatures)
+        temperatures = [r.temperature for r in used]
+        temperature = statistics.median(temperatures)
+        result.temperature = temperature
         result.spread = max(temperatures) - min(temperatures)
         result.min_temperature = _median(used, Field.MIN_TEMPERATURE)
         result.max_temperature = _median(used, Field.MAX_TEMPERATURE)
         result.last_measurement = max(r.measurement.timestamp for r in used)
         dew_points = [
-            dew_point(r.get(Field.TEMPERATURE), humidity)
+            dew_point(r.temperature, humidity)
             for r in used
             if (humidity := r.get(Field.HUMIDITY)) is not None
         ]
         if dew_points:
             raw_dew_point = statistics.median(dew_points)
-            corrected = min(raw_dew_point + dew_point_offset, result.temperature)
+            corrected = min(raw_dew_point + dew_point_offset, temperature)
             result.dew_point = corrected
-            result.humidity = min(
-                relative_humidity(result.temperature, corrected), MAX_HUMIDITY
-            )
+            humidity = min(relative_humidity(temperature, corrected), MAX_HUMIDITY)
+            result.humidity = humidity
             result.humidity_uncorrected = min(
-                relative_humidity(result.temperature, raw_dew_point), MAX_HUMIDITY
+                relative_humidity(temperature, raw_dew_point), MAX_HUMIDITY
             )
-            result.absolute_humidity = absolute_humidity(
-                result.temperature, result.humidity
-            )
+            result.absolute_humidity = absolute_humidity(temperature, humidity)
         result.pressure = _median(used, Field.PRESSURE)
         irradiances = [v for r in used if (v := r.get(Field.IRRADIANCE)) is not None]
         result.irradiance = max(irradiances) if irradiances else None

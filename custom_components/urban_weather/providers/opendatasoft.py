@@ -200,7 +200,7 @@ def parse_measurements(
         timestamp = parse_timestamp(record.get(dataset.timestamp))
         if not sensor_id or timestamp is None:
             continue
-        values = {
+        values: dict[str, float] = {
             mapped: _convert(float(record[name]), dataset.factors.get(name))
             for name, mapped in fields.items()
             if is_number(record.get(name))

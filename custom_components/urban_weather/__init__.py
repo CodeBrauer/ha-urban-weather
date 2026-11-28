@@ -22,7 +22,7 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: UrbanWeatherConfigEntry
 ) -> bool:
     """Set up a location from a config entry."""
-    network_id = entry.data.get(CONF_NETWORK)
+    network_id = str(entry.data.get(CONF_NETWORK))
     try:
         hub = await async_get_hub(hass, network_id)
     except UnknownNetworkError as err:

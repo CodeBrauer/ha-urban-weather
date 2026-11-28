@@ -59,6 +59,7 @@ from .map_view import (
     async_get_map_sessions,
     map_url,
 )
+from .provider import required
 from .providers import PROVIDERS
 from .selection import StationSelection, format_distance
 from .stations import Station, nearest, networks_in_range
@@ -322,15 +323,18 @@ class UrbanWeatherConfigFlow(ConfigFlow, domain=DOMAIN):
                 }
             ),
             errors=errors,
-            description_placeholders={"network": self._hub.provider.network.name},
+            description_placeholders={
+                "network": required(self._hub).provider.network.name
+            },
         )
 
     async def async_step_environment(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Confirm the surroundings (pre-selected from the LCZ map)."""
+        hub, location = required(self._hub), required(self._location)
         if user_input is not None:
-            self._location.environment = Environment(user_input[CONF_ENVIRONMENT])
+            location.environment = Environment(user_input[CONF_ENVIRONMENT])
             entry_id, min_interval = None, DEFAULT_SCAN_INTERVAL_MIN
             if self.source == SOURCE_RECONFIGURE:
                 entry = self._get_reconfigure_entry()
@@ -338,18 +342,16 @@ class UrbanWeatherConfigFlow(ConfigFlow, domain=DOMAIN):
                 min_interval = entry.options.get(CONF_SCAN_INTERVAL, min_interval)
             self._selection = StationSelection(
                 self.hass,
-                self._hub,
+                hub,
                 self._stations,
-                self._location.as_tuple(),
+                location.as_tuple(),
                 entry_id,
                 min_interval,
             )
             return await self.async_step_stations()
         return self.async_show_form(
             step_id="environment",
-            data_schema=_environment_schema(
-                detected_environment(self._hub, self._location)
-            ),
+            data_schema=_environment_schema(detected_environment(hub, location)),
         )
 
     async def async_step_stations(
@@ -357,7 +359,7 @@ class UrbanWeatherConfigFlow(ConfigFlow, domain=DOMAIN):
         user_input: dict[str, Any] | None = None,  # noqa: ARG002
     ) -> ConfigFlowResult:
         """Offer the recommendation, the interactive map or the list."""
-        selection = self._selection
+        selection = required(self._selection)
         options = ["map", "list"]
         if selection.recommendation_fits():
             options.insert(0, "accept")
@@ -375,7 +377,7 @@ class UrbanWeatherConfigFlow(ConfigFlow, domain=DOMAIN):
         user_input: dict[str, Any] | None = None,  # noqa: ARG002
     ) -> ConfigFlowResult:
         """Use the recommendation as is."""
-        selection = self._selection
+        selection = required(self._selection)
         return self._async_finish(
             selection.recommended_sensor_ids(), selection.recommended_wind_sensor_id()
         )
@@ -387,7 +389,7 @@ class UrbanWeatherConfigFlow(ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             self._map_choice = user_input[MAP_SELECTION]
             return self.async_external_step_done(next_step_id="map_done")
-        selection = self._selection
+        selection = required(self._selection)
         payload = await selection.async_map_payload(
             selection.recommended_sensor_ids(), selection.recommended_wind_sensor_id()
         )
@@ -402,7 +404,7 @@ class UrbanWeatherConfigFlow(ConfigFlow, domain=DOMAIN):
         user_input: dict[str, Any] | None = None,  # noqa: ARG002
     ) -> ConfigFlowResult:
         """Create or update the entry with the stations chosen on the map."""
-        choice = self._map_choice
+        choice = required(self._map_choice)
         return self._async_finish(
             choice[CONF_TEMPERATURE_SENSORS], choice[CONF_WIND_SENSOR]
         )
@@ -411,7 +413,7 @@ class UrbanWeatherConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Select the stations from a list, recommendation pre-selected."""
-        selection = self._selection
+        selection = required(self._selection)
         selected = selection.recommended_sensor_ids()
         wind = selection.recommended_wind_sensor_id()
         errors: dict[str, str] = {}
@@ -430,16 +432,17 @@ class UrbanWeatherConfigFlow(ConfigFlow, domain=DOMAIN):
         )
 
     def _async_finish(self, selected: list[str], wind: str) -> ConfigFlowResult:
-        options = selected_options(self._selection, selected, wind)
+        location = required(self._location)
+        options = selected_options(required(self._selection), selected, wind)
         data = {
-            **self._location.as_data(),
-            CONF_NETWORK: self._hub.provider.network.id,
+            **location.as_data(),
+            CONF_NETWORK: required(self._hub).provider.network.id,
         }
         if self.source == SOURCE_RECONFIGURE:
             entry = self._get_reconfigure_entry()
             return self.async_update_reload_and_abort(
                 entry,
-                unique_id=self._location.unique_id,
+                unique_id=location.unique_id,
                 data=data,
                 options={**entry.options, **options},
             )
@@ -450,7 +453,7 @@ class UrbanWeatherConfigFlow(ConfigFlow, domain=DOMAIN):
         )
 
     def _title(self) -> str:
-        location = self._location
+        location = required(self._location)
         if (
             distance_m(
                 location.latitude,
@@ -461,7 +464,7 @@ class UrbanWeatherConfigFlow(ConfigFlow, domain=DOMAIN):
             <= HOME_MATCH_RADIUS_M
         ):
             return self.hass.config.location_name
-        provider = self._hub.provider
+        provider = required(self._hub).provider
         district = provider.district(location.latitude, location.longitude)
         if district:
             return district

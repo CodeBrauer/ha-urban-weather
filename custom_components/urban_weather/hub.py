@@ -24,7 +24,13 @@ from .const import (
     STORAGE_KEY,
     STORAGE_VERSION,
 )
-from .provider import ApiError, ApiRateLimitError, SensorProvider
+from .provider import (
+    ApiError,
+    ApiRateLimitError,
+    BulkProvider,
+    SensorProvider,
+    required,
+)
 from .providers import PROVIDERS, async_create_provider
 
 if TYPE_CHECKING:
@@ -189,7 +195,7 @@ class ClimateHub:
                     }
                 )
             self._first_seen = first_seen or {}
-            return self._stations
+            return required(self._stations)
 
     async def _async_fetch_sensor_list(self) -> dict[str, Any] | None:
         if self._sensor_limiter.wait_time():
@@ -205,7 +211,9 @@ class ClimateHub:
             LOGGER.warning("Could not refresh the station list: %s", err)
         return None
 
-    def _set_stations(self, payload: dict[str, Any], fetched_at: datetime) -> None:
+    def _set_stations(
+        self, payload: dict[str, Any], fetched_at: datetime | None
+    ) -> None:
         self._stations = self.provider.build_stations(payload)
         self._stations_fetched_at = fetched_at
         self._sensor_index = {}
@@ -269,6 +277,9 @@ class ClimateHub:
         provider = self.provider
         if isinstance(provider, SensorProvider):
             return {sensor_id: await provider.async_get_measurements(sensor_id)}
+        if not isinstance(provider, BulkProvider):
+            msg = f"Unsupported provider {type(provider).__name__}"
+            raise TypeError(msg)
         sensor_ids = self._sensor_ids_in_use() | {sensor_id}
         fetched = await provider.async_get_all_measurements(
             [self._sensors[s] for s in sensor_ids if s in self._sensors]
@@ -321,7 +332,9 @@ def network_entries(hass: HomeAssistant, network_id: str) -> list[ConfigEntry]:
 
 async def _async_create_hub(hass: HomeAssistant, network_id: str) -> ClimateHub:
     provider = await async_create_provider(hass, network_id)
-    store = Store(hass, STORAGE_VERSION, STORAGE_KEY.format(network=network_id))
+    store = Store[dict[str, Any]](
+        hass, STORAGE_VERSION, STORAGE_KEY.format(network=network_id)
+    )
     return ClimateHub(hass, provider, store)
 
 

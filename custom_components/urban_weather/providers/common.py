@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import math
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, TypeGuard
 
 import aiohttp
 
@@ -53,7 +53,7 @@ OPENSTREETMAP = TileLayer(
 )
 
 
-def is_number(value: Any) -> bool:
+def is_number(value: Any) -> TypeGuard[float]:
     """Return True for a finite int or float (not a bool)."""
     return (
         isinstance(value, int | float)

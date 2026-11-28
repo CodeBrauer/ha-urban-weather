@@ -33,7 +33,7 @@ from .const import (
     Field,
 )
 from .hub import RequestDeferredError, StationListUnavailableError
-from .provider import ApiError, SensorNotFoundError
+from .provider import ApiError, SensorNotFoundError, required
 from .selection import StationSelection
 
 if TYPE_CHECKING:
@@ -171,7 +171,9 @@ class ClimateCoordinator(DataUpdateCoordinator[Estimate]):
                 ir.async_delete_issue(self.hass, DOMAIN, issue)
         if not new:
             return
-        labels = dict.fromkeys(self.hub.station_for_sensor(s).label for s in new)
+        labels = dict.fromkeys(
+            required(self.hub.station_for_sensor(s)).label for s in new
+        )
         ir.async_create_issue(
             self.hass,
             DOMAIN,
@@ -193,7 +195,7 @@ class ClimateCoordinator(DataUpdateCoordinator[Estimate]):
         readings: list[StationReading] = []
         failed = 0
         for station in self.stations:
-            sensor = station.temperature_sensor
+            sensor = required(station.temperature_sensor)
             latest = await self._async_latest(station, sensor, now)
             if latest is None:
                 failed += 1

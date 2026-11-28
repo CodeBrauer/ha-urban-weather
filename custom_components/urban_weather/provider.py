@@ -38,6 +38,18 @@ class SensorNotFoundError(ApiError):
     """The sensor does not exist (any more)."""
 
 
+def required[T](value: T | None) -> T:
+    """
+    Return a value that the caller's state guarantees to be set.
+
+    Narrows the type for the type checker; a missing value is a bug, not bad input.
+    """
+    if value is None:
+        msg = "Required value is missing"
+        raise RuntimeError(msg)
+    return value
+
+
 @dataclass(frozen=True, slots=True)
 class ApiSensor:
     """A sensor as listed by the API."""

@@ -43,6 +43,7 @@ from custom_components.urban_weather.provider import (
     Network,
     RequestLimits,
     TileLayer,
+    required,
 )
 from custom_components.urban_weather.providers import PROVIDERS
 from custom_components.urban_weather.providers.mannheim import MANNHEIM
@@ -158,6 +159,13 @@ def test_network_measurements_come_from_the_field_mapping() -> None:
     """A network measures what its field mapping names."""
     assert FAKE_NETWORK.measurements == {Field.TEMPERATURE, Field.HUMIDITY}
     assert MANNHEIM.measurements == set(Field)
+
+
+def test_required_returns_a_set_value_and_rejects_a_missing_one() -> None:
+    """A falsy value is still set; only None is missing."""
+    assert required(0) == 0
+    with pytest.raises(RuntimeError, match="missing"):
+        required(None)
 
 
 def test_provider_defaults_without_reference_data() -> None:

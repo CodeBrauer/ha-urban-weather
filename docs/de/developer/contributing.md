@@ -1,4 +1,4 @@
-<!-- source: c89a3a79eee6c82ea6bcd434f54a1316c7f15091 -->
+<!-- source: faf78be56e03bcbe19f8c57b6851c93bec87238b -->
 # Mitarbeit
 
 Die Regeln für Code, Tests, Commits, Pull Requests und Versionierung stehen in
@@ -11,7 +11,7 @@ gelten für Menschen und KI-Agenten gleichermaßen.
 |---|---|
 | `scripts/setup` | Legt `.venv` mit Home Assistant an (uv, Python 3.14) |
 | `scripts/develop` | Startet Home Assistant auf <http://localhost:8123> mit `config/` und dieser Integration |
-| `scripts/lint` | `ruff format` und `ruff check` (`select = ALL`), danach der Doku-Check |
+| `scripts/lint` | `ruff format` und `ruff check` (`select = ALL`), die Typprüfung (`mypy`, strict), danach der Doku-Check |
 | `scripts/test` | pytest; Argumente werden weitergegeben, z. B. `scripts/test -k recommend` |
 | `scripts/docs` | Startet die Doku lokal; `scripts/docs de` für Deutsch, `scripts/docs build` für beide |
 | `scripts/screenshots.py` | Erstellt die Screenshots der Doku in beiden Sprachen aus der laufenden Dev-Instanz: `uv run --no-project --with playwright python scripts/screenshots.py` |
@@ -43,7 +43,7 @@ SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/
 
 | Workflow | Läuft bei | Prüft |
 |---|---|---|
-| Lint | Push, Pull Request | `ruff check`, `ruff format --check` |
+| Lint | Push, Pull Request | `ruff check`, `ruff format --check`, `mypy` |
 | Test | Push, Pull Request | pytest; schlägt unter 95 % Coverage fehl. Die Coverage-Tabelle steht in der Zusammenfassung des Jobs und auf [Codacy](https://app.codacy.com/gh/CodeBrauer/ha-urban-weather/coverage) |
 | Validate | Push, Pull Request, täglich | hassfest, HACS-Validierung |
 | Docs | Änderungen an der Doku | Übersetzungs-Check, strikter Build beider Sprachen; Deploy auf GitHub Pages von `main` |

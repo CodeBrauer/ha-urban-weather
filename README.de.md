@@ -225,7 +225,7 @@ erzeugt `scripts/build_reference_data.py` (Quelle und Datum stehen jeweils im Fe
 ```bash
 scripts/setup      # legt .venv mit Home Assistant an (uv)
 scripts/develop    # startet Home Assistant auf http://localhost:8123 mit dieser Integration
-scripts/lint       # ruff format + check
+scripts/lint       # ruff format + check, mypy
 scripts/test       # pytest (Argumente werden durchgereicht, z. B. -k recommend)
 ```
 

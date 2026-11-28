@@ -129,7 +129,8 @@ class ReferenceData:
 
 
 def _read(name: str) -> dict[str, Any]:
-    return json.loads((DATA_DIR / name).read_text(encoding="utf-8"))
+    data: dict[str, Any] = json.loads((DATA_DIR / name).read_text(encoding="utf-8"))
+    return data
 
 
 def load_reference_data() -> ReferenceData:
