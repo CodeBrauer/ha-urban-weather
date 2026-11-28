@@ -51,9 +51,25 @@ def test_image_names_every_city_and_the_counts(script: ModuleType) -> None:
     for city in script.CITIES.values():
         assert f">{city.name}</text>" in svg, f"marker label of {city.name}"
     assert f">{len(NETWORK_IDS)} Messnetze<" in svg
-    assert ">800+ Stationen<" in svg, "856 stations rounded down to hundreds"
-    assert "Karlsruhe, Dresden, Zürich und Basel" in svg
+    assert f">{script.station_count()} Stationen<" in svg
+    last = list(script.CITIES.values())[-1].name
+    assert f" und {last}<" in svg, "the subtitle ends with the last city"
     assert svg.count('<path id="') == 4, "DE, AT, CH and LI"
+
+
+@pytest.mark.parametrize(
+    ("stations", "expected"),
+    [([400, 76, 70, 100, 90, 120], "800+"), ([400, 100], "500+"), ([450], "400+")],
+    ids=["current", "exact_hundreds", "rounded_down"],
+)
+def test_station_count(script: ModuleType, stations: list[int], expected: str) -> None:
+    """The total is rounded down to hundreds, so the pill never overstates it."""
+    cities = {
+        str(index): replace(script.CITIES["basel"], stations=count)
+        for index, count in enumerate(stations)
+    }
+    with patch.object(script, "CITIES", cities):
+        assert script.station_count() == expected
 
 
 def test_city_outside_the_outline_fails(script: ModuleType) -> None:

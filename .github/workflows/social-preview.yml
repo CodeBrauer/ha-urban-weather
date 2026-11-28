@@ -75,7 +75,13 @@ jobs:
 
           for number in $numbers; do
             [[ "$number" =~ ^[0-9]+$ ]] || continue
-            title=$(gh issue view "$number" --json title --jq .title 2>/dev/null) || continue
+            # A number that is no issue or pull request is skipped; other errors (token,
+            # rate limit) fail the run instead of leaving out the comment silently.
+            if ! title=$(gh issue view "$number" --json title --jq .title 2>"$RUNNER_TEMP/error"); then
+              grep -q "Could not resolve to an issue or pull request" "$RUNNER_TEMP/error" && continue
+              cat "$RUNNER_TEMP/error" >&2
+              exit 1
+            fi
             if [[ "$title" == Network:* ]]; then
               gh issue comment "$number" --body "$body"
               echo "Commented on #$number ($title)."
