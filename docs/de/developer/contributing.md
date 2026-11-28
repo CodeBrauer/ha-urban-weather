@@ -1,4 +1,4 @@
-<!-- source: faf78be56e03bcbe19f8c57b6851c93bec87238b -->
+<!-- source: f9c79e06da93d26d86d4d8959cf2ea2f1b4d84a7 -->
 # Mitarbeit
 
 Die Regeln für Code, Tests, Commits, Pull Requests und Versionierung stehen in
@@ -15,6 +15,7 @@ gelten für Menschen und KI-Agenten gleichermaßen.
 | `scripts/test` | pytest; Argumente werden weitergegeben, z. B. `scripts/test -k recommend` |
 | `scripts/docs` | Startet die Doku lokal; `scripts/docs de` für Deutsch, `scripts/docs build` für beide |
 | `scripts/screenshots.py` | Erstellt die Screenshots der Doku in beiden Sprachen aus der laufenden Dev-Instanz: `uv run --no-project --with playwright python scripts/screenshots.py` |
+| `scripts/social_preview.py` | Schreibt das Vorschaubild des Repositorys als SVG aus den unterstützten Messnetzen: `python3 scripts/social_preview.py preview.svg` |
 
 Unter macOS gibt es für einige Abhängigkeiten von Home Assistant (`pymicro-vad`,
 `pyspeex-noise`) keine Wheels für Python 3.14, und der Build scheitert. Einmal mit SDK-Pfad
@@ -48,6 +49,7 @@ SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/
 | Validate | Push, Pull Request, täglich | hassfest, HACS-Validierung |
 | Docs | Änderungen an der Doku | Übersetzungs-Check, strikter Build beider Sprachen; Deploy auf GitHub Pages von `main` |
 | Release | veröffentlichtes Release | Hängt `urban_weather.zip` an, das HACS installiert |
+| Social preview | veröffentlichtes Release, manuell | Erzeugt das Vorschaubild (7 Tage aufbewahrt) und verlinkt es in den Messnetz-Issues, die die Release Notes nennen |
 
 Releases folgen dem Runbook in
 [`.claude/skills/release/SKILL.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/.claude/skills/release/SKILL.md).

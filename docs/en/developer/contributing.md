@@ -14,6 +14,7 @@ apply to humans and AI agents alike.
 | `scripts/test` | pytest; arguments are passed on, e.g. `scripts/test -k recommend` |
 | `scripts/docs` | Serves the documentation locally; `scripts/docs de` for German, `scripts/docs build` for both |
 | `scripts/screenshots.py` | Takes the documentation screenshots in both languages from the running dev instance: `uv run --no-project --with playwright python scripts/screenshots.py` |
+| `scripts/social_preview.py` | Writes the social preview image of the repository as SVG from the supported networks: `python3 scripts/social_preview.py preview.svg` |
 
 On macOS some Home Assistant dependencies (`pymicro-vad`, `pyspeex-noise`) have no wheels
 for Python 3.14 and fail to compile. Build them once with the SDK path:
@@ -46,6 +47,7 @@ SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/
 | Validate | push, pull request, daily | hassfest, HACS validation |
 | Docs | changes to the documentation | translation check, strict build of both languages; deploys to GitHub Pages from `main` |
 | Release | published release | Attaches `urban_weather.zip`, which HACS installs |
+| Social preview | published release, manual | Renders the social preview image (kept 7 days) and links it on the network issues named in the release notes |
 
 Releases follow the runbook in
 [`.claude/skills/release/SKILL.md`](https://github.com/CodeBrauer/ha-urban-weather/blob/main/.claude/skills/release/SKILL.md).
