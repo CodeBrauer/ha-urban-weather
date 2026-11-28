@@ -106,6 +106,7 @@ gh api 'repos/{owner}/{repo}/milestones' --jq '.[] | "\(.number) \(.title) open=
 ```
 
 - If the workflow failed, re-run it (`gh run rerun <id>`); it replaces an existing asset. A re-run uses the workflow file of the tag, so a broken workflow needs a fix on `main` and a new PATCH release.
+- With a new network, the Social preview workflow comments a link to the rendered image on its `Network: …` issue; the person you work for uploads it under Settings → Social preview.
 - If a milestone with this version exists and has no open issues left, close it with `gh api -X PATCH 'repos/{owner}/{repo}/milestones/<number>' -f state=closed`. This is covered by the approval in step 4.
 - Never delete, move or re-tag a published version; HACS installations may already use it. Fix mistakes with a new PATCH release.
 

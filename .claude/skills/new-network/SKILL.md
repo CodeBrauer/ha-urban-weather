@@ -62,13 +62,14 @@ Screenshots only change when their motif should show the new network (`scripts/s
 - `README.md` and `README.de.md`: list of supported networks (with station count), data sources and licences.
 - `AGENTS.md`: intro, layout table (new provider files), the API section (host and limits), test fixtures.
 - `mkdocs.base.yml`: `site_description`.
+- `scripts/social_preview.py`: the city in `CITIES` (centre as `<CITY>_HOME` in `tests/common.py`, rounded station count, label side). `tests/test_social_preview.py` fails without it. Preview: `python3 scripts/social_preview.py /tmp/preview.svg && rsvg-convert -w 1280 /tmp/preview.svg -o /tmp/preview.png`.
 
 ## 6. Outside the code
 
 Done by the person you work for, or with their approval:
 
 - GitHub repository description ("Supported: …") and a topic with the city name.
-- Social preview image (Settings → Social preview): it names the networks and the station count. Keep text inside the area the repository card shows (about y 75–560 of 1280×640).
+- Social preview image: the Social preview workflow renders it on each release and comments a link on the `Network: …` issues referenced in the release notes (kept 7 days; run it manually with the issue number to get it earlier). Upload the PNG under Settings → Social preview; GitHub has no API for it.
 - Close the network issue with the release.
 
 ## 7. Release
