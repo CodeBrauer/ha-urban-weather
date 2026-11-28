@@ -141,8 +141,12 @@ class MapView(HomeAssistantView):
         if session is None:
             return web.Response(status=HTTPStatus.NOT_FOUND, text="Link expired")
         config = json.dumps(session.payload).replace("</", "<\\/")
+        # The texts fall back to English, so their language comes with them.
+        language = session.payload["text"]["lang"]
         return web.Response(
-            text=self._sessions.template.replace("__CONFIG__", config),
+            text=self._sessions.template.replace("__LANGUAGE__", language).replace(
+                "__CONFIG__", config
+            ),
             content_type="text/html",
             headers=NO_STORE,
         )

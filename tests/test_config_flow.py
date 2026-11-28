@@ -272,6 +272,24 @@ async def test_map_selection_continues_flow(
 
 
 @pytest.mark.parametrize(
+    ("language", "expected"),
+    [("en", "en"), ("de", "de"), ("de-CH", "en"), ("fr", "en")],
+)
+async def test_map_page_language(
+    hass: HomeAssistant,
+    hass_client_no_auth: ClientSessionGenerator,
+    language: str,
+    expected: str,
+) -> None:
+    """The page declares the language of its texts; without a translation, English."""
+    hass.config.language = language
+    _, path = await open_map(hass)
+    client = await hass_client_no_auth()
+    page = await client.get(path)
+    assert f'<html lang="{expected}">' in await page.text()
+
+
+@pytest.mark.parametrize(
     ("body", "error"),
     [
         ("not json", "invalid"),

@@ -136,6 +136,7 @@
     },
     "map_page": {
       "options": {
+        "lang": "en",
         "title": "Choose stations",
         "hint": "Click a station to select or deselect it. Zoom in where stations are close together.",
         "counter": "{count} of at most {max} stations selected",

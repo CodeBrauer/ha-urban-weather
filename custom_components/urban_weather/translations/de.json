@@ -136,6 +136,7 @@
     },
     "map_page": {
       "options": {
+        "lang": "de",
         "title": "Stationen wählen",
         "hint": "Klicke auf eine Station, um sie aus- oder abzuwählen. Zoome hinein, wo Stationen dicht beieinander liegen.",
         "counter": "{count} von höchstens {max} Stationen gewählt",
