@@ -216,6 +216,10 @@ header).
 
 ## Development
 
+Contributions are welcome: see [CONTRIBUTING](.github/CONTRIBUTING.md), the
+[Code of Conduct](.github/CODE_OF_CONDUCT.md), the [security policy](.github/SECURITY.md)
+and the [accessibility statement](.github/ACCESSIBILITY.md).
+
 ```bash
 scripts/setup      # creates .venv with Home Assistant (uv)
 scripts/develop    # starts Home Assistant on http://localhost:8123 with this integration
