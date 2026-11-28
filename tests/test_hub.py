@@ -24,6 +24,7 @@ from custom_components.urban_weather.provider import (
     ApiConnectionError,
     ApiRateLimitError,
     Measurement,
+    Provider,
 )
 from custom_components.urban_weather.providers.mannheim import (
     MANNHEIM,
@@ -116,6 +117,14 @@ async def test_measurements_are_cached_for_nine_minutes(
     freezer.tick(timedelta(seconds=1))
     await hub.async_get_measurements("s1")
     assert api.async_get_measurements.await_count == 2
+
+
+async def test_provider_without_request_model_is_rejected() -> None:
+    """A provider that is neither a SensorProvider nor a BulkProvider is a bug."""
+    provider = MagicMock(spec=Provider, network=MANNHEIM)
+    hub = ClimateHub(MagicMock(), provider, MagicMock())
+    with pytest.raises(TypeError, match="Unsupported provider"):
+        await hub.async_get_measurements("s1")
 
 
 async def test_request_deferred_when_budget_is_used(

@@ -179,7 +179,7 @@ def parse_measurements(
             and measurements[station_id][0].timestamp >= timestamp
         ):
             continue
-        values = {
+        values: dict[str, float] = {
             mapped: float(properties[name])
             for name, mapped in fields.items()
             if is_number(properties.get(name))

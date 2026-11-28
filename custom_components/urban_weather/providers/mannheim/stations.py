@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from custom_components.urban_weather.const import Field
 from custom_components.urban_weather.geo import cluster_points
+from custom_components.urban_weather.provider import required
 from custom_components.urban_weather.stations import (
     LczSource,
     Station,
@@ -48,11 +49,13 @@ def build_stations(
         wind = pick_sensor(members, Field.WIND_SPEED)
         if temperature is None and wind is None:
             continue
-        anchor = temperature or wind
+        anchor = required(temperature or wind)
         names = [sensor.name for sensor in members if sensor is temperature] + [
             sensor.name for sensor in members if sensor is not temperature
         ]
         entry = reference.catalog_entry(names, anchor.latitude, anchor.longitude)
+        lcz: int | None
+        lcz_source: LczSource | None
         if entry and entry.lcz:
             lcz, lcz_source = entry.lcz, LczSource.CATALOG
         else:

@@ -147,12 +147,12 @@ class StationSelection:
         """Return the temperature sensors of the recommended stations."""
         if not self.recommendation:
             return []
-        return [s.temperature_sensor.id for s in self.recommendation.stations]
+        return [s.temperature_sensor_id for s in self.recommendation.stations]
 
     def recommended_wind_sensor_id(self) -> str:
         """Return the recommended wind sensor or the 'none' option."""
         station = self.recommendation.wind_station if self.recommendation else None
-        return station.wind_sensor.id if station else NO_WIND_SENSOR
+        return station.wind_sensor_id if station else NO_WIND_SENSOR
 
     def recommendation_fits(self) -> bool:
         """Return True if the recommendation can be used within the budget."""
@@ -233,14 +233,14 @@ class StationSelection:
             self.longitude,
         )
         return by_distance[:count] + [
-            s for s in by_distance[count:] if s.temperature_sensor.id in selected
+            s for s in by_distance[count:] if s.temperature_sensor_id in selected
         ]
 
     def _wind_stations(self, wind: str) -> list[Station]:
         stations = nearest(
             [s for s in self._stations if s.wind_sensor], self.latitude, self.longitude
         )[:WIND_CANDIDATE_STATIONS]
-        if wind != NO_WIND_SENSOR and wind not in (s.wind_sensor.id for s in stations):
+        if wind != NO_WIND_SENSOR and wind not in (s.wind_sensor_id for s in stations):
             current = self._hub.station_for_sensor(wind)
             if current and current.wind_sensor:
                 stations.append(current)
@@ -255,7 +255,7 @@ class StationSelection:
         ]
         options += [
             SelectOptionDict(
-                value=station.wind_sensor.id,
+                value=station.wind_sensor_id,
                 label=f"{self.distance_text(station)} · {station.label}",
             )
             for station in self._wind_stations(wind)
@@ -270,9 +270,9 @@ class StationSelection:
         recommended = set(self.recommended_sensor_ids())
         options = [
             SelectOptionDict(
-                value=station.temperature_sensor.id,
+                value=station.temperature_sensor_id,
                 label=self.station_label(
-                    station, recommended=station.temperature_sensor.id in recommended
+                    station, recommended=station.temperature_sensor_id in recommended
                 ),
             )
             for station in self._temperature_stations(selected, CANDIDATE_STATIONS)
@@ -320,7 +320,7 @@ class StationSelection:
         recommended = set(self.recommended_sensor_ids())
         stations = [
             {
-                "id": station.temperature_sensor.id,
+                "id": station.temperature_sensor_id,
                 "number": number,
                 "label": station.label,
                 "lat": station.latitude,
@@ -330,7 +330,7 @@ class StationSelection:
                 if station.environment
                 else None,
                 "elevated": station.is_elevated,
-                "recommended": station.temperature_sensor.id in recommended,
+                "recommended": station.temperature_sensor_id in recommended,
             }
             for number, station in enumerate(
                 self._temperature_stations(selected, MAP_CANDIDATE_STATIONS), start=1

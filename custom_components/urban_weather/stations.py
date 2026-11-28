@@ -16,6 +16,7 @@ from .const import (
     MountZone,
 )
 from .geo import distance_m
+from .provider import required
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping
@@ -68,6 +69,16 @@ class Station:
         return self.zone in (MountZone.ROOF, MountZone.HIGH_POINT) or bool(
             self.height_above_ground
         )
+
+    @property
+    def temperature_sensor_id(self) -> str:
+        """Id of the temperature sensor, for a station known to have one."""
+        return required(self.temperature_sensor).id
+
+    @property
+    def wind_sensor_id(self) -> str:
+        """Id of the wind sensor, for a station known to have one."""
+        return required(self.wind_sensor).id
 
     @property
     def label(self) -> str:

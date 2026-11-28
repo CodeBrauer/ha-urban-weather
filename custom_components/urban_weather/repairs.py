@@ -21,6 +21,7 @@ from .const import (
     NO_WIND_SENSOR,
 )
 from .hub import StationListUnavailableError, async_get_hub
+from .provider import required
 from .selection import StationSelection
 
 if TYPE_CHECKING:
@@ -38,6 +39,7 @@ async def async_create_fix_flow(
     data: dict[str, str | int | float | None] | None,
 ) -> RepairsFlow:
     """Create the flow for a station_offline, station_removed or new_stations issue."""
+    data = required(data)
     sensor_id = data.get(ISSUE_SENSOR_ID)
     return StationRepairFlow(
         str(data[ISSUE_ENTRY_ID]), str(sensor_id) if sensor_id else None
@@ -116,7 +118,7 @@ class StationRepairFlow(RepairsFlow):
         user_input: dict[str, Any] | None = None,  # noqa: ARG002
     ) -> RepairsFlowResult:
         """Use the recommendation without the sensor."""
-        selection = self._selection
+        selection = required(self._selection)
         return self._async_save(
             selection.recommended_sensor_ids(), selection.recommended_wind_sensor_id()
         )
@@ -137,8 +139,8 @@ class StationRepairFlow(RepairsFlow):
         self, user_input: dict[str, Any] | None = None
     ) -> RepairsFlowResult:
         """Select the stations from a list, the current ones without the sensor."""
-        selection = self._selection
-        options = self._entry.options
+        selection = required(self._selection)
+        options = required(self._entry).options
         selected = [
             sensor_id
             for sensor_id in options.get(CONF_TEMPERATURE_SENSORS, [])
@@ -164,12 +166,12 @@ class StationRepairFlow(RepairsFlow):
 
     def _async_save(self, selected: list[str], wind: str) -> RepairsFlowResult:
         """Store the new stations and reload; finishing deletes the issue."""
-        entry = self._entry
+        entry = required(self._entry)
         self.hass.config_entries.async_update_entry(
             entry,
             options={
                 **entry.options,
-                **selected_options(self._selection, selected, wind),
+                **selected_options(required(self._selection), selected, wind),
             },
         )
         self.hass.config_entries.async_schedule_reload(entry.entry_id)
