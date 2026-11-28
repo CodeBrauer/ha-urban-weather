@@ -10,7 +10,7 @@ apply to humans and AI agents alike.
 |---|---|
 | `scripts/setup` | Creates `.venv` with Home Assistant (uv, Python 3.14) |
 | `scripts/develop` | Starts Home Assistant on <http://localhost:8123> with `config/` and this integration |
-| `scripts/lint` | `ruff format` and `ruff check` (`select = ALL`), then the documentation check |
+| `scripts/lint` | `ruff format` and `ruff check` (`select = ALL`), the type check (`mypy`, strict), then the documentation check |
 | `scripts/test` | pytest; arguments are passed on, e.g. `scripts/test -k recommend` |
 | `scripts/docs` | Serves the documentation locally; `scripts/docs de` for German, `scripts/docs build` for both |
 | `scripts/screenshots.py` | Takes the documentation screenshots in both languages from the running dev instance: `uv run --no-project --with playwright python scripts/screenshots.py` |
@@ -41,7 +41,7 @@ SDK=$(xcrun --show-sdk-path) SDKROOT="$SDK" CXXFLAGS="-isysroot $SDK -I$SDK/usr/
 
 | Workflow | Runs on | Checks |
 |---|---|---|
-| Lint | push, pull request | `ruff check`, `ruff format --check` |
+| Lint | push, pull request | `ruff check`, `ruff format --check`, `mypy` |
 | Test | push, pull request | pytest; fails below 95 % coverage. The coverage table is in the job summary and on [Codacy](https://app.codacy.com/gh/CodeBrauer/ha-urban-weather/coverage) |
 | Validate | push, pull request, daily | hassfest, HACS validation |
 | Docs | changes to the documentation | translation check, strict build of both languages; deploys to GitHub Pages from `main` |

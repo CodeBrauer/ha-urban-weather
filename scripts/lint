@@ -6,4 +6,5 @@ cd "$(dirname "$0")/.."
 
 .venv/bin/ruff format .
 .venv/bin/ruff check . --fix
+.venv/bin/mypy
 python3 scripts/check_docs.py

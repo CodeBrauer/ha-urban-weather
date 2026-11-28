@@ -217,7 +217,7 @@ header).
 ```bash
 scripts/setup      # creates .venv with Home Assistant (uv)
 scripts/develop    # starts Home Assistant on http://localhost:8123 with this integration
-scripts/lint       # ruff format + check
+scripts/lint       # ruff format + check, mypy
 scripts/test       # pytest (arguments are passed on, e.g. -k recommend)
 ```
 

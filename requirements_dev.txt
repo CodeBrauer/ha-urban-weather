@@ -5,3 +5,4 @@ homeassistant==2026.11.2
 pytest-homeassistant==2026.11.2
 coverage==7.17.5
 pytest-cov==7.1.0
+mypy==2.4.1

@@ -30,13 +30,13 @@ Home Assistant custom integration `urban_weather` ("Urban Weather (Stadtklima)")
 ```bash
 scripts/setup      # .venv with Home Assistant (uv, Python 3.14)
 scripts/develop    # dev instance on http://localhost:8123
-scripts/lint       # ruff format + check (select = ALL), docs translation check
+scripts/lint       # ruff format + check (select = ALL), mypy (strict), docs translation check
 scripts/test       # pytest, arguments are passed through
 scripts/docs       # docs on http://localhost:8000 (`de`: German, `build`: check + strict build)
 uv run --no-project --with playwright python scripts/screenshots.py  # docs screenshots, needs scripts/develop
 ```
 
-Run `scripts/lint` and `scripts/test` before every push. CI runs lint, pytest (at least 95 % coverage), hassfest, HACS validation, the PR title check and, for docs changes, the strict docs build; all must pass.
+Run `scripts/lint` and `scripts/test` before every push. CI runs lint (Ruff, mypy), pytest (at least 95 % coverage), hassfest, HACS validation, the PR title check and, for docs changes, the strict docs build; all must pass.
 
 ## Language
 
