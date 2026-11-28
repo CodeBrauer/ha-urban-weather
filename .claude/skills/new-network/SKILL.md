@@ -14,7 +14,7 @@ A network is visible in many places. Work through every section; a section that 
 
 ## 1. Preconditions
 
-- A `Network: <City> (<CC>)` issue (template `.github/ISSUE_TEMPLATE/new_network.yml`) with access, licence, freshness and limits researched. Criteria: live values at least hourly, a licence that allows reuse, stations across the city, no login.
+- A `Network: <City> (<CC>)` issue (template `.github/ISSUE_TEMPLATE/new_network.yml`) whose checklist is complete: 12 points, the same for every network issue and defined in epic #33; the issue list shows the progress ("9 of 12"). Criteria: live values at least hourly, a licence that allows reuse, stations across the city, no login.
 - The limits and the planned budget are agreed in that issue before any code ("The network APIs are shared, rate-limited resources" in `AGENTS.md`). Explore the API with a few manual requests only.
 
 ## 2. Code

@@ -99,3 +99,21 @@ body:
   id: contact
   attributes:
     label: "Operator contact"
+- type: checkboxes
+  id: checklist
+  attributes:
+    label: "Checklist"
+    description: "The same 12 points for every network issue, defined in the [network catalog epic](https://github.com/CodeBrauer/ha-urban-weather/issues/33). Tick only what you have confirmed; the rest is checked during research."
+    options:
+      - label: "Operator known and network running (not planned, under construction or ended)"
+      - label: "Stations across the city: count and spread confirmed, positions published"
+      - label: "Air temperature measured, list of fields confirmed"
+      - label: "Operator contact found (for licence, endpoint and limit questions)"
+      - label: "Machine-readable endpoint (API, WFS, file), not only a dashboard"
+      - label: "No login: no account, and no key unless the operator publishes it for everyone"
+      - label: "Live values: a live response showed values updated at least hourly"
+      - label: "All stations in one or a few requests, within the request budget"
+      - label: "Limits checked: documented rate limits, quotas and User-Agent rules, or their absence"
+      - label: "Licence allows reuse, stated by the operator or its data portal"
+      - label: "Data format understood: ids, positions, timestamps and time zone, units, stale records"
+      - label: "Limits, planned budget and open decisions agreed in this issue"
