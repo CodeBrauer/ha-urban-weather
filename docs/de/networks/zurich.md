@@ -1,4 +1,4 @@
-<!-- source: 06d53c3e310dd70d1bd8a0babb3677467be14fe3 -->
+<!-- source: 4d061a5509b06f6bb3e1a8e72c064e1ca93e7c4f -->
 # Stadtklimamessnetz Zürich
 
 | | |
@@ -42,7 +42,7 @@ Integration nutzt dieselbe Obergrenze wie für Dortmund.
 | Geplante Abfragen | Höchstens 60 pro Stunde für alle Standorte zusammen |
 
 Eine Abfrage liefert alle Stationen, die Anzahl der Stationen kostet also nichts:
-[wie viele Stationen passen](../user/api-limits.md#eine-abfrage-fur-alle-stationen-dortmund-basel-zurich-karlsruhe).
+[wie viele Stationen passen](../user/api-limits.md#eine-abfrage-fur-alle-stationen-dortmund-basel-zurich-karlsruhe-dresden).
 
 ## Besonderheiten
 

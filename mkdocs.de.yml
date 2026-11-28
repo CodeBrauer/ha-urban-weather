@@ -24,6 +24,7 @@ nav:
       - networks/basel.md
       - networks/zurich.md
       - networks/karlsruhe.md
+      - networks/dresden.md
   - Entwicklung:
       - developer/architecture.md
       - developer/data-flow.md

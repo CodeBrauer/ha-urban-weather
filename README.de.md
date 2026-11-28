@@ -17,6 +17,7 @@ Unterstützte Messnetze:
 - [Smart Climate Luftklima Basel](https://data.bs.ch/explore/dataset/100009/) (etwa 70 Stationen)
 - [Stadtklimamessnetz Zürich](https://stadtklima-zuerich.ch/) (100+ Stationen)
 - [Sensor City Karlsruhe](https://geoportal.karlsruhe.de/sensorcity/Dashboard/) (90+ Stationen)
+- [KLIPS Dresden](https://stadtplan.dresden.de/?TH=UW_KLIPS_TEMPERATUR_MESS) (etwa 120 Stationen, Stundenwerte)
 
 Die Integration wählt die Station, die deinen Ort am besten abbildet. Passt die nächste
 nicht (zu weit weg, andere Umgebung, auf einem Dach montiert), kombiniert sie stattdessen
@@ -169,8 +170,8 @@ sich das Limit.
 Dortmund hat ein eigenes Budget: Eine Abfrage liefert alle Stationen, die die Dortmunder
 Standorte nutzen, höchstens 60 pro Stunde (der Datensatz nennt ein Kontingent von 50.000
 Abfragen pro Tag). Basel und Zürich funktionieren genauso, mit derselben Obergrenze von 60 pro Stunde
-(Basel nennt ein Kontingent von 500.000 Abfragen pro Tag, Zürich dokumentiert keine Limits); Karlsruhe ebenfalls, mit einer Obergrenze von 30 pro Stunde. Details:
-[API-Limits](https://codebrauer.github.io/ha-urban-weather/de/user/api-limits/#eine-abfrage-fur-alle-stationen-dortmund-basel-zurich-karlsruhe).
+(Basel nennt ein Kontingent von 500.000 Abfragen pro Tag, Zürich dokumentiert keine Limits); Karlsruhe ebenfalls, mit einer Obergrenze von 30 pro Stunde, und Dresden mit Stundenwerten und einer Obergrenze von 24 pro Stunde (12 geplant). Details:
+[API-Limits](https://codebrauer.github.io/ha-urban-weather/de/user/api-limits/#eine-abfrage-fur-alle-stationen-dortmund-basel-zurich-karlsruhe-dresden).
 
 ## Wenn keine Daten mehr kommen
 
@@ -208,6 +209,7 @@ actions:
 | Messwerte, Stationsliste (Basel) | [Kanton Basel-Stadt, Smart Climate Luftklima](https://data.bs.ch/explore/dataset/100009/) | CC BY 4.0 |
 | Messwerte, Stationsliste (Zürich) | [Stadt Zürich, Stadtklima Zürich](https://stadtklima-zuerich.ch/), Umwelt- und Gesundheitsschutz (UGZ) | CC0 |
 | Messwerte, Stationsliste (Karlsruhe) | [Stadt Karlsruhe, Sensor City / CityCLIM](https://geoportal.karlsruhe.de/sensorcity/Dashboard/) | Nicht angegeben |
+| Messwerte, Stationsliste (Dresden) | [Landeshauptstadt Dresden, KLIPS-Temperatursensoren](https://stadtplan.dresden.de/?TH=UW_KLIPS_TEMPERATUR_MESS), Umweltamt | dl-de/by-2-0 |
 | Standort-Metadaten der Stationen (Mannheim) | [Metadatenkatalog Stadtklimamessnetze Mannheim](https://opendata.smartmannheim.de/dataset/metadaten-stadtklimamessnetze-mannheim) | dl-de/by-2-0 |
 | Lokale Klimazonen | Demuzere et al. (2022), [Global map of LCZ](https://doi.org/10.5281/zenodo.6364594) | CC BY 4.0 |
 | Stadtteilnamen | © OpenStreetMap-Mitwirkende über Nominatim | ODbL 1.0 |

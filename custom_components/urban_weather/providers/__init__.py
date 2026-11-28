@@ -10,6 +10,8 @@ from .basel import BASEL
 from .basel import DATASET as BASEL_DATASET
 from .dortmund import DATASET as DORTMUND_DATASET
 from .dortmund import DORTMUND
+from .dresden import DRESDEN
+from .dresden import FEED as DRESDEN_FEED
 from .geojson import GeoJsonProvider
 from .karlsruhe import FEED as KARLSRUHE_FEED
 from .karlsruhe import KARLSRUHE
@@ -50,6 +52,10 @@ async def _async_create_karlsruhe(hass: HomeAssistant) -> Provider:
     return GeoJsonProvider(KARLSRUHE, KARLSRUHE_FEED, async_get_clientsession(hass))
 
 
+async def _async_create_dresden(hass: HomeAssistant) -> Provider:
+    return GeoJsonProvider(DRESDEN, DRESDEN_FEED, async_get_clientsession(hass))
+
+
 # Network id -> provider factory.
 PROVIDERS: dict[str, Callable[[HomeAssistant], Awaitable[Provider]]] = {
     MANNHEIM.id: _async_create_mannheim,
@@ -57,6 +63,7 @@ PROVIDERS: dict[str, Callable[[HomeAssistant], Awaitable[Provider]]] = {
     BASEL.id: _async_create_basel,
     ZURICH.id: _async_create_zurich,
     KARLSRUHE.id: _async_create_karlsruhe,
+    DRESDEN.id: _async_create_dresden,
 }
 
 

@@ -36,7 +36,7 @@ A network is visible in many places. Work through every section; a section that 
 ## 3. Tests
 
 - A trimmed real response in `tests/fixtures/<city>.json`. Its source, date and trim filter go in the loader's docstring in `tests/common.py`, next to the test location constants (`DORTMUND_HOME`, `DORTMUND_NOW`, ...).
-- `tests/test_<module>.py` for a new provider module, otherwise extend the existing file.
+- `tests/test_<module>.py` for a new provider module. A network configuring a generic provider extends that provider's test file, or gets its own `tests/test_<city>.py` when that file grows too large.
 - Cover parsing and units, grouping sensors into stations, replaced or stale sensors, `requests_per_refresh()`, and the recommendation (without siting data: nearest station only).
 
 ## 4. Documentation

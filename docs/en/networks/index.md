@@ -11,6 +11,7 @@ login. When you add a location, the integration uses the network with a station 
 | [Smart Climate Luftklima Basel](basel.md) | about 70 | Temperature | None | Opendatasoft | `data.bs.ch` |
 | [Stadtklimamessnetz Zürich](zurich.md) | 100+ | Temperature and humidity | None | GeoJSON file | `stadtklima-zuerich.ch` |
 | [Sensor City Karlsruhe](karlsruhe.md) | 90+ | Temperature and humidity | None | ArcGIS FeatureServer (GeoJSON) | `geoportal.karlsruhe.de` |
+| [KLIPS Dresden](dresden.md) | about 120 | Temperature and humidity (hourly) | None | WFS (GeoJSON) | `kommisdd.dresden.de` |
 
 Each network has its own [API limits](../user/api-limits.md) and request budget. Data
 sources and licences: [Data sources](../data-sources.md).
