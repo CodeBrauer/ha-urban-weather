@@ -1,4 +1,4 @@
-<!-- source: 367a636bbf3c20fb9109b74ff0d391b1340ca95d -->
+<!-- source: 2d998715b6dd0708c640b21de75891d3b53b7209 -->
 # Sensor City Karlsruhe
 
 | | |
@@ -46,7 +46,7 @@ denen der anderen Messnetze liegt, die alle Stationen in einer Abfrage liefern.
 | Geplante Abfragen | Höchstens 24 pro Stunde für alle Standorte zusammen |
 
 Eine Abfrage liefert alle Stationen, die Anzahl der Stationen kostet also nichts:
-[wie viele Stationen passen](../user/api-limits.md#eine-abfrage-fur-alle-stationen-dortmund-basel-zurich-karlsruhe).
+[wie viele Stationen passen](../user/api-limits.md#eine-abfrage-fur-alle-stationen-dortmund-basel-zurich-karlsruhe-dresden).
 
 ## Besonderheiten
 

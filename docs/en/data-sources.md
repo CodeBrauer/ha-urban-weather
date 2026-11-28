@@ -7,6 +7,7 @@
 | Measurements, station list (Basel) | [Kanton Basel-Stadt, Smart Climate Luftklima](https://data.bs.ch/explore/dataset/100009/) | CC BY 4.0 |
 | Measurements, station list (Zürich) | [Stadt Zürich, Stadtklima Zürich](https://stadtklima-zuerich.ch/), Umwelt- und Gesundheitsschutz (UGZ) | CC0 |
 | Measurements, station list (Karlsruhe) | [Stadt Karlsruhe, Sensor City / CityCLIM](https://geoportal.karlsruhe.de/sensorcity/Dashboard/) | Not stated |
+| Measurements, station list (Dresden) | [Landeshauptstadt Dresden, KLIPS temperature sensors](https://stadtplan.dresden.de/?TH=UW_KLIPS_TEMPERATUR_MESS), Umweltamt | dl-de/by-2-0 |
 | Station siting metadata (Mannheim) | [Metadatenkatalog Stadtklimamessnetze Mannheim](https://opendata.smartmannheim.de/dataset/metadaten-stadtklimamessnetze-mannheim) | dl-de/by-2-0 |
 | Local Climate Zones | Demuzere et al. (2022), [Global map of LCZ](https://doi.org/10.5281/zenodo.6364594) | CC BY 4.0 |
 | District names | © OpenStreetMap contributors via Nominatim | ODbL 1.0 |
@@ -17,7 +18,8 @@
 Details per network: [Supported networks](networks/index.md).
 
 Entities carry the attribution of their network: *Smart City Mannheim GmbH, dl-de/by-2-0*,
-*Stadt Dortmund, dl-de/zero-2-0*, *Kanton Basel-Stadt, CC BY 4.0*, *Stadt Zürich (UGZ), CC0* or *Stadt Karlsruhe (Sensor City)*.
+*Stadt Dortmund, dl-de/zero-2-0*, *Kanton Basel-Stadt, CC BY 4.0*, *Stadt Zürich (UGZ), CC0*, *Stadt Karlsruhe (Sensor City)* or
+*Landeshauptstadt Dresden (KLIPS sensor network), dl-de/by-2-0*.
 
 The City of Karlsruhe states no licence for the Sensor City data.
 

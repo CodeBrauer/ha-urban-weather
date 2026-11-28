@@ -30,6 +30,9 @@ from custom_components.urban_weather.provider import (
 )
 from custom_components.urban_weather.providers import PROVIDERS, async_create_provider
 from custom_components.urban_weather.providers.common import parse_epoch_ms
+from custom_components.urban_weather.providers.dresden import (
+    DRESDEN,
+)
 from custom_components.urban_weather.providers.geojson import (
     GeoJsonProvider,
     build_stations,
@@ -70,6 +73,7 @@ ALL_FIELDS = frozenset(FIELDS.values())
 # Taken before the autouse fixture `only_mannheim` removes it for each test.
 CREATE_ZURICH = PROVIDERS[ZURICH.id]
 CREATE_KARLSRUHE = PROVIDERS[KARLSRUHE.id]
+CREATE_DRESDEN = PROVIDERS[DRESDEN.id]
 
 
 @pytest.fixture
@@ -248,11 +252,17 @@ def test_newest_feature_wins_on_a_repeated_id() -> None:
         timestamp="2026-11-22T10:00:00Z", location_name="Old", temperature_c=1
     )
     new = feature(
-        timestamp="2026-11-22T11:00:00Z", location_name="New", temperature_c=2
+        timestamp="2026-11-22T11:00:00Z",
+        location_name="New",
+        temperature_c=2,
+        humidity_relative_percent=None,
     )
     for ordered in ([old, new], [new, old]):
         [station] = build_stations(ordered, FEED, FIELDS)
         assert station.temperature_sensor.name == "New"
+        assert Field.HUMIDITY not in station.temperature_sensor.parameters, (
+            "only the newest feature says what the station measures"
+        )
         [measurement] = parse_measurements(ordered, FEED, FIELDS)[ZURICH_NEAREST]
         assert measurement.values[Field.TEMPERATURE] == 2.0, "not the older value"
 

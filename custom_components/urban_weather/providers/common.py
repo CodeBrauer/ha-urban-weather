@@ -81,12 +81,13 @@ def parse_epoch_ms(value: Any) -> datetime | None:
         return None
 
 
-async def async_get_json(
+async def async_get_json(  # noqa: PLR0913
     session: aiohttp.ClientSession,
     url: str,
     label: str,
     *,
     params: Mapping[str, str] | None = None,
+    headers: Mapping[str, str] | None = None,
     not_found: type[ApiError] | None = None,
 ) -> Any:
     """
@@ -98,7 +99,10 @@ async def async_get_json(
     """
     try:
         async with session.get(
-            url, params=params, timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT_S)
+            url,
+            params=params,
+            headers=headers,
+            timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT_S),
         ) as response:
             if response.status == HTTP_TOO_MANY_REQUESTS:
                 raise ApiRateLimitError(retry_after(response.headers))

@@ -44,7 +44,7 @@ other networks that deliver all stations in one request.
 | Requests planned | At most 24 per hour for all locations together |
 
 One request returns all stations, so the number of stations costs nothing:
-[how many stations fit](../user/api-limits.md#one-request-for-all-stations-dortmund-basel-zurich-karlsruhe).
+[how many stations fit](../user/api-limits.md#one-request-for-all-stations-dortmund-basel-zurich-karlsruhe-dresden).
 
 ## Quirks
 

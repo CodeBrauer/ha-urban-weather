@@ -1,6 +1,8 @@
 ---
 # Codacy analysis. Vendored Leaflet is not ours to change (see AGENTS.md);
-# the dev scripts are covered by ruff (select = ALL, including the S rules).
+# the dev scripts are covered by ruff (select = ALL, including the S rules);
+# AGENTS.md is agent instructions, not prose for a style checker.
 exclude_paths:
   - "custom_components/urban_weather/www/leaflet/**"
   - "scripts/**"
+  - "AGENTS.md"
